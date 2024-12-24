@@ -8,7 +8,7 @@
         <div class="content-header">
             <h2 class="content-title">Add New Family</h2>
             <div>
-                <button type="submit" class="btn btn-md rounded font-sm hover-up">Publish</button>
+                <button type="submit" class="btn btn-md rounded font-sm hover-up">Add</button>
             </div>
         </div>
     </div>
