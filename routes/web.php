@@ -40,8 +40,8 @@ Route::prefix('family')->group(function () {
     Route::get('/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/store', [FamilyController::class, 'store'])->name('family.store');
     Route::get('/{id}', [FamilyController::class, 'show'])->name('family.show');
-    Route::get('/{id}/edit', [FamilyController::class, 'edit'])->name('family.edit');
-    Route::put('/{id}', [FamilyController::class, 'update'])->name('family.update');
+    Route::get('edit/{id}', [FamilyController::class, 'edit'])->name('family.edit');
+    Route::put('edit/{id}', [FamilyController::class, 'update'])->name('family.update');
     Route::delete('/{id}', [FamilyController::class, 'destroy'])->name('family.destroy');
 });
 

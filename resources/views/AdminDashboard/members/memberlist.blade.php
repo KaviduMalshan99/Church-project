@@ -4,16 +4,14 @@
 <div class="d-flex justify-content-end mb-4">
     <a class="btn btn-primary" href="{{ route('family.create') }}">Add Family</a>
 </div>
-<div class="card py-2 px-4 fs-5 fw-bold">
-{{$totalFamilies}} Families
-</div>
+
 <div class="card">
     <div class="card-body">
         <!-- Table for listing sub-churches -->
 
         <div class="table-responsive">
             <table class="table table-hover" id="subChurchTable">
-                <thead class="fs-6">
+                <thead>
                     <tr>
                         <th>Family Number</th>
                         <th>Family Name</th>
@@ -34,7 +32,7 @@
                         <td>{{ $family->created_at->format('d/m/Y') }}</td>
                         <td class="text-end">
                             <!-- Edit and Delete Actions -->
-                            <a href="{{ route('family.edit', $family->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
+                            <a href="{{ route('church.sub.edit', $family->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
 
                             <form action="{{ route('family.destroy', $family->id) }}" method="POST" style="display:inline-block;">
                                 @csrf
@@ -52,11 +50,8 @@
                     @endforeach
                 </tbody>
             </table>
-            <!-- Pagination (if needed) -->
-            <div class="d-flex justify-content-center">
-                {{ $families->links('vendor.pagination.bootstrap-4') }}
-            </div>
-
+            <!-- Pagination links -->
+            
 
         </div>
     </div>
