@@ -52,7 +52,7 @@
                     @endforeach
                 </tbody>
             </table>
-            <!-- Pagination (if needed) -->
+            <!-- Pagination -->
             <div class="d-flex justify-content-center">
                 {{ $families->links('vendor.pagination.bootstrap-4') }}
             </div>

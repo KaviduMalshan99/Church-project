@@ -51,8 +51,8 @@ Route::prefix('member')->group(function () {
     Route::get('/create', [MemberController::class, 'create'])->name('member.create');
     Route::post('/store', [MemberController::class, 'store'])->name('member.store');
     Route::get('/{id}', [MemberController::class, 'show'])->name('member.show');
-    Route::get('/{id}/edit', [MemberController::class, 'edit'])->name('member.edit');
-    Route::put('/{id}', [MemberController::class, 'update'])->name('member.update');
+    Route::get('edit/{id}', [MemberController::class, 'edit'])->name('member.edit');
+    Route::put('edit/{id}', [MemberController::class, 'update'])->name('member.update');
     Route::delete('/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 });
 
@@ -84,4 +84,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
