@@ -81,7 +81,7 @@ class FamilyController extends Controller
     }
 
     public function edit($id) {
-        dd($id);
+        // dd($id);
         $family = Family::findorFail($id);
         $member = Member::findorFail($family -> main_person_id);
         $churches = SubChurch::all();

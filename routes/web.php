@@ -60,6 +60,11 @@ Route::prefix('member')->group(function () {
 // Gift Management
 Route::prefix('gift')->group(function () {
     Route::get('/list', [GiftController::class, 'index'])->name('gift.list');
+    Route::get('/create', [GiftController::class, 'create'])->name('gift.create');
+    Route::post('/create', [GiftController::class, 'store'])->name('gift.store');
+    Route::get('edit/{id}', [GiftController::class, 'edit'])->name('gift.edit');
+    Route::put('edit/{id}', [GiftController::class, 'update'])->name('gift.update');
+    Route::delete('/{id}', [GiftController::class, 'destroy'])->name('gift.destroy');
 });
 
 // Reports
