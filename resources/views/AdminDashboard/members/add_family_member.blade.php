@@ -1,14 +1,14 @@
 @extends ('AdminDashboard.master')
 
 @section('content')
-<form method="POST" action="{{ route('family.store') }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('member.store') }}" enctype="multipart/form-data">
 @csrf
 <div class="row">
     <div class="col-12">
         <div class="content-header">
-            <h2 class="content-title">Add New Family</h2>
+            <h2 class="content-title">Add New Family Members</h2>
             <div>
-                <button type="submit" class="btn btn-md rounded font-sm hover-up">Publish</button>
+                <button type="submit" class="btn btn-md rounded font-sm hover-up">Add Members</button>
             </div>
         </div>
     </div>
@@ -16,15 +16,18 @@
     
         <div class="card mb-4 ml-3">
             <div class="card-header">
-                <h4>Family Name (optional)</h4>
+                <h4>Main Person Name</h4>
             </div>
             <div class="card-body">
-                <!-- The same form continues here -->
                 <div class="mb-4">
-                    <label for="family_name" class="form-label">Family Name </label>
-                    <input type="text" name="family_name" placeholder="Type here Family Name" class="form-control" id="family_name" />
+                    <label for="main_person" class="form-label">Select Family Main Person</label>
+                    <select name="main_person" class="form-control" id="main_person">
+                        <option value="">Select family main person</option>
+                        @foreach($main_persons as $main_person)
+                        <option value="{{$main_person->id}}">{{$main_person->member_name}}</option>
+                        @endforeach
+                    </select>
                 </div>
-                
             </div>
         </div>
 
@@ -34,21 +37,9 @@
         <div class="card mb-4">
             <div class="card-header">
                 <br>
-                <h4>Basic Details of Main Member</h4>
+                <h4>Basic Details of Family Member</h4>
             </div>
             <div class="card-body">
-                    
-                    <br>
-                    <div class="mb-4">
-                        <label class="form-label">Select Sub Church <i class="text-danger">*</i></label>
-                        <select name="sub_church_id" class="form-select" required>
-                            <option value="">Select Sub Church</option>
-                            @foreach($churches as $subChurch)
-                                <option value="{{ $subChurch->id }}">{{ $subChurch->church_name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-
                     <div class="mb-4">
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
                         <input type="text" name="member_name" placeholder="Type here" class="form-control" id="member_name" required />
@@ -77,6 +68,10 @@
                     <div class="mb-4">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" placeholder="e.g., example@example.com" class="form-control" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Relationship to main person</label></label>
+                        <input type="text" name="relationship_to_main_person" placeholder="e.g., son, daughter" class="form-control" />
                     </div>
             </div>
         </div>

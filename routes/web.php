@@ -40,8 +40,8 @@ Route::prefix('family')->group(function () {
     Route::get('/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/store', [FamilyController::class, 'store'])->name('family.store');
     Route::get('/{id}', [FamilyController::class, 'show'])->name('family.show');
-    Route::get('/{id}/edit', [FamilyController::class, 'edit'])->name('family.edit');
-    Route::put('/{id}', [FamilyController::class, 'update'])->name('family.update');
+    Route::get('edit/{id}', [FamilyController::class, 'edit'])->name('family.edit');
+    Route::put('edit/{id}', [FamilyController::class, 'update'])->name('family.update');
     Route::delete('/{id}', [FamilyController::class, 'destroy'])->name('family.destroy');
 });
 
@@ -51,8 +51,8 @@ Route::prefix('member')->group(function () {
     Route::get('/create', [MemberController::class, 'create'])->name('member.create');
     Route::post('/store', [MemberController::class, 'store'])->name('member.store');
     Route::get('/{id}', [MemberController::class, 'show'])->name('member.show');
-    Route::get('/{id}/edit', [MemberController::class, 'edit'])->name('member.edit');
-    Route::put('/{id}', [MemberController::class, 'update'])->name('member.update');
+    Route::get('edit/{id}', [MemberController::class, 'edit'])->name('member.edit');
+    Route::put('edit/{id}', [MemberController::class, 'update'])->name('member.update');
     Route::delete('/{id}', [MemberController::class, 'destroy'])->name('member.destroy');
 });
 
@@ -60,6 +60,11 @@ Route::prefix('member')->group(function () {
 // Gift Management
 Route::prefix('gift')->group(function () {
     Route::get('/list', [GiftController::class, 'index'])->name('gift.list');
+    Route::get('/create', [GiftController::class, 'create'])->name('gift.create');
+    Route::post('/create', [GiftController::class, 'store'])->name('gift.store');
+    Route::get('edit/{id}', [GiftController::class, 'edit'])->name('gift.edit');
+    Route::put('edit/{id}', [GiftController::class, 'update'])->name('gift.update');
+    Route::delete('/{id}', [GiftController::class, 'destroy'])->name('gift.destroy');
 });
 
 // Reports
@@ -84,4 +89,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
