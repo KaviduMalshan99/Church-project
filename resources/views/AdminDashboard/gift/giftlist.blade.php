@@ -34,7 +34,11 @@
                         <td>{{ $gift->receiver_address }}</td>
                         <td>{{ $gift->greeting_title }}</td>
                         <td>{{ $gift->greeting_description? $gift->greeting_description : 'No Description' }}</td>
-                        <td>{{ $gift->gift_status }}</td>
+                        @if($gift->gift_status == 'Pending')
+                            <td class="text-warning">Pending</td>
+                        @elseif($gift->gift_status == 'Sent')
+                            <td class="text-success">Sent</td>
+                        @endif
                         <td>
                             <!-- Edit and Delete Actions -->
                             <a href="{{ route('gift.edit', $gift->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>

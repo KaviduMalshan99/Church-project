@@ -67,6 +67,7 @@ public function update(Request $request, $id)
             'receiver_address' => $validated['receiver_address'],
             'greeting_title' => $validated['greeting_title'],
             'greeting_description' => $request->greeting_msg,
+            'gift_status' => $request->gift_status,
         ]);
 
         return redirect()->route('gift.list')->with('success', 'Gift Updated Successfully');
