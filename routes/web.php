@@ -39,11 +39,11 @@ Route::prefix('family')->group(function () {
     Route::get('/list', [FamilyController::class, 'index'])->name('family.list');
     Route::get('/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/store', [FamilyController::class, 'store'])->name('family.store');
-    Route::get('/{id}', [FamilyController::class, 'show'])->name('family.show');
     Route::get('edit/{id}', [FamilyController::class, 'edit'])->name('family.edit');
-    Route::put('edit/{id}', [FamilyController::class, 'update'])->name('family.update');
+    Route::put('edit/{id}', [FamilyController::class, 'update'])->name('family.update'); 
     Route::delete('/{id}', [FamilyController::class, 'destroy'])->name('family.destroy');
 });
+
 
 // Member Management
 Route::prefix('member')->group(function () {
@@ -78,9 +78,15 @@ Route::prefix('reports')->group(function () {
 
 // Settings
 Route::prefix('settings')->group(function () {
-    Route::get('/company', [SettingsController::class, 'company'])->name('settings.company');
-    Route::get('/users', [SettingsController::class, 'users'])->name('settings.users');
-    Route::get('/roles', [SettingsController::class, 'roles'])->name('settings.roles');
+    Route::get('/occupation', [SettingsController::class, 'occupation'])->name('settings.occupation');
+    Route::post('/occupation/create', [SettingsController::class, 'occupation_store'])->name('occupation.store');
+    Route::delete('/occupation/{id}', [SettingsController::class, 'occupation_destroy'])->name('occupation.destroy');
+    Route::put('/occupation/{id}', [SettingsController::class, 'occupation_update'])->name('occupation.update');
+
+    Route::get('/religion', [SettingsController::class, 'religion'])->name('settings.religion');
+    Route::post('/religion/create', [SettingsController::class, 'religion_store'])->name('religion.store');
+    Route::delete('/religion/{id}', [SettingsController::class, 'religion_destroy'])->name('religion.destroy');
+    Route::put('/religion/{id}', [SettingsController::class, 'religion_update'])->name('religion.update');
 });
 
 Route::middleware('auth')->group(function () {

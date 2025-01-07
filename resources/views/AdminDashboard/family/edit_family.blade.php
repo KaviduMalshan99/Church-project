@@ -15,20 +15,6 @@
         </div>
 
 
-        <div class="card mb-4 ml-3">
-            <div class="card-header">
-                <h4>Family Name (optional)</h4>
-            </div>
-            <div class="card-body">
-                <!-- The same form continues here -->
-                <div class="mb-4">
-                    <label for="family_name" class="form-label">Family Name </label>
-                    <input type="text" name="family_name" value="{{$family->family_name}}" placeholder="Type here Family Name" class="form-control" id="family_name" />
-                </div>
-
-            </div>
-        </div>
-
 
 
         <div class="col-lg-7">
@@ -38,22 +24,6 @@
                     <h4>Basic Details of Main Member</h4>
                 </div>
                 <div class="card-body">
-
-                    <br>
-
-                    <div class="mb-4">
-                        <label class="form-label">Select Sub Church <i class="text-danger">*</i></label>
-                        <select name="sub_church_id" class="form-select" required>
-                            <option value="">Select Sub Church</option>
-                            @foreach($churches as $subChurch)
-                            <option value="{{ $subChurch->id }}"
-                                {{ old('sub_church_id', $member->church_id ?? '') == $subChurch->id ? 'selected' : '' }}>
-                                {{ $subChurch->church_name }}
-                            </option>
-                            @endforeach
-                        </select>
-                    </div>
-
 
                     <div class="mb-4">
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
@@ -74,8 +44,16 @@
                     </div>
 
                     <div class="mb-4">
-                        <label class="form-label">Occupation</label>
-                        <input type="text" name="occupation" value="{{$member->occupation}}" placeholder="e.g., Teacher, Engineer" class="form-control" />
+                        <label class="form-label">Occupation <i class="text-danger">*</i></label>
+                        <select name="occupation" class="form-select" required>
+                            <option value="" disabled>Select Occupation</option>
+                            @foreach ($occupation as $item)
+                                <option value="{{ $item->id }}" 
+                                    {{ old('occupation', $member->occupation) == $item->name ? 'selected' : '' }}>
+                                    {{ $item->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Contact Info</label>

@@ -12,10 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('families', function (Blueprint $table) {
-            $table->id(); // Primary key
-            $table->unsignedBigInteger('main_person_id'); // Reference to the main person
-            $table->string('family_number')->unique(); // Auto-generated family number
-            $table->string('family_name')->nullable(); // Nullable family name
+            $table->id(); 
+            $table->string('main_person_id')->nullable(); 
+            $table->string('family_number')->unique(); 
             $table->timestamps();
 
             

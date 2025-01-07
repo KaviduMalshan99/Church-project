@@ -15,32 +15,33 @@
             <table class="table table-hover" id="subChurchTable">
                 <thead class="fs-6">
                     <tr>
+                        <th>#</th>
                         <th>Family Number</th>
-                        <th>Family Name</th>
                         <th>Main Person</th>
                         <th>Created At</th>
                         <th class="text-end">Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($families as $family)
+                @foreach ($families as $family)
                     <tr>
-                        @php
-                        $main_person = App\Models\Member::find($family->main_person_id);
-                        @endphp
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $family->family_number }}</td>
-                        <td>{{ $family->family_name }}</td>
-                        <td>{{ $main_person->member_name }}</td>
+                        <td>
+                            @if($family->mainPerson)
+                                {{ $family->mainPerson->member_name }}
+                            @else
+                                N/A (Main person ID: {{ $family->main_person_id }})
+                            @endif
+                        </td>
                         <td>{{ $family->created_at->format('d/m/Y') }}</td>
                         <td class="text-end">
-                            <!-- Edit and Delete Actions -->
-                            <a href="{{ route('family.edit', $family->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
-
-                            <form action="{{ route('family.destroy', $family->id) }}" method="POST" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
-                            </form>
+                        <a href="{{ route('family.edit', $family->id ) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
+                        <form action="{{ route('family.destroy', $family->id ) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                        </form>
 
                             <script>
                                 function confirmDelete() {

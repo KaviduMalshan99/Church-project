@@ -1,7 +1,7 @@
 <aside class="navbar-aside shadow-sm" id="offcanvas_aside">
     <div class="aside-top" style="padding:0">
         <a href="{{ route('dashboard') }}" class="brand-wrap">
-            <img src="{{ asset('frontend/assets/images/logo/preloader-new1.png') }}" class="logo" alt="DK-Mart" style="margin-left:80%;" />
+            <img src="" class="logo" alt="Church Family" style="margin-left:80%;" />
         </a>
         <div>
             <button class="btn btn-icon btn-aside-minimize"><i class="text-muted material-icons md-menu_open"></i></button>
@@ -16,20 +16,7 @@
                 </a>
             </li>
 
-            <li class="menu-item has-submenu {{ request()->is('church/*') ? 'active' : '' }}">
-                <a class="menu-link" href="#">
-                    <i class="icon material-icons md-home"></i>
-                    <span class="text">Church Management</span>
-                </a>
-                <div class="submenu {{ request()->is('church/*') ? 'show' : '' }}">
-                    <a href="{{ route('church.main') }}" class="{{ request()->routeIs('church.main') ? 'active' : '' }}">
-                        Main Church Management
-                    </a>
-                    <a href="{{ route('church.sub') }}" class="{{ request()->routeIs('church.sub') ? 'active' : '' }}">
-                        Sub Church Management
-                    </a>
-                </div>
-            </li>
+          
 
             <li class="menu-item has-submenu {{ request()->is('family/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
@@ -40,16 +27,7 @@
                     <a href="{{ route('family.list') }}" class="{{ request()->routeIs('family.list') ? 'active' : '' }}">
                         Family List
                     </a>
-                </div>
-            </li>
-
-            <li class="menu-item has-submenu {{ request()->is('member/*') ? 'active' : '' }}">
-                <a class="menu-link" href="#">
-                    <i class="icon material-icons md-people"></i>
-                    <span class="text">Member Management</span>
-                </a>
-                <div class="submenu {{ request()->is('member/*') ? 'show' : '' }}">
-                    <a href="{{ route('member.list') }}" class="{{ request()->routeIs('member.list') ? 'active' : '' }}">
+                    <a href="{{ route('member.list') }}" class="{{ request()->routeIs('family.list') ? 'active' : '' }}">
                         Members List
                     </a>
                 </div>
@@ -87,9 +65,8 @@
                     <span class="text">Settings</span>
                 </a>
                 <div class="submenu {{ request()->is('settings/*') ? 'show' : '' }}">
-                    <a href="{{ route('settings.company') }}" class="{{ request()->routeIs('settings.company') ? 'active' : '' }}">Manage Company</a>
-                    <a href="{{ route('settings.users') }}" class="{{ request()->routeIs('settings.users') ? 'active' : '' }}">Users</a>
-                    <a href="{{ route('settings.roles') }}" class="{{ request()->routeIs('settings.roles') ? 'active' : '' }}">Role List</a>
+                    <a href="{{ route('settings.occupation') }}" class="{{ request()->routeIs('settings.occupation') ? 'active' : '' }}">Occupations</a>
+                    <a href="{{ route('settings.religion') }}" class="{{ request()->routeIs('settings.religion') ? 'active' : '' }}">Religion</a>
                 </div>
             </li>
         </ul>

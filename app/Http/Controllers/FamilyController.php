@@ -6,6 +6,8 @@ use App\Models\Family;
 use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Models\SubChurch;
+use App\Models\Religion;
+use App\Models\Occupation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -13,23 +15,23 @@ class FamilyController extends Controller
 {
     public function index()
     {
-        $families = Family::paginate(25);
+        $families = Family::with('mainPerson')->paginate(25);  
         $totalFamilies = Family::count();
         return view('AdminDashboard.family.familylist', compact('families', 'totalFamilies'));
     }
+    
 
     public function create()
     {
-        $churches = SubChurch::all(); // Fetch all churches
-        return view('AdminDashboard.family.add_family', compact('churches'));
+        $churches = SubChurch::all(); 
+        $occupation = Occupation::all();
+        $religion = Religion::all(); 
+        return view('AdminDashboard.family.add_family', compact('churches','occupation','religion'));
     }
 
     public function store(Request $request)
     {
-
         $request->validate([
-            'sub_church_id' => 'required|exists:sub_churches,id',
-            'family_name' => 'nullable|string|max:255',
             'member_name' => 'required|string|max:255',
             'birth_date' => 'nullable|date',
             'gender' => 'required|in:Male,Female,Other',
@@ -40,22 +42,28 @@ class FamilyController extends Controller
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
-
+    
         DB::transaction(function () use ($request) {
+            // Generate new family number (FAM-0001 format)
+            $lastFamily = Family::latest('id')->first();
+            $nextFamilyNumber = $lastFamily ? ((int)str_replace('FAM-', '', $lastFamily->family_number)) + 1 : 1;
+            $familyNumber = 'FAM-' . str_pad($nextFamilyNumber, 4, '0', STR_PAD_LEFT);
+    
             // Create family without setting main_person_id
             $family = Family::create([
-                'family_name' => $request->input('family_name'),
-                'family_number' => 'FAM-' . strtoupper(Str::uuid()),
+                'family_number' => $familyNumber,
             ]);
-
+    
             // Handle image upload if provided
             $imagePath = $request->hasFile('image')
                 ? $request->file('image')->store('members', 'public')
                 : null;
-
-            // Create main member
+    
+            // Create main member (FAM-0001-01 format)
+            $mainMemberId = $familyNumber . '-01';
             $member = Member::create([
-                'family_id' => $family->id,
+                'family_no' => $family->family_number, 
+                'member_id' => $mainMemberId, 
                 'member_name' => $request->input('member_name'),
                 'birth_date' => $request->input('birth_date'),
                 'gender' => $request->input('gender'),
@@ -72,26 +80,27 @@ class FamilyController extends Controller
                 'held_office_in_council' => $request->boolean('held_office_in_council'),
                 'image' => $imagePath,
             ]);
-
+    
             // Update family's main_person_id
-            $family->update(['main_person_id' => $member->id]);
+            $family->update(['main_person_id' => $mainMemberId]);
         });
-
+    
         return redirect()->route('family.list')->with('success', __('Family and main member created successfully!'));
     }
-
-    public function edit($id) {
-        // dd($id);
-        $family = Family::findorFail($id);
-        $member = Member::findorFail($family -> main_person_id);
-        $churches = SubChurch::all();
-        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'churches'));
+    
+    public function edit($id)
+    {
+        $family = Family::findOrFail($id); 
+        $member = Member::findorFail($id);
+        $occupation = Occupation::all(); 
+        return view('AdminDashboard.family.edit_family', compact('family','member','occupation'));
     }
+    
+    
+    
 
     public function update(Request $request, $id) {
         $request->validate([
-            'sub_church_id' => 'required|exists:sub_churches,id',
-            'family_name' => 'nullable|string|max:255',
             'member_name' => 'required|string|max:255',
             'birth_date' => 'nullable|date',
             'gender' => 'required|in:Male,Female,Other',
@@ -106,15 +115,8 @@ class FamilyController extends Controller
         DB::transaction(function () use ($request, $id) {
             // Retrieve the family instance
             $family = Family::findOrFail($id);
-            // Update family without setting main_person_id
-            $family->update([
-                'family_name' => $request->input('family_name'),
-            ]);
-
-           
-
             // Retrieve the main member
-            $member = Member::findOrFail($family->main_person_id);
+            $member = Member::findorFail($id);
             
             // Update main member
             $member->update([
@@ -142,10 +144,9 @@ class FamilyController extends Controller
     {
         // Fetch the church by its ID
         $family = Family::findOrFail($id);
-        $main_person = Member::findOrFail($family->main_person_id);
-        // Delete the church
+        $member = Member::findorFail($id);
         $family->delete();
-        $main_person->delete();
+        $member->delete();
         // Redirect back with success message
         return redirect()->route('family.list')->with('success', __('Family deleted successfully!'));
     }

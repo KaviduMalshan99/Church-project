@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('members', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('family_id')->nullable(); // Nullable foreign key to families
-            $table->unsignedBigInteger('church_id')->nullable(); // Nullable foreign key to churches
+            $table->string('family_no')->nullable(); 
+            $table->string('member_id')->nullable(); 
             $table->string('member_name');
             $table->date('birth_date')->nullable();
             $table->enum('gender', ['Male', 'Female', 'Other']);
@@ -33,8 +33,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Foreign Key Constraints
-            $table->foreign('family_id')->references('id')->on('families')->onDelete('set null');
-            $table->foreign('church_id')->references('id')->on('churches')->onDelete('set null');
+            $table->foreign('family_no')->references('family_number')->on('families')->onDelete('cascade');
         });
     }
 

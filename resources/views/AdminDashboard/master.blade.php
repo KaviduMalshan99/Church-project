@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>DK-Mart</title>
+    <title>Church Family</title>
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="description" content="" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -50,17 +50,72 @@
 
 
     <main class="main-wrap">
-        @include('AdminDashboard.Header') <!-- This will include the header template -->
+        @include('AdminDashboard.Header')
 
-        <!-- Content Section, where content from child views like church.mainlist will be injected -->
+
         <section class="content-main">
-            @yield('content') <!-- This is where content from your child views will appear -->
+            @yield('content') 
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    @if(session('success'))
+                    Swal.fire({
+                        title: 'Success!',
+                        text: "{{ session('success') }}",
+                        icon: 'success',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        }
+                    });
+                    @endif
+
+                    @if(session('error'))
+                    Swal.fire({
+                        title: 'Error!',
+                        text: "{{ session('error') }}",
+                        icon: 'error',
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: (toast) => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer);
+                            toast.addEventListener('mouseleave', Swal.resumeTimer);
+                        }
+                    });
+                    @endif
+                });
+
+                function confirmDelete(formId, message) {
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: message || "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            document.getElementById(formId).submit();
+                        }
+                    });
+                }
+            </script>
         </section>
 
         <footer class="main-footer font-xs">
             <div class="row pb-30 pt-15">
                 <div class="col-sm-6">
-                    <script>document.write(new Date().getFullYear());</script> &copy; PIXEL X Software Solutions. (+94 719707610/ +94 729707610)
+                    <script>document.write(new Date().getFullYear());</script> &copy; 
                 </div>
                 <div class="col-sm-6">
                     <div class="text-sm-end">All rights reserved</div>

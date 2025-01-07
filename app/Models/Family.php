@@ -13,7 +13,6 @@ class Family extends Model
     protected $fillable = [
         'main_person_id',
         'family_number',
-        'family_name',
     ];
 
     /**
@@ -29,8 +28,12 @@ class Family extends Model
      * Relationship with Member model for the main person
      * A Family belongs to one main person.
      */
-    public function mainPerson()
+
+        public function mainPerson()
     {
-        return $this->belongsTo(Member::class, 'main_person_id');
+        return $this->belongsTo(Member::class, 'main_person_id', 'member_id'); 
     }
+
+
+   
 }

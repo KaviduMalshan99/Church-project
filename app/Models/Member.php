@@ -11,9 +11,8 @@ class Member extends Model
 
     // Fillable fields for mass assignment
     protected $fillable = [
-        'family_id',
-        'main_member_id',
-        'church_id',
+        'family_no',
+        'member_id',
         'member_name',
         'birth_date',
         'gender',
@@ -52,13 +51,13 @@ class Member extends Model
     // Get the main family member for this member
     public function mainMember()
     {
-        return $this->belongsTo(Member::class, 'main_member_id');
+        return $this->belongsTo(Member::class, 'main_person_id');
     }
 
     // Get the other family members associated with this member
     public function otherFamilyMembers()
     {
-        return $this->hasMany(Member::class, 'main_member_id');
+        return $this->hasMany(Member::class, 'main_person_id');
     }
 
 
