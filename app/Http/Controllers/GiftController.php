@@ -12,8 +12,12 @@ class GiftController extends Controller
     public function index()
     {
         $gifts = Gift::all();
-        return view('AdminDashboard.gift.giftlist', compact('gifts'));
+        $kawaraTotal = $gifts->where('type', 'Kawara Pooja')->sum('amount');
+        $otherTotal = $gifts->where('type', 'Other')->sum('amount');
+    
+        return view('AdminDashboard.gift.giftlist', compact('gifts', 'kawaraTotal', 'otherTotal'));
     }
+    
 
     public function create()
     {
@@ -24,21 +28,16 @@ class GiftController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'sender_name' => 'required|exists:members,id',
-            'receiver_name' => 'required|exists:members,id',
-            'receiver_address' => 'required|string|max:255',
-            'greeting_title' => 'required|string|max:255',
-            'greeting_msg' => 'nullable|string|max:500',
+            'sender_id' => 'required|exists:members,member_id',
+            'type' => 'required|string',
+            'amount' => 'required|numeric',
         ]);
 
         // If validation passes, proceed to create the gift
         $gift = Gift::create([
-            'gift_code' => 'GIFT-' . strtoupper(Str::uuid()),
-            'sender_id' => $validated['sender_name'],
-            'receiver_id' => $validated['receiver_name'],
-            'receiver_address' => $validated['receiver_address'],
-            'greeting_title' => $validated['greeting_title'],
-            'greeting_description' => $request->greeting_msg,
+            'sender_id' => $validated['sender_id'],
+            'type' => $validated['type'],
+            'amount' => $validated['amount'],
         ]);
 
         return redirect()->route('gift.list')->with('success', 'Gift Added Successfully');
@@ -53,21 +52,16 @@ class GiftController extends Controller
 public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'sender_name' => 'required|exists:members,id',
-            'receiver_name' => 'required|exists:members,id',
-            'receiver_address' => 'required|string|max:255',
-            'greeting_title' => 'required|string|max:255',
-            'greeting_msg' => 'nullable|string|max:500',
+            'sender_id' => 'required|exists:members,member_id',
+            'type' => 'required|string',
+            'amount' => 'required|numeric',
         ]);
 
         $gift = Gift::findorFail($id);
         $gift->update([
-            'sender_id' => $validated['sender_name'],
-            'receiver_id' => $validated['receiver_name'],
-            'receiver_address' => $validated['receiver_address'],
-            'greeting_title' => $validated['greeting_title'],
-            'greeting_description' => $request->greeting_msg,
-            'gift_status' => $request->gift_status,
+            'sender_id' => $validated['sender_id'],
+            'type' => $validated['type'],
+            'amount' => $validated['amount'],
         ]);
 
         return redirect()->route('gift.list')->with('success', 'Gift Updated Successfully');

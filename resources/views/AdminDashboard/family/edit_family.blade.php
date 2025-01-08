@@ -1,7 +1,7 @@
 @extends ('AdminDashboard.master')
 
 @section('content')
-<form method="POST" action="{{ route('family.update', $family->id) }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('family.update', $family->family_number) }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="row">
@@ -29,9 +29,17 @@
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
                         <input type="text" name="member_name" value="{{$member->member_name}}" placeholder="Type here" class="form-control" id="member_name" required />
                     </div>
+                     <div class="mb-4">
+                        <label for="member_name" class="form-label">NIC</label>
+                        <input type="text" name="nic" value="{{$member->nic}}" placeholder="Type here" class="form-control" id="nic" required />
+                    </div>
                     <div class="mb-4">
                         <label for="birth_date" class="form-label">Birth Date</label>
                         <input type="date" name="birth_date" value="{{$member->birth_date}}" class="form-control" id="birth_date" />
+                    </div>
+                    <div class="mb-4">
+                        <label for="registered_date" class="form-label">Registered Date</label>
+                        <input type="date" name="registered_date" value="{{$member->registered_date}}" class="form-control" id="registered_date" />
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Gender <i class="text-danger">*</i></label>
@@ -42,19 +50,45 @@
                             <option value="Other" {{ old('gender', $member->gender ?? '') == 'Other' ? 'selected' : '' }}>Other</option>
                         </select>
                     </div>
-
+                    <div class="mb-2">
+                    <label class="form-label me-3">Civil Status <i class="text-danger">*</i></label>
+                        <div class="d-inline-flex">
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="civil_status" id="single" value="Single" {{ old('civil_status', $member->civil_status) == 'Single' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="single">
+                                    Single
+                                </label>
+                            </div>
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="civil_status" id="married" value="Married" {{ old('civil_status', $member->civil_status) == 'Married' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="married">
+                                    Married
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
-                        <select name="occupation" class="form-select" required>
-                            <option value="" disabled>Select Occupation</option>
+                        <input 
+                            list="occupationOptions" 
+                            name="occupation" 
+                            placeholder="Select or type your occupation" 
+                            class="form-control" 
+                            value="{{ old('occupation', $member->occupation) }}" 
+                            required 
+                        />
+                        <datalist id="occupationOptions">
                             @foreach ($occupation as $item)
-                                <option value="{{ $item->id }}" 
-                                    {{ old('occupation', $member->occupation) == $item->name ? 'selected' : '' }}>
-                                    {{ $item->name }}
-                                </option>
+                                <option data-id="{{ $item->id }}" value="{{ $item->name }}"></option>
                             @endforeach
-                        </select>
+                        </datalist>
                     </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Professional Qualifications</label>
+                        <input type="text" name="professional_quali" value="{{$member->professional_quali}}" class="form-control" />
+                    </div>
+
                     <div class="mb-4">
                         <label class="form-label">Contact Info</label>
                         <input type="text" name="contact_info" value="{{$member->contact_info}}" placeholder="e.g., 0712345678" class="form-control" />
@@ -62,6 +96,10 @@
                     <div class="mb-4">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" value="{{$member->email}}" placeholder="e.g., example@example.com" class="form-control" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Interest Activities</label>
+                        <input type="text" name="interests"  value="{{$member->interests}}" placeholder="e.g., Dance, Music, etc." class="form-control" />
                     </div>
                 </div>
             </div>
@@ -90,13 +128,30 @@
                 <div class="card-body">
                     <div class="row gx-2">
                         <div class="mb-4">
-                            <label class="form-label">Religion (If Not Catholic)</label>
-                            <input type="text" name="religion_if_not_catholic" value="{{$member->religion_if_not_catholic}}" placeholder="Specify religion" class="form-control" />
+                            <label class="form-label">Religion <i class="text-danger">*</i></label>
+                            <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
+                                <option value="">Select Religion</option>
+                                @foreach ($religion as $item)
+                                    <option value="{{ $item->name }}" 
+                                        {{ (old('religion') ?? $member->religion) === $item->name ? 'selected' : '' }}>
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
+                                <option value="other" 
+                                    {{ (old('religion') ?? $member->religion) === 'other' ? 'selected' : '' }}>
+                                    Other
+                                </option>
+                            </select>
+                        </div>  
+
+                        <div class="mb-4" id="otherReligionDiv" 
+                            style="display: {{ (old('religion') ?? $member->religion) === 'other' ? 'block' : 'none' }};">
+                            <label class="form-label">Specify Religion <i class="text-danger">*</i></label>
+                            <input type="text" name="religion" id="otherReligionInput" 
+                                class="form-control" placeholder="Specify your religion" 
+                                value="{{ (old('religion') === 'other') ? old('religion') : (($member->religion === 'other') ? $member->religion : '') }}">
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label">Nikaya</label>
-                            <input type="text" name="nikaya" value="{{$member->nikaya}}" placeholder="e.g., Malwatta, Asgiriya" class="form-control" />
-                        </div>
+
                         <div class="mb-4">
                             <label class="form-check">
                                 <input type="checkbox" name="baptized" value="1"
@@ -106,32 +161,6 @@
                             </label>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-check">
-                                <input type="checkbox" name="full_member" value="1"
-                                    class="form-check-input"
-                                    {{ old('full_member', $member->full_member) ? 'checked' : '' }} />
-                                <span class="form-check-label">Full Member</span>
-                            </label>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-check">
-                                <input type="checkbox" name="methodist_member" value="1"
-                                    class="form-check-input"
-                                    {{ old('methodist_member', $member->methodist_member) ? 'checked' : '' }} />
-                                <span class="form-check-label">Methodist Member</span>
-                            </label>
-                        </div>
-
-                        <div class="mb-4">
-                            <label class="form-check">
-                                <input type="checkbox" name="sabbath_member" value="1"
-                                    class="form-check-input"
-                                    {{ old('sabbath_member', $member->sabbath_member) ? 'checked' : '' }} />
-                                <span class="form-check-label">Sabbath Member</span>
-                            </label>
-                        </div>
 
                         <div class="mb-4">
                             <label class="form-check">
@@ -141,11 +170,46 @@
                                 <span class="form-check-label">Held Office in Council</span>
                             </label>
                         </div>
+
+                            <!-- Current Church Congregation Section -->
+                            <div class="mb-4">
+                                <label class="form-label">Current Church Congregation <i class="text-danger">*</i></label><br>
+                                <label class="form-check">
+                                    <input type="radio" name="church_congregation" value="Moratumulla" class="form-check-input"
+                                        {{ old('church_congregation', $member->church_congregation) == 'Moratumulla' ? 'checked' : '' }} />
+                                    <span class="form-check-label">Moratumulla</span>
+                                </label>
+
+                                <!-- Other Option -->
+                                <label class="form-check">
+                                    <input type="radio" name="church_congregation" value="Other" class="form-check-input"
+                                        {{ old('church_congregation', $member->church_congregation) == 'Other' ? 'checked' : '' }}
+                                        onchange="toggleOtherChurchInput()" />
+                                    <span class="form-check-label">Other</span>
+                                </label>
+                                <div class="mt-2" id="otherChurchDiv" style="display: {{ old('church_congregation', $member->church_congregation) == 'Other' ? 'block' : 'none' }};">
+                                    <input type="text" name="other_church_congregation" class="form-control" placeholder="Specify the congregation"
+                                        value="{{ old('other_church_congregation', $member->other_church_congregation) }}" />
+                                </div>
+                            </div>
+
                     </div>
                 </div>
             </div>
 
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Other</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Optional Notes and Other Details -->
+                    <div class="mb-4">
+                        <label class="form-label">Optional Notes </label>
+                        <textarea name="optional_notes" class="form-control" placeholder="Add any additional notes here...">{{ old('optional_notes', $member->optional_notes) }}</textarea>
+                    </div>
+                </div>
 
+            </div>
 
         </div>
     </div>
@@ -153,231 +217,34 @@
 
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const affiliateCheckbox = document.getElementById('affiliate_checkbox');
-        const normalPriceInput = document.getElementById('normal_price');
-        const affiliatePriceInput = document.getElementById('affiliate_price');
-        const commissionInput = document.getElementById('commission');
-        const comPriceInput = document.getElementById('com_price');
-
-        // Set initial state for inputs
-        affiliatePriceInput.value = normalPriceInput.value || 0;
-        affiliatePriceInput.readOnly = true; // Affiliate price should be equal to normal price and readonly
-        comPriceInput.readOnly = true;
-        commissionInput.readOnly = true; // Commission input should be readonly initially
-
-        affiliateCheckbox.addEventListener('change', function() {
-            if (affiliateCheckbox.checked) {
-                // When affiliate checkbox is checked
-                affiliatePriceInput.value = normalPriceInput.value || 0; // Set affiliate price equal to normal price
-                affiliatePriceInput.readOnly = true;
-
-                commissionInput.readOnly = false; // Allow the commission to be edited when affiliate is checked
-                commissionInput.value = ''; // Reset commission if unchecked
-                calculateCommissionPrice();
-            } else {
-                // When affiliate checkbox is unchecked
-                affiliatePriceInput.value = '';
-                commissionInput.value = '';
-                comPriceInput.value = '';
-                commissionInput.readOnly = true; // Disable commission input when checkbox is unchecked
-            }
-        });
-
-        normalPriceInput.addEventListener('input', function() {
-            if (affiliateCheckbox.checked) {
-                // Update affiliate price when normal price changes
-                affiliatePriceInput.value = normalPriceInput.value || 0;
-            }
-            calculateCommissionPrice();
-        });
-
-        commissionInput.addEventListener('input', function() {
-            if (affiliateCheckbox.checked) {
-                calculateCommissionPrice(); // Recalculate commission price only if affiliate is checked
-            }
-        });
-
-        function calculateCommissionPrice() {
-            const normalPrice = parseFloat(normalPriceInput.value) || 0;
-            const commissionRate = parseFloat(commissionInput.value) || 0; // Get commission rate from input
-            const commissionPrice = normalPrice * (commissionRate / 100); // Calculate commission price
-
-            comPriceInput.value = commissionPrice.toFixed(2); // Display commission price
-        }
-    });
-
-
-
-    //image upload
-    document.addEventListener('DOMContentLoaded', function() {
-        const mediaUploadInput = document.getElementById('media_upload');
-        const imagePreviewContainer = document.getElementById('image_preview_container');
-        let currentFiles = [];
-
-        mediaUploadInput.addEventListener('change', function() {
-            const files = Array.from(mediaUploadInput.files);
-            files.forEach((file, index) => {
-                currentFiles.push(file);
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageUrl = e.target.result;
-                    const imageContainer = document.createElement('div');
-                    imageContainer.classList.add('position-relative');
-                    imageContainer.style.width = '100px';
-                    imageContainer.style.height = '100px';
-
-                    const imgElement = document.createElement('img');
-                    imgElement.src = imageUrl;
-                    imgElement.classList.add('img-thumbnail');
-                    imgElement.style.width = '100%';
-                    imgElement.style.height = '100%';
-                    imgElement.style.objectFit = 'cover';
-
-                    const deleteIcon = document.createElement('span');
-                    deleteIcon.classList.add('position-absolute', 'top-0', 'end-0', 'bg-danger', 'text-white', 'rounded-circle', 'p-1', 'cursor-pointer');
-                    deleteIcon.innerHTML = '&times;';
-                    deleteIcon.style.cursor = 'pointer';
-
-                    deleteIcon.addEventListener('click', function() {
-                        imageContainer.remove();
-                        removeImageFromFileList(currentFiles.indexOf(file));
-                    });
-
-                    imageContainer.appendChild(imgElement);
-                    imageContainer.appendChild(deleteIcon);
-                    imagePreviewContainer.appendChild(imageContainer);
-                };
-
-                reader.readAsDataURL(file);
-            });
-
-            updateFileInput();
-        });
-
-        function removeImageFromFileList(index) {
-            currentFiles.splice(index, 1);
-            updateFileInput();
-        }
-
-        function updateFileInput() {
-            const dt = new DataTransfer();
-            currentFiles.forEach(file => {
-                dt.items.add(file);
-            });
-            mediaUploadInput.files = dt.files;
-        }
-    });
-
-
-    //categories dropdown
-    document.addEventListener('DOMContentLoaded', function() {
-        const categorySelect = document.getElementById('categorySelect');
-        const subcategorySelect = document.getElementById('subcategorySelect');
-        const subsubcategorySelect = document.getElementById('subsubcategorySelect');
-
-        categorySelect.addEventListener('change', function() {
-            const categoryId = this.value;
-
-            subcategorySelect.innerHTML = '<option value="">Select a subcategory</option>';
-            subsubcategorySelect.innerHTML = '<option value="">Select a sub-subcategory</option>';
-            subcategorySelect.disabled = true;
-            subsubcategorySelect.disabled = true;
-
-            if (categoryId) {
-                fetch(`/api/subcategories/${categoryId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(subcategory => {
-                            const option = document.createElement('option');
-                            option.value = subcategory.id;
-                            option.textContent = subcategory.name;
-                            subcategorySelect.appendChild(option);
-                        });
-                        subcategorySelect.disabled = false;
-                    })
-                    .catch(error => console.error('Error fetching subcategories:', error));
-            }
-        });
-
-        subcategorySelect.addEventListener('change', function() {
-            const subcategoryId = this.value;
-
-            subsubcategorySelect.innerHTML = '<option value="">Select a sub-subcategory</option>';
-            subsubcategorySelect.disabled = true;
-
-            if (subcategoryId) {
-                fetch(`/api/sub-subcategories/${subcategoryId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(subSubcategory => {
-                            const option = document.createElement('option');
-                            option.value = subSubcategory.id;
-                            option.textContent = subSubcategory.name;
-                            subsubcategorySelect.appendChild(option);
-                        });
-                        subsubcategorySelect.disabled = false;
-                    })
-                    .catch(error => console.error('Error fetching sub-subcategories:', error));
-            }
-        });
-    });
-</script>
-
-<script>
-    let variationIndex = 1;
-
-    function addVariation() {
-        const variationsContainer = document.getElementById('variationsContainer');
-
-        const newVariationRow = document.createElement('div');
-        newVariationRow.className = 'row mb-3 variation-row';
-        newVariationRow.innerHTML = `
-            <div class="col-lg-4">
-                <label class="form-label">Select Type</label>
-                <select name="variations[${variationIndex}][type]" class="form-select" onchange="toggleColorInput(this)">
-                    <option value="">Select</option>
-                    <option value="size">Size</option>
-                    <option value="color">Color</option>
-                </select>
-            </div>
-            <div class="col-lg-4">
-                <label class="form-label">Value</label>
-                <input type="text" name="variations[${variationIndex}][value]" class="form-control" placeholder="Enter value" />
-                <input type="color" name="variations[${variationIndex}][hex_value]" class="form-control color-input" style="display: none;" />
-            </div>
-            <div class="col-lg-3">
-                <label class="form-label">Quantity</label>
-                <input type="number" name="variations[${variationIndex}][quantity]" class="form-control" placeholder="Qty" />
-            </div>
-            <div class="col-lg-1 text-center">
-                <label class="form-label">Delete</label>
-                <button type="button" class="btn btn-danger delete-variation" onclick="removeVariation(this)">✖</button>
-            </div>
-        `;
-
-        variationsContainer.appendChild(newVariationRow);
-        variationIndex++;
-    }
-
-    function toggleColorInput(select) {
-        const colorInput = select.closest('.variation-row').querySelector('.color-input');
-        const valueInput = select.closest('.variation-row').querySelector('input[name*="[value]"]');
-
-        if (select.value === 'color') {
-            colorInput.style.display = 'block';
-            valueInput.style.display = 'none';
-            valueInput.value = '';
+    // Toggle the "Other" field for church congregation
+    function toggleOtherChurchInput() {
+        var otherChurchInput = document.querySelector('input[name="church_congregation"][value="Other"]');
+        var otherChurchDiv = document.getElementById('otherChurchDiv');
+        if (otherChurchInput.checked) {
+            otherChurchDiv.style.display = 'block';
         } else {
-            colorInput.style.display = 'none';
-            valueInput.style.display = 'block';
-            colorInput.value = '';
+            otherChurchDiv.style.display = 'none';
         }
     }
+</script>
+<script>
+    function handleReligionChange() {
+        const select = document.getElementById('religionSelect');
+        const otherReligionDiv = document.getElementById('otherReligionDiv');
+        const otherReligionInput = document.getElementById('otherReligionInput');
 
-    function removeVariation(button) {
-        const variationRow = button.closest('.variation-row');
-        variationRow.remove();
+        if (select.value === 'other') {
+            otherReligionDiv.style.display = 'block';
+            otherReligionInput.setAttribute('name', 'religion');
+            otherReligionInput.setAttribute('required', 'required');
+            select.removeAttribute('name'); 
+        } else {
+            otherReligionDiv.style.display = 'none';
+            otherReligionInput.removeAttribute('name'); 
+            otherReligionInput.removeAttribute('required');
+            select.setAttribute('name', 'religion'); 
+        }
     }
 </script>
 

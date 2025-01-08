@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('gifts', function (Blueprint $table) {
             $table->id();
             $table->string('gift_code')->unique();
-            $table->unsignedBigInteger('sender_id')->nullable(); // Nullable foreign key to members
-            $table->unsignedBigInteger('receiver_id')->nullable(); // Nullable foreign key to members
+            $table->unsignedBigInteger('sender_id')->nullable(); 
+            $table->unsignedBigInteger('receiver_id')->nullable(); 
             $table->string('receiver_address');
             $table->string('greeting_title');
             $table->string('greeting_description')->nullable();

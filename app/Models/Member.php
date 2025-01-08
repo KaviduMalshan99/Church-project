@@ -23,11 +23,18 @@ class Member extends Model
         'methodist_member',
         'sabbath_member',
         'nikaya',
-        'religion_if_not_catholic',
+        'religion',
         'contact_info',
         'email',
         'image',
         'held_office_in_council',
+        'registered_date',
+        'optional_notes',
+        'interests',
+        'professional_quali',
+        'church_congregation',
+        'nic',
+        'civil_status'
     ];
 
     /**

@@ -23,20 +23,21 @@
             <div class="card-body">
                 <div class="mb-4">
                     <label for="main_person" class="form-label">Select Family Main Person</label>
-                    <select name="main_person" class="form-control" id="main_person">
+                    <select name="main_person" class="form-control select2" id="main_person">
                         <option value="">Select family main person</option>
                         @foreach($main_persons as $main_person)
-                            <option value="{{ $main_person->id }}">
+                            <option value="{{ $main_person->id }}"
+                                {{ old('main_person', $member->main_person) == $main_person->id ? 'selected' : '' }}>
                                 {{ $main_person->member_name }} ({{ $main_person->family_no }})
                             </option>
                         @endforeach
                     </select>
                 </div>
             </div>
+
         </div>
 
-
-
+      
 
         <div class="col-lg-7">
             <div class="card mb-4">
@@ -48,6 +49,10 @@
                     <div class="mb-4">
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
                         <input type="text" name="member_name" value="{{$member->member_name}}" placeholder="Type here" class="form-control" id="member_name" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="member_name" class="form-label">NIC</label>
+                        <input type="text" name="nic" value="{{$member->nic}}" placeholder="Type here" class="form-control" id="nic" required />
                     </div>
                     <div class="mb-4">
                         <label for="birth_date" class="form-label">Birth Date</label>
@@ -62,18 +67,58 @@
                             <option value="Other" {{ old('gender', $member->gender ?? '') == 'Other' ? 'selected' : '' }}>Other</option>
                         </select>
                     </div>
-
+                    <div class="mb-3">
+                    <label class="form-label me-3">Civil Status <i class="text-danger">*</i></label>
+                        <div class="d-inline-flex">
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="civil_status" id="single" value="Single" {{ old('civil_status', $member->civil_status) == 'Single' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="single">
+                                    Single
+                                </label>
+                            </div>
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="civil_status" id="married" value="Married" {{ old('civil_status', $member->civil_status) == 'Married' ? 'checked' : '' }}>
+                                <label class="form-check-label" for="married">
+                                    Married
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Relationship to Main Person  <i class="text-danger">*</i></label>
+                        <input list="relationshipOptions" name="relationship_to_main_person"  value="{{$member->relationship_to_main_person}}" class="form-control" />
+                        <datalist id="relationshipOptions">
+                            <option value="Son"></option>
+                            <option value="Daughter"></option>
+                            <option value="Spouse"></option>
+                            <option value="Parent"></option>
+                            <option value="Sibling"></option>
+                            <option value="Grandparent"></option>
+                            <option value="Grandchild"></option>
+                            <option value="Uncle"></option>
+                            <option value="Aunt"></option>
+                            <option value="Cousin"></option>
+                        </datalist>
+                    </div>
                     <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
-                        <select name="occupation" class="form-select" required>
-                            <option value="" disabled>Select Occupation</option>
+                        <input 
+                            list="occupationOptions" 
+                            name="occupation" 
+                            placeholder="Select or type your occupation" 
+                            class="form-control" 
+                            value="{{ old('occupation', $member->occupation) }}" 
+                            required 
+                        />
+                        <datalist id="occupationOptions">
                             @foreach ($occupation as $item)
-                                <option value="{{ $item->id }}" 
-                                    {{ old('occupation', $member->occupation) == $item->name ? 'selected' : '' }}>
-                                    {{ $item->name }}
-                                </option>
+                                <option data-id="{{ $item->id }}" value="{{ $item->name }}"></option>
                             @endforeach
-                        </select>
+                        </datalist>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Professional Qualifications</label>
+                        <input type="text" name="professional_quali" value="{{$member->professional_quali}}" class="form-control" />
                     </div>
 
                     <div class="mb-4">
@@ -84,9 +129,10 @@
                         <label class="form-label">Email</label>
                         <input type="email" name="email" value="{{$member->email}}" placeholder="e.g., example@example.com" class="form-control" />
                     </div>
+                   
                     <div class="mb-4">
-                        <label class="form-label">Relationship to main person</label></label>
-                        <input type="text" name="relationship_to_main_person"  value="{{$member->relationship_to_main_person}}" placeholder="e.g., son, daughter" class="form-control" />
+                        <label class="form-label">Interest Activities</label>
+                        <input type="text" name="interests"  value="{{$member->interests}}" placeholder="e.g., Dance, Music, etc." class="form-control" />
                     </div>
                 </div>
             </div>
@@ -114,14 +160,32 @@
                 </div>
                 <div class="card-body">
                     <div class="row gx-2">
-                        <div class="mb-4">
-                            <label class="form-label">Religion (If Not Catholic)</label>
-                            <input type="text" name="religion_if_not_catholic" value="{{$member->religion_if_not_catholic}}" placeholder="Specify religion" class="form-control" />
+                    <div class="mb-4">
+                            <label class="form-label">Religion <i class="text-danger">*</i></label>
+                            <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
+                                <option value="">Select Religion</option>
+                                @foreach ($religion as $item)
+                                    <option value="{{ $item->name }}" 
+                                        {{ (old('religion') ?? $member->religion) === $item->name ? 'selected' : '' }}>
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
+                                <option value="other" 
+                                    {{ (old('religion') ?? $member->religion) === 'other' ? 'selected' : '' }}>
+                                    Other
+                                </option>
+                            </select>
+                        </div>  
+
+                        <div class="mb-4" id="otherReligionDiv" 
+                            style="display: {{ (old('religion') ?? $member->religion) === 'other' ? 'block' : 'none' }};">
+                            <label class="form-label">Specify Religion <i class="text-danger">*</i></label>
+                            <input type="text" name="religion" id="otherReligionInput" 
+                                class="form-control" placeholder="Specify your religion" 
+                                value="{{ (old('religion') === 'other') ? old('religion') : (($member->religion === 'other') ? $member->religion : '') }}">
                         </div>
-                        <div class="mb-4">
-                            <label class="form-label">Nikaya</label>
-                            <input type="text" name="nikaya" value="{{$member->nikaya}}" placeholder="e.g., Malwatta, Asgiriya" class="form-control" />
-                        </div>
+
+                        
                         <div class="mb-4">
                             <label class="form-check">
                                 <input type="checkbox" name="baptized" value="1"
@@ -131,7 +195,7 @@
                             </label>
                         </div>
 
-                        <div class="mb-4">
+                        <!--<div class="mb-4">
                             <label class="form-check">
                                 <input type="checkbox" name="full_member" value="1"
                                     class="form-check-input"
@@ -140,14 +204,6 @@
                             </label>
                         </div>
 
-                        <div class="mb-4">
-                            <label class="form-check">
-                                <input type="checkbox" name="methodist_member" value="1"
-                                    class="form-check-input"
-                                    {{ old('methodist_member', $member->methodist_member) ? 'checked' : '' }} />
-                                <span class="form-check-label">Methodist Member</span>
-                            </label>
-                        </div>
 
                         <div class="mb-4">
                             <label class="form-check">
@@ -156,7 +212,7 @@
                                     {{ old('sabbath_member', $member->sabbath_member) ? 'checked' : '' }} />
                                 <span class="form-check-label">Sabbath Member</span>
                             </label>
-                        </div>
+                        </div>-->
 
                         <div class="mb-4">
                             <label class="form-check">
@@ -166,10 +222,44 @@
                                 <span class="form-check-label">Held Office in Council</span>
                             </label>
                         </div>
+                         <!-- Current Church Congregation Section -->
+                         <div class="mb-4">
+                                <label class="form-label">Current Church Congregation <i class="text-danger">*</i></label><br>
+                                <label class="form-check">
+                                    <input type="radio" name="church_congregation" value="Moratumulla" class="form-check-input"
+                                        {{ old('church_congregation', $member->church_congregation) == 'Moratumulla' ? 'checked' : '' }} />
+                                    <span class="form-check-label">Moratumulla</span>
+                                </label>
+
+                                <!-- Other Option -->
+                                <label class="form-check">
+                                    <input type="radio" name="church_congregation" value="Other" class="form-check-input"
+                                        {{ old('church_congregation', $member->church_congregation) == 'Other' ? 'checked' : '' }}
+                                        onchange="toggleOtherChurchInput()" />
+                                    <span class="form-check-label">Other</span>
+                                </label>
+                                <div class="mt-2" id="otherChurchDiv" style="display: {{ old('church_congregation', $member->church_congregation) == 'Other' ? 'block' : 'none' }};">
+                                    <input type="text" name="other_church_congregation" class="form-control" placeholder="Specify the congregation"
+                                        value="{{ old('other_church_congregation', $member->other_church_congregation) }}" />
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>
 
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Other</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Optional Notes and Other Details -->
+                    <div class="mb-4">
+                        <label class="form-label">Optional Notes </label>
+                        <textarea name="optional_notes" class="form-control" placeholder="Add any additional notes here...">{{ old('optional_notes', $member->optional_notes) }}</textarea>
+                    </div>
+                </div>
+
+            </div>
 
 
         </div>
@@ -179,13 +269,45 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
 <script>
     $(document).ready(function() {
+        // Ensure Select2 is initialized correctly
         $('#main_person').select2({
             placeholder: "Select family main person",
             allowClear: true
         });
     });
 </script>
+<script>
+    // Toggle the "Other" field for church congregation
+    function toggleOtherChurchInput() {
+        var otherChurchInput = document.querySelector('input[name="church_congregation"][value="Other"]');
+        var otherChurchDiv = document.getElementById('otherChurchDiv');
+        if (otherChurchInput.checked) {
+            otherChurchDiv.style.display = 'block';
+        } else {
+            otherChurchDiv.style.display = 'none';
+        }
+    }
+</script>
+<script>
+    function handleReligionChange() {
+        const select = document.getElementById('religionSelect');
+        const otherReligionDiv = document.getElementById('otherReligionDiv');
+        const otherReligionInput = document.getElementById('otherReligionInput');
 
+        if (select.value === 'other') {
+            otherReligionDiv.style.display = 'block';
+            otherReligionInput.setAttribute('name', 'religion'); 
+            otherReligionInput.setAttribute('required', 'required');
+            select.removeAttribute('name'); 
+        } else {
+            otherReligionDiv.style.display = 'none';
+            otherReligionInput.removeAttribute('name');
+            otherReligionInput.removeAttribute('required');
+            select.setAttribute('name', 'religion'); 
+        }
+    }
+</script>
 @endsection

@@ -3,37 +3,38 @@
 @section('content')
 <form method="POST" action="{{ route('gift.update', $gift->id) }}" enctype="multipart/form-data">
     @csrf
-    @method('PUT')
+    @method('PUT') <!-- Include the method override for update -->
     <div class="row">
         <div class="col-12">
             <div class="content-header">
                 <h2 class="content-title">Update Gift</h2>
                 <div>
-                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Update Gift</button>
+                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Update</button>
                 </div>
             </div>
         </div>
 
         <div class="container mt-4">
             <div class="row g-3">
-                <!-- Sender Card -->
+                <!-- Sender Selection -->
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Sender Name</h4>
+                            <h4>Sender Details</h4>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label for="sender_name" class="form-label">Select Sender Name <i class="text-danger">*</i></label>
-                                <select name="sender_name" class="form-select" id="sender_name">
+                                <label for="sender_id" class="form-label">Select or Search Sender Name <i class="text-danger">*</i></label>
+                                <select name="sender_id" class="form-select select2" id="sender_id">
                                     <option value="">Select sender</option>
                                     @foreach($members as $member)
-                                    <option value="{{$member->id}}" {{ $gift->sender_id ? 'selected' : '' }}>
-                                        {{$member->member_name}}
+                                    <option value="{{ $member->member_id }}" 
+                                        {{ (old('sender_id', $gift->sender_id) == $member->member_id) ? 'selected' : '' }}>
+                                        {{ $member->member_name }} ({{ $member->member_id }})
                                     </option>
                                     @endforeach
                                 </select>
-                                @error('sender_name')
+                                @error('sender_id')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -41,76 +42,62 @@
                     </div>
                 </div>
 
-                <!-- Receiver Card -->
+                <!-- Gift Type -->
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Receiver Name</h4>
+                            <h4>Gift Type</h4>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label for="receiver_name" class="form-label">Select Receiver Name <i class="text-danger">*</i></label>
-                                <select name="receiver_name" class="form-select" id="receiver_name">
-                                    <option value="">Select receiver</option>
-                                    @foreach($members as $member)
-                                    <option value="{{$member->id}}" {{ $gift->receiver_id ? 'selected' : '' }}>
-                                        {{$member->member_name}}
+                                <label for="type" class="form-label">Select Gift Type <i class="text-danger">*</i></label>
+                                <select name="type" class="form-select" id="type">
+                                    <option value="Kawara Pooja" 
+                                        {{ old('type', $gift->type) == 'Kawara Pooja' ? 'selected' : '' }}>Kawara Pooja
                                     </option>
-                                    @endforeach
+                                    <option value="Other" 
+                                        {{ old('type', $gift->type) == 'Other' ? 'selected' : '' }}>Other
+                                    </option>
                                 </select>
-                                @error('receiver_name')
+                                @error('type')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Receiver Address</h4>
-            </div>
-            <div class="card-body">
-                <label for="receiver_address" class="form-label">Receiver Address <i class="text-danger">*</i></label>
-                <textarea name="receiver_address" placeholder="Type here" class="form-control" id="receiver_address">{{ $gift->receiver_address }}</textarea>
-                @error('receiver_address')
-                <span class="text-danger">{{ $message }}</span>
-                @enderror
-            </div>
-        </div>
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Greeting</h4>
-            </div>
-            <div class="card-body">
-                <div class="mb-4">
-                    <label for="greeting_title" class="form-label">Greeting Message Title <i class="text-danger">*</i></label>
-                    <input type="text" name="greeting_title" class="form-control" id="greeting_title" value="{{ $gift->greeting_title }}" />
-                    @error('greeting_title')
-                    <span class="text-danger">{{ $message }}</span>
-                    @enderror
+                <!-- Amount -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Amount</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="amount" class="form-label">Enter Amount <i class="text-danger">*</i></label>
+                                <input type="number" name="amount" id="amount" class="form-control" 
+                                    value="{{ old('amount', $gift->amount) }}" step="0.01" min="0" 
+                                    placeholder="Enter the amount">
+                                @error('amount')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-                <div class="mb-4">
-                    <label class="form-label" for="greeting_msg">Greeting Description ( Optional )</label>
-                    <textarea name="greeting_msg" id="greeting_msg" placeholder="e.g., Teacher, Engineer" class="form-control">{{ $gift->greeting_description }}</textarea>
-                </div>
-            </div>
-        </div>
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Gift Status</h4>
-            </div>
-            <div class="mb-3">
-                <label for="gift_status" class="form-label">Select Sender Name <i class="text-danger">*</i></label>
-                <select name="gift_status" class="form-select" id="gift_status">
-                    <option value="Pending">Pending</option>
-                    <option value="Sent">Sent</option>                    
-                </select>
             </div>
         </div>
     </div>
 </form>
+
+<script>
+    $(document).ready(function() {
+        $('.select2').select2({
+            placeholder: "Search or select a sender",
+            allowClear: true
+        });
+    });
+</script>
+
 @endsection

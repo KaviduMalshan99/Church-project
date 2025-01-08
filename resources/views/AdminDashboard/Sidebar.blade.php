@@ -33,17 +33,27 @@
                 </div>
             </li>
 
-            <li class="menu-item has-submenu {{ request()->is('gift/*') ? 'active' : '' }}">
+            <li class="menu-item {{ request()->routeIs('gift.list') ? 'active' : '' }}">
+                <a class="menu-link" href="{{ route('gift.list') }}">
+                    <i class="icon material-icons md-card_giftcard"></i>
+                    <span class="text">Gift Management</span>
+                </a>
+            </li>
+
+            <!--<li class="menu-item has-submenu {{ request()->is('gift/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-card_giftcard"></i>
                     <span class="text">Gift Management</span>
                 </a>
                 <div class="submenu {{ request()->is('gift/*') ? 'show' : '' }}">
+                    <a href="{{ route('gift.create') }}" class="{{ request()->routeIs('gift.create') ? 'active' : '' }}">
+                        Add Gift
+                    </a>
                     <a href="{{ route('gift.list') }}" class="{{ request()->routeIs('gift.list') ? 'active' : '' }}">
-                        Gift List
+                        List
                     </a>
                 </div>
-            </li>
+            </li>-->
 
             <li class="menu-item has-submenu {{ request()->is('reports/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
@@ -52,10 +62,6 @@
                 </a>
                 <div class="submenu {{ request()->is('reports/*') ? 'show' : '' }}">
                     <a href="{{ route('reports.customers') }}" class="{{ request()->routeIs('reports.customers') ? 'active' : '' }}">Customers</a>
-                    <a href="{{ route('reports.products') }}" class="{{ request()->routeIs('reports.products') ? 'active' : '' }}">Products</a>
-                    <a href="{{ route('reports.affiliate') }}" class="{{ request()->routeIs('reports.affiliate') ? 'active' : '' }}">Affiliate Customers</a>
-                    <a href="{{ route('reports.bank') }}" class="{{ request()->routeIs('reports.bank') ? 'active' : '' }}">Affiliate Bank Details</a>
-                    <a href="{{ route('reports.vendors') }}" class="{{ request()->routeIs('reports.vendors') ? 'active' : '' }}">Vendors</a>
                 </div>
             </li>
 

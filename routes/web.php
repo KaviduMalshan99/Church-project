@@ -39,9 +39,9 @@ Route::prefix('family')->group(function () {
     Route::get('/list', [FamilyController::class, 'index'])->name('family.list');
     Route::get('/create', [FamilyController::class, 'create'])->name('family.create');
     Route::post('/store', [FamilyController::class, 'store'])->name('family.store');
-    Route::get('edit/{id}', [FamilyController::class, 'edit'])->name('family.edit');
-    Route::put('edit/{id}', [FamilyController::class, 'update'])->name('family.update'); 
-    Route::delete('/{id}', [FamilyController::class, 'destroy'])->name('family.destroy');
+    Route::get('edit/{family_number}', [FamilyController::class, 'edit'])->name('family.edit');
+    Route::put('edit/{family_number}', [FamilyController::class, 'update'])->name('family.update'); 
+    Route::delete('/{family_number}', [FamilyController::class, 'destroy'])->name('family.destroy');
 });
 
 
@@ -62,8 +62,8 @@ Route::prefix('gift')->group(function () {
     Route::get('/list', [GiftController::class, 'index'])->name('gift.list');
     Route::get('/create', [GiftController::class, 'create'])->name('gift.create');
     Route::post('/create', [GiftController::class, 'store'])->name('gift.store');
-    Route::get('edit/{id}', [GiftController::class, 'edit'])->name('gift.edit');
-    Route::put('edit/{id}', [GiftController::class, 'update'])->name('gift.update');
+    Route::get('/edit/{id}', [GiftController::class, 'edit'])->name('gift.edit');
+    Route::put('/edit/{id}', [GiftController::class, 'update'])->name('gift.update');
     Route::delete('/{id}', [GiftController::class, 'destroy'])->name('gift.destroy');
 });
 

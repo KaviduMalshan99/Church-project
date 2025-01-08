@@ -2,32 +2,36 @@
 
 @section('content')
 <form method="POST" action="{{ route('family.store') }}" enctype="multipart/form-data">
-@csrf
-<div class="row">
-    <div class="col-12">
-        <div class="content-header">
-            <h2 class="content-title">Add New Family</h2>
-            <div>
-                <button type="submit" class="btn btn-md rounded font-sm hover-up">Add</button>
+    @csrf
+    <div class="row">
+        <div class="col-12">
+            <div class="content-header">
+                <h2 class="content-title">Add New Family</h2>
+                <div>
+                    <button type="submit" class="btn btn-md rounded font-sm hover-up">Add</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    
-       
-
-    
-
-    <div class="col-lg-7">
-        <div class="card mb-4">
-            <div class="card-header">
-                <br>
-                <h4>Basic Details of the Main Member</h4>
-            </div>
-            <div class="card-body">
+        <!-- Main Member Section -->
+        <div class="col-lg-7">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <br>
+                    <h4>Basic Details of the Main Member</h4>
+                </div>
+                <div class="card-body">
                     <div class="mb-4">
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
                         <input type="text" name="member_name" placeholder="Type here" class="form-control" id="member_name" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="member_name" class="form-label">NIC <i class="text-danger">*</i></label>
+                        <input type="text" name="nic" placeholder="NIC number" class="form-control" id="nic" required />
+                    </div>
+                    <div class="mb-4">
+                        <label for="registered_date" class="form-label">Registered Date</label>
+                        <input type="date" name="registered_date" class="form-control" id="registered_date" />
                     </div>
                     <div class="mb-4">
                         <label for="birth_date" class="form-label">Birth Date</label>
@@ -42,14 +46,35 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
+                    <div class="mb-2">
+                        <label class="form-label me-3">Civil Status <i class="text-danger">*</i></label>
+                        <div class="d-inline-flex">
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="civil_status" id="single" value="Single">
+                                <label class="form-check-label" for="single">
+                                    Single
+                                </label>
+                            </div>
+                            <div class="form-check me-4">
+                                <input class="form-check-input" type="radio" name="civil_status" id="married" value="Married">
+                                <label class="form-check-label" for="married">
+                                    Married
+                                </label>
+                            </div>
+                        </div>
+                    </div>
                     <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
-                        <select name="occupation" class="form-select" required>
-                            <option value="">Select Occupation</option>
+                        <input list="occupationOptions" name="occupation" placeholder="Select or type your occupation" class="form-control" required />
+                        <datalist id="occupationOptions">
                             @foreach ($occupation as $item)
-                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                <option value="{{ $item->name }}"></option>
                             @endforeach
-                        </select>
+                        </datalist>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Professional Qualifications</label>
+                        <input type="text" name="professional_quali" class="form-control" />
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Contact Info</label>
@@ -59,84 +84,118 @@
                         <label class="form-label">Email</label>
                         <input type="email" name="email" placeholder="e.g., example@example.com" class="form-control" />
                     </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="col-lg-5">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Media</h4>
-            </div>
-            <div class="card-body">
-                <div class="input-upload">
-                    <img src="{{ asset('backend/assets/imgs/theme/upload.svg') }}" alt="" />
-                    <input name="images[]" id="media_upload" class="form-control" type="file" multiple />
-                </div>
-                <div class="image-preview mt-4" id="image_preview_container" style="display: flex; gap: 5px; flex-wrap: wrap;">
-                    <!-- Image previews will appear here -->
+                    <div class="mb-4">
+                        <label class="form-label">Interest Activities</label>
+                        <input type="text" name="interests" placeholder="e.g., Dance, Music, etc." class="form-control" />
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4>Organization</h4>
+
+        <!-- Media Section -->
+        <div class="col-lg-5">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Media</h4>
+                </div>
+                <div class="card-body">
+                    <div class="input-upload">
+                        <img src="{{ asset('backend/assets/imgs/theme/upload.svg') }}" alt="" />
+                        <input name="images[]" id="media_upload" class="form-control" type="file" multiple />
+                    </div>
+                    <div class="image-preview mt-4" id="image_preview_container" style="display: flex; gap: 5px; flex-wrap: wrap;">
+                        <!-- Image previews will appear here -->
+                    </div>
+                </div>
             </div>
-            <div class="card-body">
-                <div class="row gx-2">
-                    <div class="mb-4">
-                        <label class="form-label">Religion <i class="text-danger">*</i></label>
-                        <select name="religion_if_not_catholic" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
-                            <option value="">Select Religion</option>
-                            @foreach ($religion as $item)
-                                <option value="{{ $item->name }}">{{ $item->name }}</option>
-                            @endforeach
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
+            
+            <!-- Organization Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Organization</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row gx-2">
+                        <div class="mb-4">
+                            <label class="form-label">Religion <i class="text-danger">*</i></label>
+                            <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
+                                <option value="">Select Religion</option>
+                                @foreach ($religion as $item)
+                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                @endforeach
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
 
-                    <div class="mb-4" id="otherReligionDiv" style="display: none;">
-                        <label class="form-label">Specify Religion <i class="text-danger">*</i></label>
-                        <input type="text" id="otherReligionInput" class="form-control" placeholder="Specify your religion">
-                    </div>
+                        <div class="mb-4" id="otherReligionDiv" style="display: none;">
+                            <label class="form-label">Specify Religion <i class="text-danger">*</i></label>
+                            <input type="text" id="otherReligionInput" class="form-control" placeholder="Specify your religion">
+                        </div>
 
-                    <div class="mb-4">
-                        <label class="form-check">
-                            <input type="checkbox" name="baptized" class="form-check-input" />
-                            <span class="form-check-label">Baptized</span>
-                        </label>
-                    </div>
-                    <!--<div class="mb-4">
-                        <label class="form-check">
-                            <input type="checkbox" name="full_member" class="form-check-input" />
-                            <span class="form-check-label">Full Member</span>
-                        </label>
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-check">
-                            <input type="checkbox" name="sabbath_member" class="form-check-input" />
-                            <span class="form-check-label">Sabbath Member</span>
-                        </label>
-                    </div>-->
-                    <div class="mb-4">
+                        <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="baptized" class="form-check-input" />
+                                <span class="form-check-label">Baptized</span>
+                            </label>
+                        </div>
+                        <div class="mb-4">
                         <label class="form-check">
                             <input type="checkbox" name="held_office_in_council" class="form-check-input" />
                             <span class="form-check-label">Held Office in Council</span>
                         </label>
                     </div>
+                        
+                       <!-- Current Church Congregation Section -->
+                        <div class="mb-4">
+                            <label class="form-label">Current Church Congregation <i class="text-danger">*</i></label><br>
+                            <label class="form-check">
+                                <input type="radio" name="church_congregation" value="Moratumulla" class="form-check-input" />
+                                <span class="form-check-label">Moratumulla</span>
+                            </label>
+                            <label class="form-check">
+                                <input type="radio" name="church_congregation" value="Other" class="form-check-input" onchange="toggleOtherChurchInput()" />
+                                <span class="form-check-label">Other</span>
+                            </label>
+                            <div class="mt-2" id="otherChurchDiv" style="display: none;">
+                                <input type="text" name="other_church_congregation" class="form-control" placeholder="Specify the congregation" />
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Other</h4>
+                </div>
+                <div class="card-body">
+                    <!-- Optional Notes and Other Details -->
+                    <div class="mb-4">
+                            <label class="form-label">Optional Notes </label>
+                            <textarea name="optional_notes" class="form-control" placeholder="Add any additional notes here..."></textarea>
+                        </div>
+                </div>
+            </div>
+            
+
         </div>
-
-        
-        
     </div>
-</div>
 </form>
+
+
+<script>
+    // Toggle the "Other" field for church congregation
+    function toggleOtherChurchInput() {
+        var otherChurchInput = document.querySelector('input[name="church_congregation"][value="Other"]');
+        var otherChurchDiv = document.getElementById('otherChurchDiv');
+        if (otherChurchInput.checked) {
+            otherChurchDiv.style.display = 'block';
+        } else {
+            otherChurchDiv.style.display = 'none';
+        }
+    }
+</script>
  
-
-
 <script>
     function handleReligionChange() {
         const select = document.getElementById('religionSelect');
@@ -145,14 +204,14 @@
 
         if (select.value === 'other') {
             otherReligionDiv.style.display = 'block';
-            otherReligionInput.setAttribute('name', 'religion_if_not_catholic'); // Assign the same name
+            otherReligionInput.setAttribute('name', 'religion');
             otherReligionInput.setAttribute('required', 'required');
-            select.removeAttribute('name'); // Remove name from dropdown
+            select.removeAttribute('name'); 
         } else {
             otherReligionDiv.style.display = 'none';
-            otherReligionInput.removeAttribute('name'); // Remove name from input
+            otherReligionInput.removeAttribute('name'); 
             otherReligionInput.removeAttribute('required');
-            select.setAttribute('name', 'religion_if_not_catholic'); // Assign the name back to dropdown
+            select.setAttribute('name', 'religion'); 
         }
     }
 </script>

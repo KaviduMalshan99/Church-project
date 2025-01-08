@@ -34,11 +34,19 @@ class FamilyController extends Controller
         $request->validate([
             'member_name' => 'required|string|max:255',
             'birth_date' => 'nullable|date',
+            'nic' => 'nullable|string',
+            'registered_date' => 'nullable|date',
             'gender' => 'required|in:Male,Female,Other',
             'occupation' => 'nullable|string|max:255',
+            'professional_quali' => 'nullable|string|max:255',
+            'church_congregation' => 'nullable|string|max:255',
+            'civil_status' => 'nullable|string',
+            'other_church_congregation' => 'nullable|string|max:255',
+            'interests' => 'nullable|string',
+            'optional_notes' => 'nullable|string',
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
-            'religion_if_not_catholic' => 'nullable|string|max:255',
+            'religion' => 'nullable|string|max:255',
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -59,19 +67,34 @@ class FamilyController extends Controller
                 ? $request->file('image')->store('members', 'public')
                 : null;
     
+            // Check if "Other" was selected and store the value accordingly
+            $churchCongregation = $request->input('church_congregation');
+            if ($churchCongregation === 'Other') {
+                $churchCongregation = $request->input('other_church_congregation');
+            }
+
+
             // Create main member (FAM-0001-01 format)
-            $mainMemberId = $familyNumber . '-01';
+            $mainMemberId = $familyNumber . '/01';
             $member = Member::create([
                 'family_no' => $family->family_number, 
                 'member_id' => $mainMemberId, 
                 'member_name' => $request->input('member_name'),
+                'civil_status' => $request->input('civil_status'),
+                'nic' => $request->input('nic'),
                 'birth_date' => $request->input('birth_date'),
+                'registered_date' =>  $request->input('registered_date'),
                 'gender' => $request->input('gender'),
+                'occupation' => $request->input('occupation'),
+                'professional_quali' =>  $request->input('professional_quali'),
+                'church_congregation' => $churchCongregation,
+                'interests' =>  $request->input('interests'),
+                'optional_notes' =>  $request->input('optional_notes'),
                 'relationship_to_main_person' => 'Main Member',
                 'occupation' => $request->input('occupation'),
                 'contact_info' => $request->input('contact_info'),
                 'email' => $request->input('email'),
-                'religion_if_not_catholic' => $request->input('religion_if_not_catholic'),
+                'religion' => $request->input('religion'),
                 'nikaya' => $request->input('nikaya'),
                 'baptized' => $request->boolean('baptized'),
                 'full_member' => $request->boolean('full_member'),
@@ -88,46 +111,69 @@ class FamilyController extends Controller
         return redirect()->route('family.list')->with('success', __('Family and main member created successfully!'));
     }
     
-    public function edit($id)
+    
+    public function edit($family_number)
     {
-        $family = Family::findOrFail($id); 
-        $member = Member::findorFail($id);
-        $occupation = Occupation::all(); 
-        return view('AdminDashboard.family.edit_family', compact('family','member','occupation'));
+        $family = Family::where('family_number', $family_number)->firstOrFail();
+        $member = Member::where('family_no', $family_number)->firstOrFail();
+        $religion = Religion::all();
+        $occupation = Occupation::all();
+        
+        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion'));
     }
     
     
     
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, $family_number) {
         $request->validate([
             'member_name' => 'required|string|max:255',
+            'nic' => 'nullable|string',
+            'civil_status' => 'nullable|string',
             'birth_date' => 'nullable|date',
             'gender' => 'required|in:Male,Female,Other',
             'occupation' => 'nullable|string|max:255',
+            'professional_quali' => 'nullable|string|max:255',
+            'church_congregation' => 'nullable|string|max:255',
+            'other_church_congregation' => 'nullable|string|max:255',
+            'interests' => 'nullable|string',
+            'optional_notes' => 'nullable|string',
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
-            'religion_if_not_catholic' => 'nullable|string|max:255',
+            'religion' => 'nullable|string|max:255',
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        DB::transaction(function () use ($request, $id) {
+
+        DB::transaction(function () use ($request, $family_number) {
             // Retrieve the family instance
-            $family = Family::findOrFail($id);
-            // Retrieve the main member
-            $member = Member::findorFail($id);
-            
+            $family = Family::where('family_number', $family_number)->firstOrFail();
+            $member = Member::where('family_no', $family_number)->firstOrFail();
+
+             // Check if "Other" was selected and store the value accordingly
+            $churchCongregation = $request->input('church_congregation');
+            if ($churchCongregation === 'Other') {
+                $churchCongregation = $request->input('other_church_congregation');
+            }
             // Update main member
             $member->update([
                 'member_name' => $request->input('member_name'),
+                'nic' => $request->input('nic'),
+                'civil_status' => $request->input('civil_status'),
                 'birth_date' => $request->input('birth_date'),
+                'registered_date' =>  $request->input('registered_date'),
                 'gender' => $request->input('gender'),
+                'occupation' => $request->input('occupation'),
+                'professional_quali' =>  $request->input('professional_quali'),
+                'church_congregation' => $churchCongregation,
+                'interests' =>  $request->input('interests'),
+                'optional_notes' =>  $request->input('optional_notes'),
                 'relationship_to_main_person' => 'Main Member',
                 'occupation' => $request->input('occupation'),
                 'contact_info' => $request->input('contact_info'),
                 'email' => $request->input('email'),
-                'religion_if_not_catholic' => $request->input('religion_if_not_catholic'),
+                'religion' => $request->input('religion'),
                 'nikaya' => $request->input('nikaya'),
                 'baptized' => $request->boolean('baptized'),
                 'full_member' => $request->boolean('full_member'),
@@ -140,14 +186,13 @@ class FamilyController extends Controller
         return redirect()->route('family.list')->with('success', __('Family and main member updated successfully!'));
     }
 
-    public function destroy($id)
+    public function destroy($family_number)
     {
         // Fetch the church by its ID
-        $family = Family::findOrFail($id);
-        $member = Member::findorFail($id);
+        $family = Family::where('family_number', $family_number)->firstOrFail();
+        $member = Member::where('family_no', $family_number)->firstOrFail();
         $family->delete();
         $member->delete();
-        // Redirect back with success message
         return redirect()->route('family.list')->with('success', __('Family deleted successfully!'));
     }
 }

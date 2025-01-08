@@ -1,6 +1,9 @@
 @extends ('AdminDashboard.master')
 
 @section('content')
+
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+   
 <div class="d-flex justify-content-end mb-4">
     <a class="btn btn-primary" href="{{ route('family.create') }}">Add Family</a>
 </div>
@@ -9,16 +12,14 @@
 </div>
 <div class="card">
     <div class="card-body">
-        <!-- Table for listing sub-churches -->
-
         <div class="table-responsive">
-            <table class="table table-hover" id="subChurchTable">
+            <table class="table table-hover" id="familyTable">
                 <thead class="fs-6">
                     <tr>
                         <th>#</th>
                         <th>Family Number</th>
                         <th>Main Person</th>
-                        <th>Created At</th>
+                        <th>Registered Date</th>
                         <th class="text-end">Action</th>
                     </tr>
                 </thead>
@@ -34,15 +35,21 @@
                                 N/A (Main person ID: {{ $family->main_person_id }})
                             @endif
                         </td>
-                        <td>{{ $family->created_at->format('d/m/Y') }}</td>
-                        <td class="text-end">
-                        <a href="{{ route('family.edit', $family->id ) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
-                        <form action="{{ route('family.destroy', $family->id ) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
-                        </form>
+                        <td>
+                            @if ($family->mainPerson)
+                                {{ $family->mainPerson->registered_date }}
+                            @else
+                                <span class="text-danger">Main person not set</span>
+                            @endif
+                        </td>
 
+                        <td class="text-end">
+                            <a href="{{ route('family.edit', $family->family_number ) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
+                            <form action="{{ route('family.destroy', $family->family_number ) }}" method="POST" style="display:inline-block;">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                            </form>
                             <script>
                                 function confirmDelete() {
                                     return confirm("Are you sure you want to delete this family?");
@@ -50,7 +57,7 @@
                             </script>
                         </td>
                     </tr>
-                    @endforeach
+                @endforeach
                 </tbody>
             </table>
             <!-- Pagination -->
@@ -62,5 +69,21 @@
         </div>
     </div>
 </div>
+
+
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#familyTable').DataTable({
+            "paging": true,           
+            "searching": true,      
+            "ordering": true,       
+            "info": true,            
+            "lengthChange": true     
+        });
+    });
+</script>
 
 @endsection
