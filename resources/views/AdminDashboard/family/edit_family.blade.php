@@ -113,11 +113,22 @@
                 </div>
                 <div class="card-body">
                     <div class="input-upload">
-                        <img src="{{ asset('backend/assets/imgs/theme/upload.svg') }}" alt="" />
-                        <input name="images[]" id="media_upload" class="form-control" type="file" multiple />
+                        <label for="media_upload">
+                            <img src="{{ asset('backend/assets/imgs/theme/upload.svg') }}" alt="" />
+                        </label>
+                        <input name="image" id="media_upload" class="form-control" type="file" style="display: none;" onchange="previewImage(event)" />
                     </div>
+
                     <div class="image-preview mt-4" id="image_preview_container" style="display: flex; gap: 5px; flex-wrap: wrap;">
-                        <!-- Image previews will appear here -->
+                        <!-- Existing Image Preview -->
+                        @if($member->image)
+                            <img 
+                                id="existing_image" 
+                                src="{{ asset('storage/' . $member->image) }}" 
+                                alt="Existing Image" 
+                                style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; border-radius: 5px;" 
+                            />
+                        @endif
                     </div>
                 </div>
             </div>
@@ -215,6 +226,33 @@
     </div>
 </form>
 
+<script>
+    function previewImage(event) {
+        const previewContainer = document.getElementById('image_preview_container');
+        const existingImage = document.getElementById('existing_image');
+
+        // Remove existing image if it exists
+        if (existingImage) {
+            existingImage.remove();
+        }
+
+        // Add new image preview
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '150px';
+                img.style.maxHeight = '150px';
+                img.style.border = '1px solid #ddd';
+                img.style.borderRadius = '5px';
+                previewContainer.appendChild(img);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
 
 <script>
     // Toggle the "Other" field for church congregation

@@ -10,6 +10,8 @@ use App\Models\Religion;
 use App\Models\Occupation;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+
 
 class FamilyController extends Controller
 {
@@ -62,10 +64,14 @@ class FamilyController extends Controller
                 'family_number' => $familyNumber,
             ]);
     
-            // Handle image upload if provided
-            $imagePath = $request->hasFile('image')
-                ? $request->file('image')->store('members', 'public')
-                : null;
+          // Handle image upload if provided
+            $imagePath = null;
+            if ($request->hasFile('image')) {
+                $file = $request->file('image');
+                $originalName = $file->getClientOriginalName(); 
+                $imagePath = $file->storeAs('members', $originalName, 'public');
+            }
+
     
             // Check if "Other" was selected and store the value accordingly
             $churchCongregation = $request->input('church_congregation');
@@ -156,6 +162,20 @@ class FamilyController extends Controller
             if ($churchCongregation === 'Other') {
                 $churchCongregation = $request->input('other_church_congregation');
             }
+
+            // Handle image upload and replace existing image if needed
+            if ($request->hasFile('image')) {
+                // Delete the old image if it exists
+                if ($member->image) {
+                    Storage::delete('public/' . $member->image);
+                }
+                $file = $request->file('image');
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                $imagePath = $file->storeAs('members', $fileName, 'public');
+
+                $member->image = $imagePath;
+            }
+
             // Update main member
             $member->update([
                 'member_name' => $request->input('member_name'),

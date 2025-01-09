@@ -139,7 +139,7 @@
             <div class="card-body">
                 <div class="input-upload">
                     <img src="{{ asset('backend/assets/imgs/theme/upload.svg') }}" alt="" />
-                    <input name="images[]" id="media_upload" class="form-control" type="file" multiple />
+                    <input name="image" id="media_upload" class="form-control" type="file" />
                 </div>
                 <div class="image-preview mt-4" id="image_preview_container" style="display: flex; gap: 5px; flex-wrap: wrap;">
                     <!-- Image previews will appear here -->

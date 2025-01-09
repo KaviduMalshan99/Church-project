@@ -16,8 +16,6 @@
                 </a>
             </li>
 
-          
-
             <li class="menu-item has-submenu {{ request()->is('family/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-family_restroom"></i>
@@ -40,6 +38,13 @@
                 </a>
             </li>
 
+            <li class="menu-item {{ request()->routeIs('filter.index') ? 'active' : '' }}">
+                <a class="menu-link" href="{{ route('filter.index') }}">
+                    <i class="icon material-icons md-filter_list"></i>
+                    <span class="text">Filter Members</span>
+                </a>
+            </li>
+
             <!--<li class="menu-item has-submenu {{ request()->is('gift/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-card_giftcard"></i>
@@ -55,7 +60,7 @@
                 </div>
             </li>-->
 
-            <li class="menu-item has-submenu {{ request()->is('reports/*') ? 'active' : '' }}">
+           <!--<li class="menu-item has-submenu {{ request()->is('reports/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-description"></i>
                     <span class="text">Reports</span>
@@ -63,7 +68,7 @@
                 <div class="submenu {{ request()->is('reports/*') ? 'show' : '' }}">
                     <a href="{{ route('reports.customers') }}" class="{{ request()->routeIs('reports.customers') ? 'active' : '' }}">Customers</a>
                 </div>
-            </li>
+            </li>-->
 
             <li class="menu-item has-submenu {{ request()->is('settings/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">

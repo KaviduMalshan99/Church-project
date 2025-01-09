@@ -8,6 +8,7 @@ use App\Models\Religion;
 use Illuminate\Http\Request;
 use App\Models\SubChurch;
 use App\Models\Occupation;
+use Illuminate\Support\Facades\Storage;
 
 class MemberController extends Controller
 {
@@ -51,8 +52,16 @@ class MemberController extends Controller
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'religion' => 'nullable|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $originalName = $file->getClientOriginalName(); 
+            $imagePath = $file->storeAs('members', $originalName, 'public');
+        }
+
         // Find the main person based on the provided ID
         $main_person = Member::findOrFail($validatedData['main_person']);
         
@@ -99,6 +108,7 @@ class MemberController extends Controller
             'methodist_member' => $request->boolean('methodist_member'),
             'sabbath_member' => $request->boolean('sabbath_member'),
             'held_office_in_council' => $request->boolean('held_office_in_council'),
+            'image' => $imagePath,
         ]);
     
         // Redirect with a success message
@@ -118,30 +128,49 @@ class MemberController extends Controller
 
     public function update(Request $request, $id)
     {
-        // Find the member that needs to be updated
         $member = Member::findOrFail($id);
-
+    
+        // Validate the input including the image
+        $request->validate([
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+    
         $family = Family::where('main_person_id', $request->main_person)->first();
         $family_no = $family ? $family->id : $member->family_no;
     
+        // Handle church congregation input
         $churchCongregation = $request->input('church_congregation');
         if ($churchCongregation === 'Other') {
             $churchCongregation = $request->input('other_church_congregation');
         }
+    
+        // Handle image upload and replace existing image if needed
+        if ($request->hasFile('image')) {
+            // Delete the old image if it exists
+            if ($member->image) {
+                Storage::delete('public/' . $member->image);
+            }
+            $file = $request->file('image');
+            $fileName = time() . '_' . $file->getClientOriginalName();
+            $imagePath = $file->storeAs('members', $fileName, 'public');
+
+            $member->image = $imagePath;
+        }
+    
         // Update the member details without changing member_id and family_no
         $member->update([
-            'family_no' => $family_no, 
-            'member_id' => $member->member_id, 
+            'family_no' => $family_no,
+            'member_id' => $member->member_id,
             'member_name' => $request->input('member_name'),
             'civil_status' => $request->input('civil_status'),
             'nic' => $request->input('nic'),
             'birth_date' => $request->input('birth_date'),
             'gender' => $request->input('gender'),
             'occupation' => $request->input('occupation'),
-            'professional_quali' =>  $request->input('professional_quali'),
+            'professional_quali' => $request->input('professional_quali'),
             'church_congregation' => $churchCongregation,
-            'interests' =>  $request->input('interests'),
-            'optional_notes' =>  $request->input('optional_notes'),
+            'interests' => $request->input('interests'),
+            'optional_notes' => $request->input('optional_notes'),
             'contact_info' => $request->input('contact_info'),
             'email' => $request->input('email'),
             'religion' => $request->input('religion'),

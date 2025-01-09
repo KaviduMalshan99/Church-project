@@ -9,7 +9,7 @@ use App\Http\Controllers\MemberController;
 use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
-
+use App\Http\Controllers\FilterController;
 
 //frontend pages
 Route::get('/', [HomeController::class, 'index'])->name('dashboard');
@@ -66,6 +66,12 @@ Route::prefix('gift')->group(function () {
     Route::put('/edit/{id}', [GiftController::class, 'update'])->name('gift.update');
     Route::delete('/{id}', [GiftController::class, 'destroy'])->name('gift.destroy');
 });
+
+
+Route::get('/filter', [FilterController::class, 'index'])->name('filter.index');
+Route::get('/filter/member-details/{id}', [FilterController::class, 'show'])->name('filter.show');
+
+
 
 // Reports
 Route::prefix('reports')->group(function () {
