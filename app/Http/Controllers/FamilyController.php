@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\SubChurch;
 use App\Models\Religion;
 use App\Models\Occupation;
+use App\Models\HeldinCouncil;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -28,7 +29,8 @@ class FamilyController extends Controller
         $churches = SubChurch::all(); 
         $occupation = Occupation::all();
         $religion = Religion::all(); 
-        return view('AdminDashboard.family.add_family', compact('churches','occupation','religion'));
+        $heldincouncil = HeldinCouncil::all();
+        return view('AdminDashboard.family.add_family', compact('churches','occupation','religion','heldincouncil'));
     }
 
     public function store(Request $request)
@@ -49,6 +51,7 @@ class FamilyController extends Controller
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'religion' => 'nullable|string|max:255',
+            'held_office_in_council' => 'nullable|string|max:255',
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -106,7 +109,7 @@ class FamilyController extends Controller
                 'full_member' => $request->boolean('full_member'),
                 'methodist_member' => $request->boolean('methodist_member'),
                 'sabbath_member' => $request->boolean('sabbath_member'),
-                'held_office_in_council' => $request->boolean('held_office_in_council'),
+                'held_office_in_council' => $request->input('held_office_in_council'),
                 'image' => $imagePath,
             ]);
     
@@ -124,8 +127,9 @@ class FamilyController extends Controller
         $member = Member::where('family_no', $family_number)->firstOrFail();
         $religion = Religion::all();
         $occupation = Occupation::all();
+        $heldincouncil = HeldinCouncil::all();
         
-        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion'));
+        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion','heldincouncil'));
     }
     
     
@@ -147,6 +151,7 @@ class FamilyController extends Controller
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'religion' => 'nullable|string|max:255',
+            'held_office_in_council' => 'nullable|string|max:255',
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -199,7 +204,7 @@ class FamilyController extends Controller
                 'full_member' => $request->boolean('full_member'),
                 'methodist_member' => $request->boolean('methodist_member'),
                 'sabbath_member' => $request->boolean('sabbath_member'),
-                'held_office_in_council' => $request->boolean('held_office_in_council'),
+                'held_office_in_council' => $request->input('held_office_in_council'),
             ]);
         });
 

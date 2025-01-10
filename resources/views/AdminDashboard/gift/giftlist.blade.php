@@ -6,7 +6,7 @@
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex">
         <!-- Kawara Pooja Card -->
-        <div class="card text-white me-3" style="width: 22rem;">
+        <div class="card text-white me-3" style="width: 18rem;">
             <div class="card-body">
             <h4 class="card-title">Kawara Pooja Total Amount</h4>
             <h4 class="card-text text-danger">Rs. {{ number_format($kawaraTotal, 2) }}</h4>
@@ -14,15 +14,25 @@
         </div>
 
         <!-- Other Card -->
-        <div class="card text-white" style="width: 22rem;">
+        <div class="card text-white me-3" style="width: 18rem;">
             <div class="card-body">
-            <h4 class="card-title">Other Total Amount</h4>
-            <h4 class="card-text text-danger">Rs. {{ number_format($otherTotal, 2) }}</h4>
+                <h4 class="card-title">Other Total Amount</h4>
+                <h4 class="card-text text-danger">Rs. {{ number_format($otherTotal, 2) }}</h4>
             </div>
         </div>
+
+        <!-- Total Card -->
+        <div class="card text-white" style="width: 18rem;">
+            <div class="card-body">
+                <h4 class="card-title">Total Amount</h4>
+                <h4 class="card-text text-danger">Rs. {{ number_format($totalAmount, 2) }}</h4>
+            </div>
+        </div>
+
     </div>
     <a class="btn btn-primary" href="{{ route('gift.create') }}">Add Gift</a>
 </div>
+
 
 
 <div class="card">

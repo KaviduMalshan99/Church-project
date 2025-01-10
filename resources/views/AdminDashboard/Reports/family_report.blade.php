@@ -24,7 +24,7 @@
 
     <section class="content-main">
         <div class="content-header">
-            <h2 class="content-title">Report - Vendors</h2>
+            <h2 class="content-title">Report - Families</h2>
         </div>
 
         <!-- Room Form -->
@@ -37,32 +37,38 @@
                             <table id="tableData" class="table table-hover display">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Name</th>
-                                        <th>Shop Name</th>
-                                        <th>Address</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Status</th>
+                                        <th></th>
+                                        <th>Family Number</th>
+                                        <th>Main Person</th>
+                                        <th>Member id</th>
+                                        <th>Phone number</th>
+                                        <th>Registered Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach($vendors as $index => $vendor)
+                                    @foreach($families as $index=> $family)
                                     <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $vendor->name }}</td>
-                                        <td>{{ $vendor->shop ? $vendor->shop->shop_name : 'No Shop' }}</td>
-                                        <td>{{ $vendor->address }}</td>
-                                        <td>{{ $vendor->email }}</td>
-                                        <td>{{ $vendor->phone }}</td>
+                                        <td>{{ $index+1 }}</td>
+                                        <td>{{ $family->family_number }}</td>
                                         <td>
-                                            <span class="{{ strtolower($vendor->status) }}-status">
-                                                {{ ucfirst($vendor->status) }}
-                                            </span>
+                                            @if($family->mainPerson)
+                                                {{ $family->mainPerson->member_name }}
+                                            @else
+                                                N/A (Main person ID: {{ $family->main_person_id }})
+                                            @endif
                                         </td>
-                                    </tr>
-                                @endforeach
+                                        <td> {{ $family->main_person_id }}</td>
+                                        <td> {{ $family->mainPerson->contact_info }}</td>
+                                        <td>
+                                            @if ($family->mainPerson)
+                                                {{ $family->mainPerson->registered_date }}
+                                            @else
+                                                <span class="text-danger">Main person not set</span>
+                                            @endif
+                                        </td>
 
+                                    </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
                         </div>
@@ -93,7 +99,7 @@
                     {
                         extend: 'pdfHtml5',
                         footer: true,
-                        title: 'Vendor Report',
+                        title: 'Family Report',
                         customize: function(doc) {
                             // Set a margin for the footer
                             doc.content[1].margin = [0, 0, 0, 20];
@@ -102,7 +108,7 @@
                     {
                         extend: 'print',
                         footer: true,
-                        title: 'Vendor Report',
+                        title: 'Family Report',
                     }
                 ],
 

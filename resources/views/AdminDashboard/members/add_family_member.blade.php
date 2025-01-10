@@ -167,12 +167,7 @@
                         <label class="form-label">Specify Religion <i class="text-danger">*</i></label>
                         <input type="text" id="otherReligionInput" class="form-control" placeholder="Specify your religion">
                     </div>
-                    <div class="mb-4">
-                        <label class="form-check">
-                            <input type="checkbox" name="baptized" class="form-check-input" />
-                            <span class="form-check-label">Baptized</span>
-                        </label>
-                    </div>
+                   
                     <!--<div class="mb-4">
                         <label class="form-check">
                             <input type="checkbox" name="full_member" class="form-check-input" />
@@ -186,9 +181,19 @@
                         </label>
                     </div>-->
                     <div class="mb-4">
+                            <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>
+                            <select name="held_office_in_council" id="held_office_in_councilSelect" class="form-select"">
+                                <option value="">Select</option>
+                                @foreach ($heldincouncil as $item)
+                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
                         <label class="form-check">
-                            <input type="checkbox" name="held_office_in_council" class="form-check-input" />
-                            <span class="form-check-label">Held Office in Council</span>
+                            <input type="checkbox" name="baptized" class="form-check-input" />
+                            <span class="form-check-label">Baptized</span>
                         </label>
                     </div>
                     <!-- Current Church Congregation Section -->

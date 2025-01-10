@@ -3436,11 +3436,7 @@ body.offcanvas-active {
   padding-right: 0.5rem;
   display: inline-block;
 }
-.navbar-aside .aside-top .logo {
-  max-width: 80px;
-  margin-top: 5px;
-  min-width: 80px;
-}
+
 
 .main-header {
   padding-left: 3%;
@@ -3854,9 +3850,7 @@ footer.main-footer {
     overflow-x: hidden;
     transition: visibility 0.2s ease-in-out, transform 0.2s ease-in-out;
   }
-  .navbar-aside .aside-top .logo {
-    height: 40px;
-  }
+  
   .navbar-aside.show {
     visibility: visible;
     transform: translateX(0);

@@ -10,7 +10,7 @@
     <div class="col-nav">
         <button class="btn btn-icon btn-mobile me-auto" data-trigger="#offcanvas_aside"><i class="material-icons md-apps"></i></button>
         <ul class="nav">
-            <li class="nav-item dropdown"> 
+           <!-- <li class="nav-item dropdown"> 
                  <a class="nav-link btn-icon dropdown-toggle" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       <i class="material-icons md-notifications animation-shake"></i>
                           <span class="badge rounded-pill">
@@ -34,7 +34,7 @@
                            <li class="dropdown-item text-muted">No notifications</li>
                      @endif
                 </ul>
-            </li>
+            </li>-->
 
            <li class="nav-item">
                 <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
@@ -44,19 +44,17 @@
                     <img class="img-xs rounded-circle" src="{{ asset('backend/assets/imgs/people/avatar-2.png') }}" alt="User" />
                 </a>
                 
+               <!-- Dropdown menu for logout -->
                 <div class="dropdown-menu" style="left: -100px;" aria-labelledby="dropdownAccount">
-                    <a class="dropdown-item" href="{{ route('dashboard') }}">
-                        <i class="material-icons md-perm_identity"></i> Edit Profile
-                    </a>
-                    <div class="dropdown-divider"></div>
                     <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
                         <i class="material-icons md-exit_to_app"></i> Logout
                     </a>
                     <!-- Hidden logout form -->
-                    <form id="admin-logout-form" action="{{ route('dashboard') }}" method="POST" style="display: none;">
+                    <form id="admin-logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
                 </div>
+
             </li>
         </ul>
     </div>

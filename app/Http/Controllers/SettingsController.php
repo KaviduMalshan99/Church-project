@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 use App\Models\Occupation;
 use App\Models\Religion;
+use App\Models\HeldinCouncil;
+use App\Models\SystemUser;
 use Illuminate\Http\Request;
 
 class SettingsController extends Controller
@@ -84,6 +86,109 @@ class SettingsController extends Controller
 
         return redirect()->route('settings.religion')->with('success', 'Religion updated successfully!');
     }
+
+
+
+    
+    public function held_in_council()
+    {
+        $heldincouncil = HeldinCouncil::all();
+        return view('AdminDashboard.settings.held_in_council', compact('heldincouncil'));
+    }
+
+
+    public function held_in_council_store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        HeldinCouncil::create($validated);
+
+        return redirect()->route('settings.held_in_council')->with('success', 'Data added successfully!');
+    }
+
+
+    public function held_in_council_destroy($id)
+    {
+        $heldincouncil = HeldinCouncil::findOrFail($id);
+        $heldincouncil->delete();
+
+        return redirect()->route('settings.held_in_council')->with('success', 'Deleted successfully!');
+    }
+
+    public function held_in_council_update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        
+        $heldincouncil = HeldinCouncil::findOrFail($id);
+        $heldincouncil->update($validated);
+
+        return redirect()->route('settings.held_in_council')->with('success', 'Updated successfully!');
+    }
+
+
+      
+    public function users()
+    {
+        $users = SystemUser::all();
+        return view('AdminDashboard.settings.users', compact('users'));
+    }
+
+    public function users_store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255|email|unique:system_users,email',
+            'contact' => 'required|numeric',
+            'password' => 'required|string|max:255|confirmed', 
+        ]);
+    
+        SystemUser::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'contact' => $validated['contact'],
+            'password' => bcrypt($validated['password']), 
+        ]);
+    
+        return redirect()->route('settings.users')->with('success', 'User added successfully!');
+    }
+
+    public function users_destroy($id)
+    {
+        $users = SystemUser::findOrFail($id);
+        $users->delete();
+
+        return redirect()->route('settings.users')->with('success', 'User Deleted successfully!');
+    }
+    
+    public function users_update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|max:255|email|unique:system_users,email,' . $id,
+            'contact' => 'required|numeric',
+            'password' => 'nullable|string|max:255|confirmed',
+        ]);
+
+
+        $user = SystemUser::findOrFail($id);
+        $user->name = $validated['name'];
+        $user->email = $validated['email'];
+        $user->contact = $validated['contact'];
+        
+        if ($request->has('password') && $request->password) {
+            $user->password = bcrypt($validated['password']);
+        }
+
+        $user->save();
+
+        return redirect()->route('settings.users')->with('success', 'User updated successfully!');
+    }
+
+
 
 
 }

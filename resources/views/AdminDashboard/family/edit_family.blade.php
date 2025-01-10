@@ -68,6 +68,10 @@
                         </div>
                     </div>
                     <div class="mb-4">
+                        <label class="form-label">Contact Info <i class="text-danger">*</i></label>
+                        <input type="text" name="contact_info" value="{{$member->contact_info}}" placeholder="e.g., 0712345678" class="form-control" />
+                    </div>
+                    <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
                         <input 
                             list="occupationOptions" 
@@ -89,10 +93,7 @@
                         <input type="text" name="professional_quali" value="{{$member->professional_quali}}" class="form-control" />
                     </div>
 
-                    <div class="mb-4">
-                        <label class="form-label">Contact Info</label>
-                        <input type="text" name="contact_info" value="{{$member->contact_info}}" placeholder="e.g., 0712345678" class="form-control" />
-                    </div>
+                  
                     <div class="mb-4">
                         <label class="form-label">Email</label>
                         <input type="email" name="email" value="{{$member->email}}" placeholder="e.g., example@example.com" class="form-control" />
@@ -164,21 +165,25 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-check">
-                                <input type="checkbox" name="baptized" value="1"
-                                    class="form-check-input"
-                                    {{ old('baptized', $member->baptized) ? 'checked' : '' }} />
-                                <span class="form-check-label">Baptized</span>
-                            </label>
+                            <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>
+                            <select name="held_office_in_council" id="held_office_in_councilSelect" class="form-select">
+                                <option value="">Select</option>
+                                @foreach ($heldincouncil as $item)
+                                    <option value="{{ $item->name }}" 
+                                        {{ old('held_office_in_council', isset($member) ? $member->held_office_in_council : '') == $item->name ? 'selected' : '' }}>
+                                        {{ $item->name }}
+                                    </option>
+                                @endforeach
+                            </select>
                         </div>
 
 
                         <div class="mb-4">
                             <label class="form-check">
-                                <input type="checkbox" name="held_office_in_council" value="1"
+                                <input type="checkbox" name="baptized" value="1"
                                     class="form-check-input"
-                                    {{ old('held_office_in_council', $member->held_office_in_council) ? 'checked' : '' }} />
-                                <span class="form-check-label">Held Office in Council</span>
+                                    {{ old('baptized', $member->baptized) ? 'checked' : '' }} />
+                                <span class="form-check-label">Baptized</span>
                             </label>
                         </div>
 

@@ -29,7 +29,7 @@
             <div class="card-body">
             <form method="GET" action="{{ route('filter.index') }}">
                 <div class="d-flex justify-content-between mb-4">
-                    <button type="submit" class="btn btn-primary">Filter</button>
+                    <button type="submit" class="btn btn-primary"  style="padding:10px 15px">Filter</button>
                     <a href="{{ route('filter.index') }}" class="btn btn-secondary">Reset</a>
                 </div>
 
@@ -150,7 +150,7 @@
                                     <td>{{ $member->nic }}</td>
                                     <td>{{ $member->contact_info }}</td>
                                     <td class="text-end">
-                                        <button 
+                                        <button style="padding:5px"
                                             class="btn btn-primary btn-sm" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#memberDetailModal" 

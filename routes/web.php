@@ -11,10 +11,20 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\FilterController;
 
-//frontend pages
-Route::get('/', [HomeController::class, 'index'])->name('dashboard');
 
-// Church Management
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Middleware\AdminAuth;
+
+
+Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
+Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
+
+Route::middleware([App\Http\Middleware\AdminAuth::class])->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('dashboard');
+    
+    // Church Management
 Route::prefix('church')->group(function () {
     Route::get('/main', [ChurchController::class, 'main'])->name('church.main');
     Route::get('/main/create', [ChurchController::class, 'create'])->name('church.main.create');
@@ -75,11 +85,8 @@ Route::get('/filter/member-details/{id}', [FilterController::class, 'show'])->na
 
 // Reports
 Route::prefix('reports')->group(function () {
-    Route::get('/customers', [ReportController::class, 'customers'])->name('reports.customers');
-    Route::get('/products', [ReportController::class, 'products'])->name('reports.products');
-    Route::get('/affiliate', [ReportController::class, 'affiliate'])->name('reports.affiliate');
-    Route::get('/bank', [ReportController::class, 'bank'])->name('reports.bank');
-    Route::get('/vendors', [ReportController::class, 'vendors'])->name('reports.vendors');
+    Route::get('/families', [ReportController::class, 'families'])->name('reports.families');
+    Route::get('/members', [ReportController::class, 'members'])->name('reports.members');
 });
 
 // Settings
@@ -93,7 +100,27 @@ Route::prefix('settings')->group(function () {
     Route::post('/religion/create', [SettingsController::class, 'religion_store'])->name('religion.store');
     Route::delete('/religion/{id}', [SettingsController::class, 'religion_destroy'])->name('religion.destroy');
     Route::put('/religion/{id}', [SettingsController::class, 'religion_update'])->name('religion.update');
+
+    Route::get('/held_in_council', [SettingsController::class, 'held_in_council'])->name('settings.held_in_council');
+    Route::post('/held_in_council/create', [SettingsController::class, 'held_in_council_store'])->name('held_in_council.store');
+    Route::delete('/held_in_council/{id}', [SettingsController::class, 'held_in_council_destroy'])->name('held_in_council.destroy');
+    Route::put('/held_in_council/{id}', [SettingsController::class, 'held_in_council_update'])->name('held_in_council.update');
+
+    Route::get('/users', [SettingsController::class, 'users'])->name('settings.users');
+    Route::post('/users/create', [SettingsController::class, 'users_store'])->name('users.store');
+    Route::delete('/users/{id}', [SettingsController::class, 'users_destroy'])->name('users.destroy');
+    Route::put('/users/{id}', [SettingsController::class, 'users_update'])->name('users.update');
+
 });
+
+});
+
+
+
+
+
+
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

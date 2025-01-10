@@ -64,6 +64,10 @@
                         </div>
                     </div>
                     <div class="mb-4">
+                        <label class="form-label">Contact Info <i class="text-danger">*</i></label>
+                        <input type="text" name="contact_info" placeholder="e.g., 0712345678" class="form-control" />
+                    </div>
+                    <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
                         <input list="occupationOptions" name="occupation" placeholder="Select or type your occupation" class="form-control" required />
                         <datalist id="occupationOptions">
@@ -75,10 +79,6 @@
                     <div class="mb-4">
                         <label class="form-label">Professional Qualifications</label>
                         <input type="text" name="professional_quali" class="form-control" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label">Contact Info</label>
-                        <input type="text" name="contact_info" placeholder="e.g., 0712345678" class="form-control" />
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Email</label>
@@ -131,6 +131,15 @@
                             <label class="form-label">Specify Religion <i class="text-danger">*</i></label>
                             <input type="text" id="otherReligionInput" class="form-control" placeholder="Specify your religion">
                         </div>
+                        <div class="mb-4">
+                            <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>
+                            <select name="held_office_in_council" id="held_office_in_councilSelect" class="form-select"">
+                                <option value="">Select</option>
+                                @foreach ($heldincouncil as $item)
+                                    <option value="{{ $item->name }}">{{ $item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                         <div class="mb-4">
                             <label class="form-check">
@@ -138,12 +147,7 @@
                                 <span class="form-check-label">Baptized</span>
                             </label>
                         </div>
-                        <div class="mb-4">
-                        <label class="form-check">
-                            <input type="checkbox" name="held_office_in_council" class="form-check-input" />
-                            <span class="form-check-label">Held Office in Council</span>
-                        </label>
-                    </div>
+                       
                         
                        <!-- Current Church Congregation Section -->
                         <div class="mb-4">

@@ -14,10 +14,11 @@ class GiftController extends Controller
         $gifts = Gift::all();
         $kawaraTotal = $gifts->where('type', 'Kawara Pooja')->sum('amount');
         $otherTotal = $gifts->where('type', 'Other')->sum('amount');
-    
-        return view('AdminDashboard.gift.giftlist', compact('gifts', 'kawaraTotal', 'otherTotal'));
+        $totalAmount = $kawaraTotal + $otherTotal; 
+        
+        return view('AdminDashboard.gift.giftlist', compact('gifts', 'kawaraTotal', 'otherTotal', 'totalAmount'));
     }
-    
+
 
     public function create()
     {
