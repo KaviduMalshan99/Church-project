@@ -47,6 +47,10 @@
                 </div>
                 <div class="card-body">
                     <div class="mb-4">
+                        <label for="member_title" class="form-label">Title  <i class="text-danger">*</i></label>
+                        <input type="text" name="member_title" id="member_title"  value="{{$member->member_title}}" class="form-control" placeholder="Enter title (e.g., Mr., Mrs., Dr.)" required/>
+                    </div>
+                    <div class="mb-4">
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
                         <input type="text" name="member_name" value="{{$member->member_name}}" placeholder="Type here" class="form-control" id="member_name" required />
                     </div>
@@ -67,22 +71,31 @@
                             <option value="Other" {{ old('gender', $member->gender ?? '') == 'Other' ? 'selected' : '' }}>Other</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                    <label class="form-label me-3">Civil Status <i class="text-danger">*</i></label>
+                    <div class="mb-2">
+                        <label class="form-label me-3">Civil Status <i class="text-danger">*</i></label>
                         <div class="d-inline-flex">
                             <div class="form-check me-4">
-                                <input class="form-check-input" type="radio" name="civil_status" id="single" value="Single" {{ old('civil_status', $member->civil_status) == 'Single' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" name="civil_status" id="single" value="Single" 
+                                    {{ old('civil_status', $member->civil_status) == 'Single' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="single">
                                     Single
                                 </label>
                             </div>
                             <div class="form-check me-4">
-                                <input class="form-check-input" type="radio" name="civil_status" id="married" value="Married" {{ old('civil_status', $member->civil_status) == 'Married' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" name="civil_status" id="married" value="Married" 
+                                    {{ old('civil_status', $member->civil_status) == 'Married' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="married">
                                     Married
                                 </label>
                             </div>
                         </div>
+                    </div>
+
+                    <!-- Married Date Input -->
+                    <div class="mb-4" id="marriedDateContainer" style="{{ old('civil_status', $member->civil_status) == 'Married' ? 'display: block;' : 'display: none;' }}">
+                        <label class="form-label" for="marriedDate">Married Date</label>
+                        <input type="date" id="marriedDate" name="married_date" class="form-control" 
+                            value="{{ old('married_date', $member->married_date) }}" />
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Relationship to Main Person  <i class="text-danger">*</i></label>
@@ -115,6 +128,18 @@
                                 <option data-id="{{ $item->id }}" value="{{ $item->name }}"></option>
                             @endforeach
                         </datalist>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Academic Qualifications</label>
+                        <select name="academic_quali" class="form-control">
+                            <option value="">Select Academic Qualification</option>
+                            @foreach ($academicQualifications as $qualification)
+                                <option value="{{ $qualification->id }}"
+                                    {{ old('academic_quali', $member->academic_quali) == $qualification->id ? 'selected' : '' }}>
+                                    {{ $qualification->name }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Professional Qualifications</label>
@@ -210,15 +235,22 @@
                             </select>
                         </div>
 
-                        
+                       
                         <div class="mb-4">
                             <label class="form-check">
-                                <input type="checkbox" name="baptized" value="1"
+                                <input type="checkbox" name="baptized" id="baptizedCheckbox" value="1"
                                     class="form-check-input"
                                     {{ old('baptized', $member->baptized) ? 'checked' : '' }} />
                                 <span class="form-check-label">Baptized</span>
                             </label>
                         </div>
+
+                        <div class="mb-4" id="baptizedDateContainer" style="{{ old('baptized', $member->baptized) ? 'display: block;' : 'display: none;' }}">
+                            <label for="baptizedDate">Baptism Date</label>
+                            <input type="date" id="baptizedDate" name="baptized_date" class="form-control"
+                                value="{{ old('baptized_date', $member->baptized_date) }}" />
+                        </div>
+
 
                         <!--<div class="mb-4">
                             <label class="form-check">
@@ -353,5 +385,48 @@
             select.setAttribute('name', 'religion'); 
         }
     }
+</script>
+<script>
+    // Wait for the DOM to fully load before attaching the event listener
+    document.addEventListener('DOMContentLoaded', function () {
+        const baptizedCheckbox = document.getElementById('baptizedCheckbox');
+        const baptizedDateContainer = document.getElementById('baptizedDateContainer');
+
+        // Add event listener for checkbox change
+        baptizedCheckbox.addEventListener('change', function () {
+            if (this.checked) {
+                baptizedDateContainer.style.display = 'block'; 
+            } else {
+                baptizedDateContainer.style.display = 'none'; 
+            }
+        });
+
+        // Trigger the change event to ensure correct initial state when the page loads
+        baptizedCheckbox.dispatchEvent(new Event('change'));
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const marriedRadio = document.getElementById('married');
+        const singleRadio = document.getElementById('single');
+        const marriedDateContainer = document.getElementById('marriedDateContainer');
+
+        // Function to toggle the display of the married date field
+        function toggleMarriedDateField() {
+            if (marriedRadio.checked) {
+                marriedDateContainer.style.display = 'block'; 
+            } else {
+                marriedDateContainer.style.display = 'none';   
+            }
+        }
+
+        // Add event listeners for both radio buttons
+        marriedRadio.addEventListener('change', toggleMarriedDateField);
+        singleRadio.addEventListener('change', toggleMarriedDateField);
+
+        toggleMarriedDateField();
+    });
 </script>
 @endsection

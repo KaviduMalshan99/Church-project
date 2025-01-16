@@ -14,4 +14,9 @@ class Gift extends Model
         'type',
         'amount'
     ];
+
+    public function member()
+    {
+        return $this->belongsTo(Member::class, 'sender_id', 'member_id');
+    }
 }

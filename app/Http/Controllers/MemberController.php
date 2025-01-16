@@ -7,6 +7,7 @@ use App\Models\Member;
 use App\Models\Religion;
 use Illuminate\Http\Request;
 use App\Models\SubChurch;
+use App\Models\AcademicQualification;
 use App\Models\Occupation;
 use App\Models\HeldinCouncil;
 use Illuminate\Support\Facades\Storage;
@@ -28,9 +29,10 @@ class MemberController extends Controller
         $occupation = Occupation::all(); 
         $religion = Religion::all();
         $heldincouncil = HeldinCouncil::all();
+        $academicQualifications = AcademicQualification::all(); 
         $main_persons = Member::where("relationship_to_main_person", "Main Member")
                               ->get(['id', 'member_name', 'family_no']);  
-        return view('AdminDashboard.members.add_family_member', compact('main_persons', 'occupation','religion','heldincouncil'));
+        return view('AdminDashboard.members.add_family_member', compact('main_persons', 'occupation','religion','heldincouncil','academicQualifications'));
     }
     
 
@@ -39,10 +41,14 @@ class MemberController extends Controller
         // Validate the request data
         $validatedData = $request->validate([
             'main_person' => 'required|exists:members,id',
+            'member_title' => 'required|string|max:255',
+            'academic_quali' => 'nullable|string|max:255',
             'member_name' => 'required|string|max:255',
             'nic' => 'required|string',
             'birth_date' => 'nullable|date',
             'civil_status' => 'nullable|string',
+            'baptized_date' => 'nullable|date',
+            'married_date' => 'nullable|date',
             'gender' => 'required|in:Male,Female,Other',
             'occupation' => 'nullable|string|max:255',
             'professional_quali' => 'nullable|string|max:255',
@@ -91,9 +97,13 @@ class MemberController extends Controller
         // Create the new family member with the validated data
         $member = Member::create([
             'family_no' => $main_person->family_no,
+            'member_title' => $request->input('member_title'),
             'member_id' => $newMemberId,
             'member_name' => $validatedData['member_name'],
             'civil_status' => $request->input('civil_status'),
+            'baptized_date' =>  $request->input('baptized_date'),
+            'married_date' =>  $request->input('married_date'),
+            'academic_quali' => $request->input('academic_quali'),
             'nic' => $validatedData['nic'],
             'birth_date' => $validatedData['birth_date'],
             'gender' => $request->input('gender'),
@@ -127,7 +137,8 @@ class MemberController extends Controller
         $occupation = Occupation::all(); 
         $religion = Religion::all(); 
         $heldincouncil = HeldinCouncil::all();
-        return view('AdminDashboard.members.edit_member', compact('member', 'main_persons', 'occupation','religion','heldincouncil'));
+        $academicQualifications = AcademicQualification::all(); 
+        return view('AdminDashboard.members.edit_member', compact('member', 'main_persons', 'occupation','religion','heldincouncil','academicQualifications'));
     }
 
     public function update(Request $request, $id)
@@ -166,9 +177,12 @@ class MemberController extends Controller
             'family_no' => $family_no,
             'member_id' => $member->member_id,
             'member_name' => $request->input('member_name'),
+            'member_title' => $request->input('member_title'),
             'civil_status' => $request->input('civil_status'),
             'nic' => $request->input('nic'),
             'birth_date' => $request->input('birth_date'),
+            'married_date' => $request->input('civil_status') === 'Married' ? $request->input('married_date') : null,
+            'baptized_date' => $request->boolean('baptized') ? $request->input('baptized_date') : null,
             'gender' => $request->input('gender'),
             'occupation' => $request->input('occupation'),
             'professional_quali' => $request->input('professional_quali'),
@@ -178,6 +192,7 @@ class MemberController extends Controller
             'contact_info' => $request->input('contact_info'),
             'email' => $request->input('email'),
             'religion' => $request->input('religion'),
+            'academic_quali' => $request->input('academic_quali'),
             'nikaya' => $request->input('nikaya'),
             'baptized' => $request->boolean('baptized'),
             'full_member' => $request->boolean('full_member'),

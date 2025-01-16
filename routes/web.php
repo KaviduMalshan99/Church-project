@@ -87,6 +87,7 @@ Route::get('/filter/member-details/{id}', [FilterController::class, 'show'])->na
 Route::prefix('reports')->group(function () {
     Route::get('/families', [ReportController::class, 'families'])->name('reports.families');
     Route::get('/members', [ReportController::class, 'members'])->name('reports.members');
+    Route::get('/fund_list', [ReportController::class, 'fund_list'])->name('reports.fund_list');
 });
 
 // Settings
@@ -111,6 +112,15 @@ Route::prefix('settings')->group(function () {
     Route::delete('/users/{id}', [SettingsController::class, 'users_destroy'])->name('users.destroy');
     Route::put('/users/{id}', [SettingsController::class, 'users_update'])->name('users.update');
 
+    Route::get('/academic_qualifications', [SettingsController::class, 'academic_qualifications'])->name('settings.academic_qualifications');
+    Route::post('/academic_qualifications/create', [SettingsController::class, 'academic_qualifications_store'])->name('academic_qualifications.store');
+    Route::delete('/academic_qualifications/{id}', [SettingsController::class, 'academic_qualifications_destroy'])->name('academic_qualifications.destroy');
+    Route::put('/academic_qualifications/{id}', [SettingsController::class, 'academic_qualifications_update'])->name('academic_qualifications.update');
+
+    Route::get('/contribution_types', [SettingsController::class, 'contribution_types'])->name('settings.contribution_types');
+    Route::post('/contribution_types/create', [SettingsController::class, 'contribution_types_store'])->name('contribution_types.store');
+    Route::delete('/contribution_types/{id}', [SettingsController::class, 'contribution_types_destroy'])->name('contribution_types.destroy');
+    Route::put('/contribution_types/{id}', [SettingsController::class, 'contribution_types_update'])->name('contribution_types.update');
 });
 
 });

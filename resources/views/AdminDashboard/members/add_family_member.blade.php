@@ -44,7 +44,10 @@
                 <h4>Basic Details of Family Member</h4>
             </div>
             <div class="card-body">
-                
+                    <div class="mb-4">
+                        <label for="member_title" class="form-label">Title  <i class="text-danger">*</i></label>
+                        <input type="text" name="member_title" id="member_title" class="form-control" placeholder="Enter title (e.g., Mr., Mrs., Dr.)" required/>
+                    </div>
                     <div class="mb-4">
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
                         <input type="text" name="member_name" placeholder="Type here" class="form-control" id="member_name" required />
@@ -66,22 +69,29 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="mb-3">
+                    <div class="mb-2">
                         <label class="form-label me-3">Civil Status <i class="text-danger">*</i></label>
                         <div class="d-inline-flex">
                             <div class="form-check me-4">
-                                <input class="form-check-input" type="radio" name="civil_status" id="single" value="Single">
+                                <input class="form-check-input" type="radio" name="civil_status" id="single" value="Single" 
+                                    {{ old('civil_status') == 'Single' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="single">
                                     Single
                                 </label>
                             </div>
                             <div class="form-check me-4">
-                                <input class="form-check-input" type="radio" name="civil_status" id="married" value="Married">
+                                <input class="form-check-input" type="radio" name="civil_status" id="married" value="Married" 
+                                    {{ old('civil_status') == 'Married' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="married">
                                     Married
                                 </label>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="mb-4" id="marriedDateContainer" style="display: none;">
+                        <label class="form-label" for="marriedDate">Marriage Date</label>
+                        <input type="date" id="marriedDate" name="married_date" class="form-control" value="{{ old('married_date') }}" />
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Relationship to Main Person <i class="text-danger">*</i></label>
@@ -107,6 +117,15 @@
                                 <option value="{{ $item->name }}"></option>
                             @endforeach
                         </datalist>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Academic Qualifications</label>
+                        <select name="academic_quali" class="form-control">
+                            <option value="">Select Academic Qualification</option>
+                            @foreach ($academicQualifications as $qualification)
+                                <option value="{{ $qualification->id }}">{{ $qualification->name }}</option>
+                            @endforeach
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Professional Qualifications</label>
@@ -190,12 +209,18 @@
                             </select>
                         </div>
                         
+                       
                         <div class="mb-4">
-                        <label class="form-check">
-                            <input type="checkbox" name="baptized" class="form-check-input" />
-                            <span class="form-check-label">Baptized</span>
-                        </label>
-                    </div>
+                            <label class="form-check">
+                                <input type="checkbox" id="baptizedCheckbox" name="baptized" class="form-check-input" />
+                                <span class="form-check-label">Baptized</span>
+                            </label>
+                        </div>
+
+                        <div class="mb-4" id="baptizedDateContainer" style="display: none;">
+                            <label for="baptizedDate">Baptism Date</label>
+                            <input type="date" id="baptizedDate" name="baptized_date" class="form-control" />
+                        </div>
                     <!-- Current Church Congregation Section -->
                     <div class="mb-4">
                             <label class="form-label">Current Church Congregation <i class="text-danger">*</i></label><br>
@@ -274,5 +299,40 @@
             select.setAttribute('name', 'religion'); 
         }
     }
+</script>
+<script>
+    document.getElementById('baptizedCheckbox').addEventListener('change', function () {
+        const dateContainer = document.getElementById('baptizedDateContainer');
+        if (this.checked) {
+            // If checked, show the date input
+            dateContainer.style.display = 'block';
+        } else {
+            // If unchecked, hide the date input
+            dateContainer.style.display = 'none';
+        }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const marriedRadio = document.getElementById('married');
+        const singleRadio = document.getElementById('single');
+        const marriedDateContainer = document.getElementById('marriedDateContainer');
+
+        // Function to toggle the display of the married date field
+        function toggleMarriedDateField() {
+            if (marriedRadio.checked) {
+                marriedDateContainer.style.display = 'block';  
+            } else {
+                marriedDateContainer.style.display = 'none';   
+            }
+        }
+
+        // Add event listeners for both radio buttons
+        marriedRadio.addEventListener('change', toggleMarriedDateField);
+        singleRadio.addEventListener('change', toggleMarriedDateField);
+
+        // Trigger the toggle function on page load to set the initial state
+        toggleMarriedDateField();
+    });
 </script>
 @endsection

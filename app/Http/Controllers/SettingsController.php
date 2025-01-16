@@ -5,7 +5,9 @@ use App\Models\Occupation;
 use App\Models\Religion;
 use App\Models\HeldinCouncil;
 use App\Models\SystemUser;
+use App\Models\ContributionType;
 use Illuminate\Http\Request;
+use App\Models\AcademicQualification;
 
 class SettingsController extends Controller
 {
@@ -190,5 +192,82 @@ class SettingsController extends Controller
 
 
 
+    public function academic_qualifications()
+    {
+        $academicqualification = AcademicQualification::all();
+        return view('AdminDashboard.settings.aca_quali', compact('academicqualification'));
+    }
+
+    public function academic_qualifications_store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        AcademicQualification::create($validated);
+
+        return redirect()->route('settings.academic_qualifications')->with('success', 'Academic Qualification added successfully!');
+    }
+
+
+    public function academic_qualifications_destroy($id)
+    {
+        $academicqualification = AcademicQualification::findOrFail($id);
+        $academicqualification->delete();
+
+        return redirect()->route('settings.academic_qualifications')->with('success', 'Academic Qualification deleted successfully!');
+    }
+
+    public function academic_qualifications_update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $academicqualification = AcademicQualification::findOrFail($id);
+        $academicqualification->update($validated);
+
+        return redirect()->route('settings.academic_qualifications')->with('success', 'Academic Qualification updated successfully!');
+    }
+
+
+
+    public function contribution_types()
+    {
+        $contribution_types = ContributionType::all();
+        return view('AdminDashboard.settings.contribution_types', compact('contribution_types'));
+    }
+
+    public function contribution_types_store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        ContributionType::create($validated);
+
+        return redirect()->route('settings.contribution_types')->with('success', 'Contribution type  added successfully!');
+    }
+
+
+    public function contribution_types_destroy($id)
+    {
+        $contribution_types = ContributionType::findOrFail($id);
+        $contribution_types->delete();
+
+        return redirect()->route('settings.contribution_types')->with('success', 'Contribution type  deleted successfully!');
+    }
+
+    public function contribution_types_update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $contribution_types = ContributionType::findOrFail($id);
+        $contribution_types->update($validated);
+
+        return redirect()->route('settings.contribution_types')->with('success', 'Contribution type updated successfully!');
+    }
 
 }

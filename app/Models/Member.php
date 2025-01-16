@@ -34,7 +34,11 @@ class Member extends Model
         'professional_quali',
         'church_congregation',
         'nic',
-        'civil_status'
+        'civil_status',
+        'baptized_date',
+        'academic_quali',
+        'member_title',
+        'married_date'
     ];
 
     /**

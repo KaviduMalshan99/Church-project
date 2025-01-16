@@ -35,7 +35,7 @@
             <li class="menu-item {{ request()->routeIs('gift.list') ? 'active' : '' }}">
                 <a class="menu-link" href="{{ route('gift.list') }}">
                     <i class="icon material-icons md-card_giftcard"></i>
-                    <span class="text">Gift Management</span>
+                    <span class="text">Fund Management</span>
                 </a>
             </li>
 
@@ -69,6 +69,7 @@
                 <div class="submenu {{ request()->is('reports/*') ? 'show' : '' }}">
                     <a href="{{ route('reports.families') }}" class="{{ request()->routeIs('reports.families') ? 'active' : '' }}">Families</a>
                     <a href="{{ route('reports.members') }}" class="{{ request()->routeIs('reports.members') ? 'active' : '' }}">Members</a>
+                    <a href="{{ route('reports.fund_list') }}" class="{{ request()->routeIs('reports.fund_list') ? 'active' : '' }}">Fund List</a>
                 </div>
             </li>
 
@@ -80,6 +81,8 @@
                 <div class="submenu {{ request()->is('settings/*') ? 'show' : '' }}">
                     <a href="{{ route('settings.occupation') }}" class="{{ request()->routeIs('settings.occupation') ? 'active' : '' }}">Occupations</a>
                     <a href="{{ route('settings.religion') }}" class="{{ request()->routeIs('settings.religion') ? 'active' : '' }}">Religion</a>
+                    <a href="{{ route('settings.contribution_types') }}" class="{{ request()->routeIs('settings.contribution_types') ? 'active' : '' }}">Contribution Types</a>
+                    <a href="{{ route('settings.academic_qualifications') }}" class="{{ request()->routeIs('settings.academic_qualifications') ? 'active' : '' }}">Academic Qualifications</a>
                     <a href="{{ route('settings.held_in_council') }}" class="{{ request()->routeIs('settings.held_in_council') ? 'active' : '' }}">Held in Council</a>
                     <a href="{{ route('settings.users') }}" class="{{ request()->routeIs('settings.users') ? 'active' : '' }}">Users</a>
                 </div>

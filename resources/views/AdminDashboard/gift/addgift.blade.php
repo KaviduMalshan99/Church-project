@@ -44,20 +44,25 @@
                 <div class="col-md-6">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Gift Type</h4>
+                            <h4>Contribution Type</h4>
                         </div>
                         <div class="card-body">
                             <div class="mb-3">
-                                <label for="type" class="form-label">Select Gift Type <i class="text-danger">*</i></label>
+                                <label for="type" class="form-label">Select Type <i class="text-danger">*</i></label>
                                 <select name="type" class="form-select" id="type">
-                                    <option value="Kawara Pooja" {{ old('type') == 'Kawara Pooja' ? 'selected' : '' }}>Kawara Pooja</option>
-                                    <option value="Other" {{ old('type') == 'Other' ? 'selected' : '' }}>Other</option>
+                                    <option value="">Select Type</option>
+                                    @foreach ($contribution_types as $contributionType)
+                                        <option value="{{ $contributionType->name }}" {{ old('type') == $contributionType->name ? 'selected' : '' }}>
+                                            {{ $contributionType->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 @error('type')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
+
                     </div>
                 </div>
 

@@ -52,12 +52,13 @@
                             <div class="mb-3">
                                 <label for="type" class="form-label">Select Gift Type <i class="text-danger">*</i></label>
                                 <select name="type" class="form-select" id="type">
-                                    <option value="Kawara Pooja" 
-                                        {{ old('type', $gift->type) == 'Kawara Pooja' ? 'selected' : '' }}>Kawara Pooja
-                                    </option>
-                                    <option value="Other" 
-                                        {{ old('type', $gift->type) == 'Other' ? 'selected' : '' }}>Other
-                                    </option>
+                                    <option value="">Select Type</option>
+                                    @foreach ($contribution_types as $contributionType)
+                                        <option value="{{ $contributionType->name }}" 
+                                            {{ old('type', $gift->type) == $contributionType->name ? 'selected' : '' }}>
+                                            {{ $contributionType->name }}
+                                        </option>
+                                    @endforeach
                                 </select>
                                 @error('type')
                                 <span class="text-danger">{{ $message }}</span>

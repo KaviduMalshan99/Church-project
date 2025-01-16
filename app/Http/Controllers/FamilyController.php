@@ -7,6 +7,7 @@ use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Models\SubChurch;
 use App\Models\Religion;
+use App\Models\AcademicQualification;
 use App\Models\Occupation;
 use App\Models\HeldinCouncil;
 use Illuminate\Support\Facades\DB;
@@ -29,17 +30,22 @@ class FamilyController extends Controller
         $churches = SubChurch::all(); 
         $occupation = Occupation::all();
         $religion = Religion::all(); 
+        $academicQualifications = AcademicQualification::all(); 
         $heldincouncil = HeldinCouncil::all();
-        return view('AdminDashboard.family.add_family', compact('churches','occupation','religion','heldincouncil'));
+        return view('AdminDashboard.family.add_family', compact('churches','occupation','religion','heldincouncil','academicQualifications'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'member_name' => 'required|string|max:255',
+            'member_title' => 'required|string|max:255',
+            'academic_quali' => 'nullable|string|max:255',
             'birth_date' => 'nullable|date',
             'nic' => 'nullable|string',
             'registered_date' => 'nullable|date',
+            'baptized_date' => 'nullable|date',
+            'married_date' => 'nullable|date',
             'gender' => 'required|in:Male,Female,Other',
             'occupation' => 'nullable|string|max:255',
             'professional_quali' => 'nullable|string|max:255',
@@ -88,11 +94,14 @@ class FamilyController extends Controller
             $member = Member::create([
                 'family_no' => $family->family_number, 
                 'member_id' => $mainMemberId, 
+                'member_title' => $request->input('member_title'),
                 'member_name' => $request->input('member_name'),
                 'civil_status' => $request->input('civil_status'),
                 'nic' => $request->input('nic'),
                 'birth_date' => $request->input('birth_date'),
                 'registered_date' =>  $request->input('registered_date'),
+                'baptized_date' =>  $request->input('baptized_date'),
+                'married_date' =>  $request->input('married_date'),
                 'gender' => $request->input('gender'),
                 'occupation' => $request->input('occupation'),
                 'professional_quali' =>  $request->input('professional_quali'),
@@ -103,6 +112,7 @@ class FamilyController extends Controller
                 'occupation' => $request->input('occupation'),
                 'contact_info' => $request->input('contact_info'),
                 'email' => $request->input('email'),
+                'academic_quali' => $request->input('academic_quali'),
                 'religion' => $request->input('religion'),
                 'nikaya' => $request->input('nikaya'),
                 'baptized' => $request->boolean('baptized'),
@@ -127,9 +137,10 @@ class FamilyController extends Controller
         $member = Member::where('family_no', $family_number)->firstOrFail();
         $religion = Religion::all();
         $occupation = Occupation::all();
+        $academicQualifications = AcademicQualification::all(); 
         $heldincouncil = HeldinCouncil::all();
         
-        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion','heldincouncil'));
+        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion','heldincouncil','academicQualifications'));
     }
     
     
@@ -138,9 +149,12 @@ class FamilyController extends Controller
     public function update(Request $request, $family_number) {
         $request->validate([
             'member_name' => 'required|string|max:255',
+            'member_title' => 'required|string|max:255',
             'nic' => 'nullable|string',
             'civil_status' => 'nullable|string',
+            'married_date' => 'nullable|date',
             'birth_date' => 'nullable|date',
+            'baptized_date' => 'nullable|date',
             'gender' => 'required|in:Male,Female,Other',
             'occupation' => 'nullable|string|max:255',
             'professional_quali' => 'nullable|string|max:255',
@@ -150,6 +164,7 @@ class FamilyController extends Controller
             'optional_notes' => 'nullable|string',
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
+            'academic_quali' => 'nullable|string|max:255',
             'religion' => 'nullable|string|max:255',
             'held_office_in_council' => 'nullable|string|max:255',
             'nikaya' => 'nullable|string|max:255',
@@ -181,23 +196,27 @@ class FamilyController extends Controller
                 $member->image = $imagePath;
             }
 
-            // Update main member
+           // Update main member
             $member->update([
                 'member_name' => $request->input('member_name'),
+                'member_title' => $request->input('member_title'),
                 'nic' => $request->input('nic'),
                 'civil_status' => $request->input('civil_status'),
                 'birth_date' => $request->input('birth_date'),
-                'registered_date' =>  $request->input('registered_date'),
+                'married_date' => $request->input('civil_status') === 'Married' ? $request->input('married_date') : null,
+                'registered_date' => $request->input('registered_date'),
+                'baptized_date' => $request->boolean('baptized') ? $request->input('baptized_date') : null,
                 'gender' => $request->input('gender'),
                 'occupation' => $request->input('occupation'),
-                'professional_quali' =>  $request->input('professional_quali'),
+                'professional_quali' => $request->input('professional_quali'),
                 'church_congregation' => $churchCongregation,
-                'interests' =>  $request->input('interests'),
-                'optional_notes' =>  $request->input('optional_notes'),
+                'interests' => $request->input('interests'),
+                'optional_notes' => $request->input('optional_notes'),
                 'relationship_to_main_person' => 'Main Member',
                 'occupation' => $request->input('occupation'),
                 'contact_info' => $request->input('contact_info'),
                 'email' => $request->input('email'),
+                'academic_quali' => $request->input('academic_quali'),
                 'religion' => $request->input('religion'),
                 'nikaya' => $request->input('nikaya'),
                 'baptized' => $request->boolean('baptized'),
@@ -206,6 +225,7 @@ class FamilyController extends Controller
                 'sabbath_member' => $request->boolean('sabbath_member'),
                 'held_office_in_council' => $request->input('held_office_in_council'),
             ]);
+
         });
 
         return redirect()->route('family.list')->with('success', __('Family and main member updated successfully!'));
