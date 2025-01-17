@@ -1,7 +1,7 @@
 <aside class="navbar-aside shadow-sm" id="offcanvas_aside">
     <div class="aside-top" style="padding:0">
         <a href="{{ route('dashboard') }}" class="brand-wrap">
-            <img src="{{ asset('backend/assets/logo.jpg') }}" class="logo" alt="Church Moratumulla" style="margin-left:80%; width:50px; height:auto;" />
+            <img src="{{ asset('backend/assets/logo.jpg') }}" class="logo pt-2" alt="Church Moratumulla" style="margin-left:80%; width:40px; height:auto;" />
         </a>
 
         <div>
@@ -43,6 +43,13 @@
                 <a class="menu-link" href="{{ route('filter.index') }}">
                     <i class="icon material-icons md-filter_list"></i>
                     <span class="text">Filter Members</span>
+                </a>
+            </li>
+
+            <li class="menu-item {{ request()->routeIs('show.list') ? 'active' : '' }}">
+                <a class="menu-link" href="{{ route('show.list') }}">
+                    <i class="icon material-icons md-event"></i>
+                    <span class="text">Birthdays and Anniversaries</span>
                 </a>
             </li>
 

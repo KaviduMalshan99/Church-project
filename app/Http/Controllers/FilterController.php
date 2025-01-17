@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Family;
 use App\Models\Member;
 use App\Models\Religion;
+use Carbon\Carbon;
 use App\Models\Occupation;
 use Illuminate\Http\Request;
 
@@ -97,5 +98,28 @@ class FilterController extends Controller
     }
     
 
+    public function show_list()
+    {
+        $startOfWeek = Carbon::now()->subWeek()->startOfWeek();
+        $endOfWeek = Carbon::now()->subWeek()->endOfWeek();
+    
+        $startMonth = $startOfWeek->month;
+        $startDay = $startOfWeek->day;
+        $endMonth = $endOfWeek->month;
+        $endDay = $endOfWeek->day;
+    
+        $birthdays = Member::whereRaw(
+            "(MONTH(birth_date) = ? AND DAY(birth_date) >= ?) OR (MONTH(birth_date) = ? AND DAY(birth_date) <= ?)",
+            [$startMonth, $startDay, $endMonth, $endDay]
+        )->get();
+    
+        $anniversaries = Member::whereRaw(
+            "(MONTH(married_date) = ? AND DAY(married_date) >= ?) OR (MONTH(married_date) = ? AND DAY(married_date) <= ?)",
+            [$startMonth, $startDay, $endMonth, $endDay]
+        )->get();
+    
+        return view('AdminDashboard.filter.list', compact('birthdays', 'anniversaries', 'startOfWeek', 'endOfWeek'));
+    }
+    
  
 }

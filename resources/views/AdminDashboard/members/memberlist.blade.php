@@ -50,17 +50,13 @@
                                 <!-- Edit and Delete Actions -->
                                 <a href="{{ route('member.edit', $family_member->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
 
-                                <form action="{{ route('member.destroy', $family_member->id) }}" method="POST" style="display:inline-block;">
+                                <form id="delete-form-{{ $family_member->id }}" action="{{ route('member.destroy', $family_member->id) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                                    <button type="button" class="btn  btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{ $family_member->id }}', 'Are you sure you want to delete this Member?');">
+                                    Delete
+                                    </button>
                                 </form>
-
-                                <script>
-                                    function confirmDelete() {
-                                        return confirm("Are you sure you want to delete this member?");
-                                    }
-                                </script>
                             </td>
                         </tr>
                     @endforeach
@@ -75,7 +71,7 @@
 
 <script>
     function confirmDelete() {
-        return confirm("Are you sure you want to delete this item?");
+        return confirm("Are you sure you want to delete this member?");
     }
 </script>
 <script>

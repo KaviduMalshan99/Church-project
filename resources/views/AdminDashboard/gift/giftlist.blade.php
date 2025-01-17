@@ -86,10 +86,12 @@
                             </td>
                             <td class="text-end">
                                 <a href="{{ route('gift.edit', $gift->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
-                                <form action="{{ route('gift.destroy', $gift->id) }}" method="POST" style="display:inline-block;">
+                                <form id="delete-form-{{ $gift->id }}" action="{{ route('gift.destroy', $gift->id) }}" method="POST" style="display: inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                                    <button type="button" class="btn  btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{ $gift->id }}', 'Are you sure you want to delete this?');">
+                                    Delete
+                                    </button>
                                 </form>
                             </td>
                         </tr>
@@ -101,9 +103,6 @@
 </div>
 
 <script>
-    function confirmDelete() {
-        return confirm("Are you sure you want to delete this item?");
-    }
 
     $(document).ready(function() {
         // Initialize DataTable for the combined table

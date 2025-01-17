@@ -60,7 +60,8 @@ class MemberController extends Controller
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'religion' => 'nullable|string|max:255',
-            'held_office_in_council' => 'nullable|string|max:255',
+            'held_office_in_council' => 'nullable|array', 
+            'held_office_in_council.*' => 'string', 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
@@ -120,7 +121,7 @@ class MemberController extends Controller
             'full_member' => $request->boolean('full_member'),
             'methodist_member' => $request->boolean('methodist_member'),
             'sabbath_member' => $request->boolean('sabbath_member'),
-            'held_office_in_council' => $request->input('held_office_in_council'),
+            'held_office_in_council' => json_encode($request->input('held_office_in_council', [])),
             'image' => $imagePath,
         ]);
     
@@ -137,8 +138,9 @@ class MemberController extends Controller
         $occupation = Occupation::all(); 
         $religion = Religion::all(); 
         $heldincouncil = HeldinCouncil::all();
+        $existingHeldOffices = json_decode($member->held_office_in_council, true) ?: [];
         $academicQualifications = AcademicQualification::all(); 
-        return view('AdminDashboard.members.edit_member', compact('member', 'main_persons', 'occupation','religion','heldincouncil','academicQualifications'));
+        return view('AdminDashboard.members.edit_member', compact('member', 'main_persons', 'occupation','religion','heldincouncil','academicQualifications','existingHeldOffices'));
     }
 
     public function update(Request $request, $id)
@@ -198,7 +200,7 @@ class MemberController extends Controller
             'full_member' => $request->boolean('full_member'),
             'methodist_member' => $request->boolean('methodist_member'),
             'sabbath_member' => $request->boolean('sabbath_member'),
-            'held_office_in_council' => $request->input('held_office_in_council'),
+            'held_office_in_council' => json_encode($request->input('held_office_in_council', [])),
         ]);
     
         return redirect()->route('member.list')->with('success', __('Family member updated successfully!'));

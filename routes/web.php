@@ -81,7 +81,7 @@ Route::prefix('gift')->group(function () {
 Route::get('/filter', [FilterController::class, 'index'])->name('filter.index');
 Route::get('/filter/member-details/{id}', [FilterController::class, 'show'])->name('filter.show');
 
-
+Route::get('/list', [FilterController::class, 'show_list'])->name('show.list');
 
 // Reports
 Route::prefix('reports')->group(function () {

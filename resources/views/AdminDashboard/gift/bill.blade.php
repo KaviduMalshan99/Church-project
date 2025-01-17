@@ -82,7 +82,6 @@
         <!-- Header Section -->
         <div class="header">
             <h2>Gift Fund Receipt</h2>
-            <p>Fund ID: {{ $gift->id }}</p>
         </div>
 
         <!-- Bill Info Section -->
@@ -119,7 +118,7 @@
         <!-- Additional Details Section -->
         <div class="bill-details">
             <p><strong>Thank you for your contribution!</strong></p>
-            <p>Your generous donation will make a significant impact.</p>
+            <p>Your donation makes a significant impact by helping us support our community.</p>
         </div>
 
     </div>

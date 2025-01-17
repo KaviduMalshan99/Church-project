@@ -22,7 +22,7 @@
     </div>
     @endif
 
-    <section class="content-main">
+
         <div class="content-header">
             <h2 class="content-title">Report - Families</h2>
         </div>
@@ -77,7 +77,7 @@
                 </div>
             </div>
         </div>
-    </section>
+
 
     <!-- JavaScript to handle delete confirmation -->
     <script>

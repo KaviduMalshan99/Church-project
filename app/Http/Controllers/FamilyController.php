@@ -57,7 +57,8 @@ class FamilyController extends Controller
             'contact_info' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
             'religion' => 'nullable|string|max:255',
-            'held_office_in_council' => 'nullable|string|max:255',
+            'held_office_in_council' => 'nullable|array', 
+            'held_office_in_council.*' => 'string', 
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -119,7 +120,7 @@ class FamilyController extends Controller
                 'full_member' => $request->boolean('full_member'),
                 'methodist_member' => $request->boolean('methodist_member'),
                 'sabbath_member' => $request->boolean('sabbath_member'),
-                'held_office_in_council' => $request->input('held_office_in_council'),
+                'held_office_in_council' => json_encode($request->input('held_office_in_council', [])),
                 'image' => $imagePath,
             ]);
     
@@ -137,11 +138,14 @@ class FamilyController extends Controller
         $member = Member::where('family_no', $family_number)->firstOrFail();
         $religion = Religion::all();
         $occupation = Occupation::all();
-        $academicQualifications = AcademicQualification::all(); 
+        $academicQualifications = AcademicQualification::all();
         $heldincouncil = HeldinCouncil::all();
-        
-        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion','heldincouncil','academicQualifications'));
+
+        $existingHeldOffices = json_decode($member->held_office_in_council, true) ?: [];
+
+        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion', 'heldincouncil', 'academicQualifications', 'existingHeldOffices'));
     }
+
     
     
     
@@ -166,7 +170,8 @@ class FamilyController extends Controller
             'email' => 'nullable|email|max:255',
             'academic_quali' => 'nullable|string|max:255',
             'religion' => 'nullable|string|max:255',
-            'held_office_in_council' => 'nullable|string|max:255',
+            'held_office_in_council' => 'nullable|array',
+            'held_office_in_council.*' => 'string', 
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -223,7 +228,7 @@ class FamilyController extends Controller
                 'full_member' => $request->boolean('full_member'),
                 'methodist_member' => $request->boolean('methodist_member'),
                 'sabbath_member' => $request->boolean('sabbath_member'),
-                'held_office_in_council' => $request->input('held_office_in_council'),
+                'held_office_in_council' => json_encode($request->input('held_office_in_council', [])),
             ]);
 
         });

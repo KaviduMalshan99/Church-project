@@ -45,16 +45,14 @@
 
                         <td class="text-end">
                             <a href="{{ route('family.edit', $family->family_number ) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
-                            <form action="{{ route('family.destroy', $family->family_number ) }}" method="POST" style="display:inline-block;">
+                           
+                            <form id="delete-form-{{ $family->family_number }}" action="{{ route('family.destroy', $family->family_number ) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirmDelete()">Delete</button>
+                                <button type="button" class="btn  btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{$family->family_number  }}', 'Are you sure you want to delete this family?');">
+                                Delete
+                                </button>
                             </form>
-                            <script>
-                                function confirmDelete() {
-                                    return confirm("Are you sure you want to delete this family?");
-                                }
-                            </script>
                         </td>
                     </tr>
                 @endforeach

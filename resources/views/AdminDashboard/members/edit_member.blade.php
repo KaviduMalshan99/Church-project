@@ -197,6 +197,22 @@
                 </div>
                 <div class="card-body">
                     <div class="row gx-2">
+                        
+                    <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="baptized" id="baptizedCheckbox" value="1"
+                                    class="form-check-input"
+                                    {{ old('baptized', $member->baptized) ? 'checked' : '' }} />
+                                <span class="form-check-label">Baptized</span>
+                            </label>
+                        </div>
+
+                        <div class="mb-4" id="baptizedDateContainer" style="{{ old('baptized', $member->baptized) ? 'display: block;' : 'display: none;' }}">
+                            <label for="baptizedDate">Baptism Date</label>
+                            <input type="date" id="baptizedDate" name="baptized_date" class="form-control"
+                                value="{{ old('baptized_date', $member->baptized_date) }}" />
+                        </div>
+
                     <div class="mb-4">
                             <label class="form-label">Religion <i class="text-danger">*</i></label>
                             <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
@@ -224,33 +240,20 @@
 
                         <div class="mb-4">
                             <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>
-                            <select name="held_office_in_council" id="held_office_in_councilSelect" class="form-select">
-                                <option value="">Select</option>
+                            <div id="held_office_in_councilSelect">
                                 @foreach ($heldincouncil as $item)
-                                    <option value="{{ $item->name }}" 
-                                        {{ old('held_office_in_council', isset($member) ? $member->held_office_in_council : '') == $item->name ? 'selected' : '' }}>
-                                        {{ $item->name }}
-                                    </option>
+                                    <div class="form-check">
+                                        <!-- Check if the current value exists in the existing array of selected values -->
+                                        <input class="form-check-input" type="checkbox" name="held_office_in_council[]" value="{{ $item->name }}" id="office_{{ $item->id }}" 
+                                        @if(in_array($item->name, old('held_office_in_council', $existingHeldOffices))) checked @endif>
+                                        <label class="form-check-label" for="office_{{ $item->id }}">
+                                            {{ $item->name }}
+                                        </label>
+                                    </div>
                                 @endforeach
-                            </select>
+                            </div>
                         </div>
-
                        
-                        <div class="mb-4">
-                            <label class="form-check">
-                                <input type="checkbox" name="baptized" id="baptizedCheckbox" value="1"
-                                    class="form-check-input"
-                                    {{ old('baptized', $member->baptized) ? 'checked' : '' }} />
-                                <span class="form-check-label">Baptized</span>
-                            </label>
-                        </div>
-
-                        <div class="mb-4" id="baptizedDateContainer" style="{{ old('baptized', $member->baptized) ? 'display: block;' : 'display: none;' }}">
-                            <label for="baptizedDate">Baptism Date</label>
-                            <input type="date" id="baptizedDate" name="baptized_date" class="form-control"
-                                value="{{ old('baptized_date', $member->baptized_date) }}" />
-                        </div>
-
 
                         <!--<div class="mb-4">
                             <label class="form-check">
