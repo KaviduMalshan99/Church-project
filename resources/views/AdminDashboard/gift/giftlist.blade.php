@@ -1,6 +1,26 @@
 @extends('AdminDashboard.master')
 
 @section('content')
+@if(session('pdf_url'))
+    <script type="text/javascript">
+        window.onload = function() {
+            // Open the PDF in a new tab
+            var pdfWindow = window.open("{{ session('pdf_url') }}", "_blank");
+
+            // Trigger print after the PDF is loaded
+            pdfWindow.onload = function() {
+                pdfWindow.print();
+            };
+
+            // After printing (or canceling), redirect to the gift list page
+            pdfWindow.onafterprint = function() {
+                window.location.href = '{{ route('gift.list') }}';
+            };
+        };
+    </script>
+@endif
+
+    
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex">
         <!-- Total Card -->

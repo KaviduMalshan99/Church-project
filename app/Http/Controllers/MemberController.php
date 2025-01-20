@@ -71,30 +71,34 @@ class MemberController extends Controller
             $originalName = $file->getClientOriginalName(); 
             $imagePath = $file->storeAs('members', $originalName, 'public');
         }
-
+    
         // Find the main person based on the provided ID
         $main_person = Member::findOrFail($validatedData['main_person']);
-        
+    
         // Find the highest family member number (excluding the main person)
-        $lastFamilyMember = Member::where('family_no', $main_person->family_number)
-                                  ->where('member_id', '!=', $main_person->member_id) 
+        $lastFamilyMember = Member::where('family_no', $main_person->family_no)
+                                  ->where('member_id', '!=', $main_person->member_id)
                                   ->orderBy('member_id', 'desc')
                                   ->first();
     
-        // If there are other family members, calculate the next available member number
-        $nextMemberSuffix = $lastFamilyMember
-                            ? (int)substr($lastFamilyMember->member_id, -2) + 1
-                            : 2; 
-        
+        // If there are no other members, start with suffix 02
+        $nextMemberSuffix = 2;
+    
+        // If there are existing members, increment the last member's suffix
+        if ($lastFamilyMember) {
+            $lastSuffix = (int)substr($lastFamilyMember->member_id, -2);
+            $nextMemberSuffix = $lastSuffix + 1;
+        }
+    
         // Format the new member ID (FAM-0001-02 for example)
         $newMemberId = $main_person->family_no . '/' . str_pad($nextMemberSuffix, 2, '0', STR_PAD_LEFT);
     
-         // Check if "Other" was selected and store the value accordingly
-         $churchCongregation = $request->input('church_congregation');
-         if ($churchCongregation === 'Other') {
-             $churchCongregation = $request->input('other_church_congregation');
-         }
-
+        // Check if "Other" was selected and store the value accordingly
+        $churchCongregation = $request->input('church_congregation');
+        if ($churchCongregation === 'Other') {
+            $churchCongregation = $request->input('other_church_congregation');
+        }
+    
         // Create the new family member with the validated data
         $member = Member::create([
             'family_no' => $main_person->family_no,
@@ -128,6 +132,7 @@ class MemberController extends Controller
         // Redirect with a success message
         return redirect()->route('member.list')->with('success', __('Family member created successfully!'));
     }
+    
     
 
     public function edit($id)

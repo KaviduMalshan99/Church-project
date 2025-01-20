@@ -14,8 +14,9 @@
                 <thead>
                     <tr>
                         <th>Family Number</th>
+                        <th>Member id</th>
+                        <th>Member Name</th>
                         <th>Main Member</th>
-                        <th>Family Member Name</th>
                         <th>Relationship to Main Member</th>
                         <th>Gender</th>
                         <th>Contact No</th>
@@ -26,7 +27,8 @@
                 @foreach ($family_members as $family_member)
                         <tr>
                             <td>{{ $family_member->family_no }}</td>
-
+                            <td>{{ $family_member->member_id }}</td>
+                            <td>{{ $family_member->member_name }}</td>
                             <td>
                                 @php
                                     // Fetch the main member (assumed to be the first member with the same family_no)
@@ -42,7 +44,6 @@
                                 @endif
                             </td>
 
-                            <td>{{ $family_member->member_name }}</td>
                             <td>{{ $family_member->relationship_to_main_person }}</td>
                             <td>{{ $family_member->gender }}</td>
                             <td>{{ $family_member->contact_info }}</td>

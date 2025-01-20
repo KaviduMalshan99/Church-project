@@ -12,99 +12,94 @@
             background-color: #f4f4f4;
         }
         .container {
-            width: 80%;
+            width: 300px;
             margin: 20px auto;
-            padding: 20px;
+            padding: 10px;
             background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border: 1px dashed #333;
         }
         .header {
             text-align: center;
-            margin-bottom: 20px;
-            color: #bd0f0f;
+            margin-bottom: 10px;
+        }
+        .header img {
+            width: 40px;
+            height: auto;
         }
         .header h1 {
-            font-size: 36px;
-            margin: 0;
+            font-size: 18px;
+            margin: 5px 0;
         }
         .header p {
-            font-size: 18px;
+            font-size: 12px;
+            margin: 0;
         }
         .bill-info {
-            margin-top: 30px;
-            font-size: 16px;
+            font-size: 14px;
+            margin-top: 10px;
         }
         .bill-info table {
             width: 100%;
             border-collapse: collapse;
         }
-        .bill-info table, .bill-info th, .bill-info td {
-            border: 1px solid #bd0f0f;
-        }
         .bill-info th, .bill-info td {
-            padding: 12px;
             text-align: left;
+            padding: 5px;
         }
         .bill-info th {
-            color: black;
+            font-weight: bold;
         }
         .bill-info td {
-            background-color: #f9f9f9;
+            border-bottom: 1px solid #ccc;
+        }
+        .total {
+            font-size: 16px;
+            font-weight: bold;
+            text-align: right;
+            margin-top: 10px;
         }
         .footer {
-            margin-top: 30px;
             text-align: center;
-            font-size: 14px;
-            color: #333;
+            font-size: 12px;
+            margin-top: 10px;
         }
         .footer p {
             margin: 0;
         }
-        .total {
-            font-size: 18px;
-            font-weight: bold;
-            color: #bd0f0f;
-            text-align: right;
-            margin-top: 20px;
-        }
-        .bill-details {
-            margin-top: 30px;
-            text-align: left;
-            font-size: 14px;
-        }
-        .bill-details p {
-            margin: 5px 0;
-        }
     </style>
+    
 </head>
 <body>
     <div class="container">
         <!-- Header Section -->
         <div class="header">
-            <h2>Gift Fund Receipt</h2>
+        <img src="data:image/jpeg;base64,{{ base64_encode(file_get_contents(public_path('backend/assets/logo.jpg'))) }}" alt="Logo">
+
+            <h1>Community Gift Fund</h1>
+            <p>Thank you for your generous contribution!</p>
         </div>
 
         <!-- Bill Info Section -->
         <div class="bill-info">
             <table>
                 <tr>
-                    <th>Sender Name</th>
+                    <th>Sender Name:</th>
                     <td>{{ $gift->member->member_name }}</td>
                 </tr>
                 <tr>
-                    <th>Sender ID</th>
+                    <th>Sender ID:</th>
                     <td>{{ $gift->sender_id }}</td>
                 </tr>
                 <tr>
-                    <th>Contribution Type</th>
+                    <th>Type:</th>
                     <td>{{ $gift->type }}</td>
                 </tr>
                 <tr>
-                    <th>Date</th>
+                    <th>Date:</th>
                     <td>{{ \Carbon\Carbon::parse($gift->created_at)->format('F j, Y') }}</td>
                 </tr>
                 <tr>
-                    <th>Amount</th>
+                    <th>Amount:</th>
                     <td>Rs. {{ number_format($gift->amount, 2) }}</td>
                 </tr>
             </table>
@@ -112,15 +107,15 @@
 
         <!-- Total Amount Section -->
         <div class="total">
-            Total Amount: Rs. {{ number_format($gift->amount, 2) }}
+            Total: Rs. {{ number_format($gift->amount, 2) }}
         </div>
 
-        <!-- Additional Details Section -->
-        <div class="bill-details">
-            <p><strong>Thank you for your contribution!</strong></p>
-            <p>Your donation makes a significant impact by helping us support our community.</p>
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>Contact Us: support@communitygiftfund.com</p>
+            <p>Phone: +91-9876543210</p>
+            <p>Visit Us: www.communitygiftfund.com</p>
         </div>
-
     </div>
 </body>
 </html>

@@ -26,15 +26,17 @@
         <div class="content-header">
             <h2 class="content-title">Report - Families</h2>
         </div>
-
-        <!-- Room Form -->
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <!-- Room Table -->
+                  
+                    <!-- Table -->
                     <div class="col-md-12">
                         <div class="table-responsive">
                             <table id="tableData" class="table table-hover display">
+                                <div class="mt-3 mb-3">
+                                    <strong>No. of Families: {{ $totalFamilies }}</strong>
+                                </div>
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -42,6 +44,7 @@
                                         <th>Main Person</th>
                                         <th>Member id</th>
                                         <th>Phone number</th>
+                                        <th>Email</th>
                                         <th>Registered Date</th>
                                     </tr>
                                 </thead>
@@ -59,6 +62,7 @@
                                         </td>
                                         <td> {{ $family->main_person_id }}</td>
                                         <td> {{ $family->mainPerson->contact_info }}</td>
+                                        <td> {{ $family->mainPerson->email }}</td>
                                         <td>
                                             @if ($family->mainPerson)
                                                 {{ $family->mainPerson->registered_date }}
@@ -86,20 +90,19 @@
                 dom: 'Bfrtip', // Layout for DataTables with Buttons
                 buttons: [{
                         extend: 'copyHtml5',
-                        footer: true
+                        footer: true,
+                        messageTop: 'No. of Families: {{ $totalFamilies }}'
                     },
                     {
                         extend: 'excelHtml5',
-                        footer: true
-                    },
-                    {
-                        extend: 'csvHtml5',
-                        footer: true
+                        footer: true,
+                        messageTop: 'No. of Families: {{ $totalFamilies }}'
                     },
                     {
                         extend: 'pdfHtml5',
                         footer: true,
                         title: 'Family Report',
+                        messageTop: 'No. of Families: {{ $totalFamilies }}',
                         customize: function(doc) {
                             // Set a margin for the footer
                             doc.content[1].margin = [0, 0, 0, 20];
@@ -109,6 +112,7 @@
                         extend: 'print',
                         footer: true,
                         title: 'Family Report',
+                        messageTop: 'No. of Families: {{ $totalFamilies }}'
                     }
                 ],
 

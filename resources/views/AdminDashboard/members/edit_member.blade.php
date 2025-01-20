@@ -213,6 +213,16 @@
                                 value="{{ old('baptized_date', $member->baptized_date) }}" />
                         </div>
 
+                        <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="full_member" value="1"
+                                    class="form-check-input"
+                                    {{ old('full_member', $member->full_member) ? 'checked' : '' }} />
+                                <span class="form-check-label">Full Member</span>
+                            </label>
+                        </div>
+
+
                     <div class="mb-4">
                             <label class="form-label">Religion <i class="text-danger">*</i></label>
                             <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
@@ -255,17 +265,7 @@
                         </div>
                        
 
-                        <!--<div class="mb-4">
-                            <label class="form-check">
-                                <input type="checkbox" name="full_member" value="1"
-                                    class="form-check-input"
-                                    {{ old('full_member', $member->full_member) ? 'checked' : '' }} />
-                                <span class="form-check-label">Full Member</span>
-                            </label>
-                        </div>
-
-
-                        <div class="mb-4">
+                       <!-- <div class="mb-4">
                             <label class="form-check">
                                 <input type="checkbox" name="sabbath_member" value="1"
                                     class="form-check-input"

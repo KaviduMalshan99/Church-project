@@ -113,12 +113,6 @@
                         messageTop: 'Total Amount: Rs. {{ number_format($totalAmount, 2) }}'
                     },
                     {
-                        extend: 'csvHtml5',
-                        footer: true,
-                        title: 'Fund Report',
-                        messageTop: 'Total Amount: Rs. {{ number_format($totalAmount, 2) }}'
-                    },
-                    {
                         extend: 'pdfHtml5',
                         footer: true,
                         title: 'Fund Report',

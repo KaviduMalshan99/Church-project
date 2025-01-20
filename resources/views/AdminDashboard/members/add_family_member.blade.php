@@ -172,7 +172,6 @@
             <div class="card-body">
                 <div class="row gx-2">
                     <div class="mb-4">
-                    <div class="mb-4">
                             <label class="form-check">
                                 <input type="checkbox" id="baptizedCheckbox" name="baptized" class="form-check-input" />
                                 <span class="form-check-label">Baptized</span>
@@ -183,6 +182,14 @@
                             <label for="baptizedDate">Baptism Date</label>
                             <input type="date" id="baptizedDate" name="baptized_date" class="form-control" />
                         </div>
+
+                        <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="full_member" class="form-check-input" />
+                                <span class="form-check-label">Full Member</span>
+                            </label>
+                        </div>
+
                         <label class="form-label">Religion <i class="text-danger">*</i></label>
                         <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
                             <option value="">Select Religion</option>
@@ -198,19 +205,14 @@
                         <input type="text" id="otherReligionInput" class="form-control" placeholder="Specify your religion">
                     </div>
                    
+                   
                     <!--<div class="mb-4">
-                        <label class="form-check">
-                            <input type="checkbox" name="full_member" class="form-check-input" />
-                            <span class="form-check-label">Full Member</span>
-                        </label>
-                    </div>
-                    <div class="mb-4">
                         <label class="form-check">
                             <input type="checkbox" name="sabbath_member" class="form-check-input" />
                             <span class="form-check-label">Sabbath Member</span>
                         </label>
                     </div>-->
-                    <div class="mb-4">
+                    <div class="mb-4 mt-4">
                             <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>
                             <div id="held_office_in_councilSelect">
                                 @foreach ($heldincouncil as $item)

@@ -153,6 +153,13 @@
                         </div>
 
                         <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="full_member" class="form-check-input" />
+                                <span class="form-check-label">Full Member</span>
+                            </label>
+                        </div>
+
+                        <div class="mb-4">
                             <label class="form-label">Religion <i class="text-danger">*</i></label>
                             <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
                                 <option value="">Select Religion</option>
@@ -167,6 +174,7 @@
                             <label class="form-label">Specify Religion <i class="text-danger">*</i></label>
                             <input type="text" id="otherReligionInput" class="form-control" placeholder="Specify your religion">
                         </div>
+                       
                         
                         <div class="mb-4">
                             <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>

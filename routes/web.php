@@ -10,6 +10,7 @@ use App\Http\Controllers\GiftController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\FilterController;
+use App\Http\Controllers\SMSController;
 
 
 use App\Http\Controllers\Auth\AdminLoginController;
@@ -123,10 +124,8 @@ Route::prefix('settings')->group(function () {
     Route::put('/contribution_types/{id}', [SettingsController::class, 'contribution_types_update'])->name('contribution_types.update');
 });
 
+
 });
-
-
-
 
 
 

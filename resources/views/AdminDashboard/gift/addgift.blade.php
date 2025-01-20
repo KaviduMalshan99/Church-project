@@ -1,6 +1,7 @@
 @extends ('AdminDashboard.master')
 
 @section('content')
+
 <form method="POST" action="{{ route('gift.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="row">
@@ -62,7 +63,6 @@
                                 @enderror
                             </div>
                         </div>
-
                     </div>
                 </div>
 

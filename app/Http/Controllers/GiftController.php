@@ -57,41 +57,45 @@ class GiftController extends Controller
             'type' => 'required|string',
             'amount' => 'required|numeric',
         ]);
-
+    
+        // Create the gift entry
         $gift = Gift::create([
             'sender_id' => $validated['sender_id'],
             'type' => $validated['type'],
             'amount' => $validated['amount'],
         ]);
-
+    
+        // Generate the PDF
         $dompdf = new Dompdf();
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isPhpEnabled', true);
         $dompdf->setOptions($options);
-
+    
         $html = view('AdminDashboard.gift.bill', compact('gift'))->render();
-
         $dompdf->loadHtml($html);
-
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-
+    
         $pdfPath = 'gifts/' . $gift->id . '_bill.pdf';
         file_put_contents(storage_path('app/public/' . $pdfPath), $dompdf->output());
-
+    
+        // Save the PDF path in the database
         $gift->bill_path = $pdfPath;
         $gift->save();
-
+    
         // Get the sender's email
         $sender = Member::where('member_id', $validated['sender_id'])->first();
         $senderEmail = $sender->email;
-
-        // Send the email
+    
+        // Send the email with the PDF attached
         Mail::to($senderEmail)->send(new \App\Mail\GiftBillMail($gift, $pdfPath));
-
-        return redirect()->route('gift.list')->with('success', 'Gift Added Successfully');
+    
+        // Redirect to the gift list and pass the PDF URL to be opened
+        return redirect()->route('gift.list')->with('pdf_url', asset('storage/' . $pdfPath));
     }
+    
+    
 
     
     
