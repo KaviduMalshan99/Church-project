@@ -80,6 +80,17 @@
                 </div>
             </li>
 
+            <li class="menu-item has-submenu {{ request()->is('messages/*') ? 'active' : '' }}">
+                <a class="menu-link" href="#">
+                    <i class="icon material-icons md-message"></i>
+                    <span class="text">Messages</span>
+                </a>
+                <div class="submenu {{ request()->is('messages/*') ? 'show' : '' }}">
+                    <a href="{{ route('admin.send_sms') }}" class="{{ request()->routeIs('admin.send_sms') ? 'active' : '' }}">Sent Messages</a>
+                    <a href="{{ route('admin.viewSentMessages') }}" class="{{ request()->routeIs('admin.viewSentMessages') ? 'active' : '' }}">Message list</a>
+                </div>
+            </li>
+
             <li class="menu-item has-submenu {{ request()->is('settings/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-settings"></i>

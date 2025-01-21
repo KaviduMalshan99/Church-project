@@ -128,7 +128,10 @@ Route::prefix('settings')->group(function () {
 });
 
 
+Route::get('sent-messages', [SMSController::class, 'viewSentMessages'])->name('admin.viewSentMessages');
 
+Route::get('send-sms', [SMSController::class, 'showMainMembers'])->name('admin.send_sms');
+Route::post('send-group-sms', [SMSController::class, 'sendGroupSMS'])->name('admin.sendGroupSMS');
 
 
 Route::middleware('auth')->group(function () {

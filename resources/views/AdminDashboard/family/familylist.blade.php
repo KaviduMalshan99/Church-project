@@ -19,6 +19,7 @@
                         <th>#</th>
                         <th>Family Number</th>
                         <th>Main Person</th>
+                        <th>Contact</th>
                         <th>Registered Date</th>
                         <th class="text-end">Action</th>
                     </tr>
@@ -35,6 +36,7 @@
                                 N/A (Main person ID: {{ $family->main_person_id }})
                             @endif
                         </td>
+                        <td>{{ $family->mainPerson->contact_info }}</td>
                         <td>
                             @if ($family->mainPerson)
                                 {{ $family->mainPerson->registered_date }}

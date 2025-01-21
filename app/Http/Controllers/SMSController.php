@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Member;
 use App\Services\NotifyLkService;
+use App\Models\MessageSent;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -52,5 +53,61 @@ class SMSController extends Controller
     
         return 'Birthday SMS sent!';
     }
+
+
+
+    public function showMainMembers()
+    {
+        $members = Member::where('relationship_to_main_person', 'Main member')->get();
+        return view('AdminDashboard.messages.message', compact('members'));
+    }
+    
+
+
+    public function sendGroupSMS(Request $request)
+    {
+        $selectedMembers = $request->input('member_ids');
+        $message = $request->input('message');
+
+        if (empty($selectedMembers)) {
+            return back()->with('error', 'Please select at least one member.');
+        }
+
+        $members = Member::whereIn('id', $selectedMembers)->get();
+
+        foreach ($members as $member) {
+            $phoneNumber = $member->contact_info;
+            if (substr($phoneNumber, 0, 2) !== '94') {
+                $phoneNumber = '94' . ltrim($phoneNumber, '0');
+            }
+
+            $response = $this->notifyLkService->sendSMS($phoneNumber, $message);
+
+            $status = ($response && isset($response->status) && $response->status == 'success') ? 'success' : 'failed';
+            MessageSent::create([
+                'member_id' => $member->id,
+                'message' => $message,
+                'status' => $status,
+                'sent_at' => now(),
+            ]);
+
+            if ($status == 'success') {
+                \Log::info("Message sent to {$phoneNumber} for {$member->member_name}");
+            } else {
+                \Log::error("Failed to send SMS to {$phoneNumber}. Response: " . json_encode($response));
+            }
+        }
+
+        return back()->with('success', 'Messages sent successfully!');
+    }
+
+
+    public function viewSentMessages()
+    {
+        $messages = MessageSent::with('member')->orderBy('sent_at', 'desc')->paginate(10);
+        return view('AdminDashboard.messages.message_list', compact('messages'));
+    }
+    
+
     
 }
