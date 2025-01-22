@@ -13,6 +13,7 @@ class UpdateGiftsTable extends Migration
             $table->dropColumn([
                 'gift_code',
                 'receiver_id',
+                'sender_id',
                 'receiver_address',
                 'greeting_title',
                 'greeting_description',
