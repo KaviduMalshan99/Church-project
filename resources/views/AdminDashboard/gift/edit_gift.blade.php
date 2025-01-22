@@ -87,11 +87,28 @@
                         </div>
                     </div>
                 </div>
+                
+                <!-- Date -->
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4>Date</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <label for="date" class="form-label">Enter date <i class="text-danger">*</i></label>
+                                <input type="date" name="date" id="date" class="form-control" value="{{ old('date', $gift->date) }}" step="0.01" min="0">
+                                @error('date')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </form>
-
 <script>
     $(document).ready(function() {
         $('.select2').select2({

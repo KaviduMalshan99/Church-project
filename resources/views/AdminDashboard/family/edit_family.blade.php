@@ -216,19 +216,10 @@
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>
-                            <div id="held_office_in_councilSelect">
-                                @foreach ($heldincouncil as $item)
-                                    <div class="form-check">
-                                        <!-- Check if the current value exists in the existing array of selected values -->
-                                        <input class="form-check-input" type="checkbox" name="held_office_in_council[]" value="{{ $item->name }}" id="office_{{ $item->id }}" 
-                                        @if(in_array($item->name, old('held_office_in_council', $existingHeldOffices))) checked @endif>
-                                        <label class="form-check-label" for="office_{{ $item->id }}">
-                                            {{ $item->name }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
+                            <label class="form-label">Head in Council</label>
+                            <input type="text" id="selectedOffices" name="held_office_in_council[]" class="form-control" readonly data-bs-toggle="modal" data-bs-target="#officeModal" 
+                                placeholder="Select Head in Council" 
+                                value="{{ implode(', ', $existingHeldOffices) }}">
                         </div>
 
                        
@@ -265,6 +256,14 @@
                 <div class="card-body">
                     <!-- Optional Notes and Other Details -->
                     <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="member_status" value="1"
+                                    class="form-check-input"
+                                    {{ old('member_status', $member->member_status) ? 'checked' : '' }} />
+                                <span class="form-check-label">Active Member</span>
+                            </label>
+                        </div>
+                    <div class="mb-4">
                         <label class="form-label">Optional Notes </label>
                         <textarea name="optional_notes" class="form-control" placeholder="Add any additional notes here...">{{ old('optional_notes', $member->optional_notes) }}</textarea>
                     </div>
@@ -276,6 +275,56 @@
     </div>
 </form>
 
+
+
+<!-- Modal -->
+<div class="modal fade" id="officeModal" tabindex="-1" aria-labelledby="officeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="officeModalLabel">Select Head in Council</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="held_office_in_councilSelect">
+                    @foreach ($heldincouncil as $item)
+                        <div class="form-check">
+                            <input class="form-check-input office-checkbox" type="checkbox" value="{{ $item->name }}" name="held_office_in_council[]" id="office_{{ $item->id }}"
+                            @if(in_array($item->name, old('held_office_in_council', $existingHeldOffices))) checked @endif>
+                            <label class="form-check-label" for="office_{{ $item->id }}">
+                                {{ $item->name }}
+                            </label>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="selectOfficesBtn">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+document.getElementById('selectOfficesBtn').addEventListener('click', function() {
+    var selectedOffices = [];
+    var checkboxes = document.querySelectorAll('.office-checkbox:checked');
+    
+    checkboxes.forEach(function(checkbox) {
+        selectedOffices.push(checkbox.value);
+    });
+
+    // Populate the readonly input field with the selected office names
+    document.getElementById('selectedOffices').value = selectedOffices.join(', ');
+
+    // Optional: You can log the selected offices if needed
+    console.log(selectedOffices);
+});
+
+</script>
 <script>
     function previewImage(event) {
         const previewContainer = document.getElementById('image_preview_container');

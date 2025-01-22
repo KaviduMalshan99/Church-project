@@ -177,21 +177,12 @@
                        
                         
                         <div class="mb-4">
-                            <label class="form-label">Held Office in Council <i class="text-danger">*</i></label>
-                            <div id="held_office_in_councilSelect">
-                                @foreach ($heldincouncil as $item)
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="held_office_in_council[]" value="{{ $item->name }}" id="office_{{ $item->id }}">
-                                        <label class="form-check-label" for="office_{{ $item->id }}">
-                                            {{ $item->name }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            </div>
+                            <label class="form-label">Head in Council</label>
+                            <input type="text" id="selectedOffices" name="held_office_in_council[]" class="form-control" readonly data-bs-toggle="modal" data-bs-target="#officeModal" placeholder="Select Head in Council">
                         </div>
 
-                      
-                        
+
+
                        <!-- Current Church Congregation Section -->
                         <div class="mb-4">
                             <label class="form-label">Current Church Congregation <i class="text-danger">*</i></label><br>
@@ -218,6 +209,12 @@
                 <div class="card-body">
                     <!-- Optional Notes and Other Details -->
                     <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="member_status" class="form-check-input" />
+                                <span class="form-check-label">Active Member</span>
+                            </label>
+                        </div>
+                    <div class="mb-4">
                             <label class="form-label">Optional Notes </label>
                             <textarea name="optional_notes" class="form-control" placeholder="Add any additional notes here..."></textarea>
                         </div>
@@ -228,6 +225,35 @@
         </div>
     </div>
 </form>
+
+<!-- Modal -->
+<div class="modal fade" id="officeModal" tabindex="-1" aria-labelledby="officeModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="officeModalLabel">Select Head in Council</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="held_office_in_councilSelect">
+                    @foreach ($heldincouncil as $item)
+                    <div class="form-check">
+                        <input class="form-check-input office-checkbox" type="checkbox" value="{{ $item->name }}" name="held_office_in_council[]" id="office_{{ $item->id }}">
+                        <label class="form-check-label" for="office_{{ $item->id }}">
+                            {{ $item->name }}
+                        </label>
+                    </div>
+
+                    @endforeach
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="selectOfficesBtn">Done</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script>
@@ -296,6 +322,32 @@
         // Trigger the toggle function on page load to set the initial state
         toggleMarriedDateField();
     });
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const selectOfficesBtn = document.getElementById('selectOfficesBtn');
+    const selectedOfficesInput = document.getElementById('selectedOffices');
+    const checkboxes = document.querySelectorAll('.office-checkbox');
+    const officeModal = new bootstrap.Modal(document.getElementById('officeModal'));
+
+    selectOfficesBtn.addEventListener('click', function () {
+        let selectedOffices = [];
+
+        // Get selected checkbox values
+        checkboxes.forEach(function (checkbox) {
+            if (checkbox.checked) {
+                selectedOffices.push(checkbox.value);
+            }
+        });
+
+        // Update the readonly input field with selected values
+        selectedOfficesInput.value = selectedOffices.join(', ');
+
+        // Close the modal
+        officeModal.hide();
+    });
+});
 </script>
 
 @endsection

@@ -145,18 +145,33 @@ class SettingsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|email|unique:system_users,email',
             'contact' => 'required|numeric',
-            'password' => 'required|string|max:255|confirmed', 
+            'role' => 'required|string',
+            'password' => 'required|string|max:255|confirmed',
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
     
+        // Handle eSignature upload
+        $signaturePath = null;
+        if ($request->hasFile('signature')) {
+            $file = $request->file('signature');
+            $originalName = $file->getClientOriginalName(); 
+            $signaturePath = $file->storeAs('signatures', $originalName, 'public');
+        }
+    
+        // Create the user
         SystemUser::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'contact' => $validated['contact'],
+            'role' => $validated['role'],
             'password' => bcrypt($validated['password']), 
+            'signature' => $signaturePath, 
         ]);
     
         return redirect()->route('settings.users')->with('success', 'User added successfully!');
     }
+    
+
 
     public function users_destroy($id)
     {
@@ -166,31 +181,54 @@ class SettingsController extends Controller
         return redirect()->route('settings.users')->with('success', 'User Deleted successfully!');
     }
     
+
     public function users_update(Request $request, $id)
     {
-        $validated = $request->validate([
+        // Validate the incoming data
+        $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:system_users,email,' . $id,
-            'contact' => 'required|numeric',
-            'password' => 'nullable|string|max:255|confirmed',
+            'email' => 'required|email|max:255',
+            'contact' => 'required|string|max:15',
+            'role' => 'required|string',
+            'current_password' => 'required|string', 
+            'password' => 'nullable|string|min:8|confirmed', 
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
-
+    
         $user = SystemUser::findOrFail($id);
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->contact = $validated['contact'];
-        
-        if ($request->has('password') && $request->password) {
-            $user->password = bcrypt($validated['password']);
+    
+        if (!\Hash::check($request->current_password, $user->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'The current password is incorrect.']);
         }
-
+    
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->contact = $request->contact;
+        $user->role = $request->role;
+    
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+    
+        if ($request->hasFile('signature')) {
+            // Remove the old signature if exists
+            if ($user->signature && \Storage::disk('public')->exists($user->signature)) {
+                \Storage::disk('public')->delete($user->signature);
+            }
+    
+            // Store the new signature with the original name
+            $file = $request->file('signature');
+            $originalName = $file->getClientOriginalName();
+            $user->signature = $file->storeAs('signatures', $originalName, 'public');
+        }
+    
         $user->save();
-
-        return redirect()->route('settings.users')->with('success', 'User updated successfully!');
+    
+        return redirect()->route('settings.users')->with('success', 'User updated successfully');
     }
+    
 
-
+    
 
     public function academic_qualifications()
     {
