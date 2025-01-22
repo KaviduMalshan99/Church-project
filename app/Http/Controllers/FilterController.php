@@ -98,6 +98,8 @@ class FilterController extends Controller
     }
     
 
+   
+
     public function show_list()
     {
         $startOfWeek = Carbon::now()->subWeek()->startOfWeek();
@@ -108,18 +110,40 @@ class FilterController extends Controller
         $endMonth = $endOfWeek->month;
         $endDay = $endOfWeek->day;
     
-        $birthdays = Member::whereRaw(
-            "(MONTH(birth_date) = ? AND DAY(birth_date) >= ?) OR (MONTH(birth_date) = ? AND DAY(birth_date) <= ?)",
-            [$startMonth, $startDay, $endMonth, $endDay]
-        )->get();
+        $birthdays = Member::where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
+            if ($startMonth === $endMonth) {
+                // If the range is within the same month
+                $query->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
+            } else {
+                // If the range spans across two months
+                $query->where(function ($subQuery) use ($startMonth, $startDay) {
+                    $subQuery->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) >= ?", [$startMonth, $startDay]);
+                })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
+                    $subQuery->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) <= ?", [$endMonth, $endDay]);
+                });
+            }
+        })->get();
     
-        $anniversaries = Member::whereRaw(
-            "(MONTH(married_date) = ? AND DAY(married_date) >= ?) OR (MONTH(married_date) = ? AND DAY(married_date) <= ?)",
-            [$startMonth, $startDay, $endMonth, $endDay]
-        )->get();
+        $anniversaries = Member::where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
+            if ($startMonth === $endMonth) {
+                // If the range is within the same month
+                $query->whereRaw("MONTH(married_date) = ? AND DAY(married_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
+            } else {
+                // If the range spans across two months
+                $query->where(function ($subQuery) use ($startMonth, $startDay) {
+                    $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) >= ?", [$startMonth, $startDay]);
+                })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
+                    $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) <= ?", [$endMonth, $endDay]);
+                });
+            }
+        })->get();
     
         return view('AdminDashboard.filter.list', compact('birthdays', 'anniversaries', 'startOfWeek', 'endOfWeek'));
     }
+    
+    
+    
+
     
  
 }
