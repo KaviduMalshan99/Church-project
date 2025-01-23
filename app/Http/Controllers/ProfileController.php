@@ -2,59 +2,75 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\View\View;
+use App\Models\SystemUser;
+use Illuminate\Support\Facades\Hash;
 
 class ProfileController extends Controller
 {
-    /**
-     * Display the user's profile form.
-     */
-    public function edit(Request $request): View
-    {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
+    
 
-    /**
-     * Update the user's profile information.
-     */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function show()
     {
-        $request->user()->fill($request->validated());
-
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $admin = SystemUser::where('email', session('email'))->first(); 
+        if (!$admin) {
+            return redirect()->route('admin.login')->withErrors(['error' => 'Admin not found.']);
         }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return view('AdminDashboard.profile', compact('admin'));
     }
+    
+    
 
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
+    public function update(Request $request)
     {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
+        $admin = SystemUser::where('email', session('email'))->first();
+    
+        if (!$admin) {
+            return redirect()->route('admin.login')->withErrors(['error' => 'Admin not found.']);
+        }
+    
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'contact' => 'required|string|max:15',
+            'current_password' => 'required|string',
+            'password' => 'nullable|string|min:8|confirmed',
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+    
+        // Verify current password
+        if (!\Hash::check($request->current_password, $admin->password)) {
+            return redirect()->back()->withErrors(['current_password' => 'The current password is incorrect.']);
+        }
+    
+        // Update admin details
+        $admin->name = $request->name;
+        $admin->email = $request->email;
+        $admin->contact = $request->contact;
+    
+        // Update password if provided
+        if ($request->filled('password')) {
+            $admin->password = bcrypt($request->password);
+        }
+    
+        // Update signature if uploaded
+        if ($request->hasFile('signature')) {
+            if ($admin->signature && \Storage::disk('public')->exists($admin->signature)) {
+                \Storage::disk('public')->delete($admin->signature);
+            }
+    
+            $file = $request->file('signature');
+            $admin->signature = $file->storeAs('signatures', $file->getClientOriginalName(), 'public');
+        }
+    
+        $admin->save();
+    
+        return redirect()->route('profile.show')->with('success', 'Profile updated successfully.');
     }
+    
+
+
+
+
 }

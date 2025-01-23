@@ -45,6 +45,15 @@
                                         </select>
                                     </div>
 
+                                    <div class="form-group">
+                                        <label for="baptized" class="mb-1">Baptized:</label>
+                                        <select class="form-control" name="baptized" id="baptized">
+                                            <option value="">-- Select Filter --</option>
+                                            <option value="yes" {{ request('baptized') == 'yes' ? 'selected' : '' }}>Yes</option>
+                                            <option value="no" {{ request('baptized') == 'no' ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+
                                     <div class="form-group mt-3">
                                         <label for="baptized_filter" class="mb-1">Baptized Members by Age:</label>
                                         <select class="form-control" name="baptized_filter" id="baptized_filter">
@@ -82,6 +91,15 @@
                                             <input type="date" name="marriage_start" class="form-control" value="{{ request('marriage_start') }}">
                                             <span class="input-group-text">to</span>
                                             <input type="date" name="marriage_end" class="form-control" value="{{ request('marriage_end') }}">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group mt-3">
+                                        <label class="mb-1">Deaths During Period</label>
+                                        <div class="input-group">
+                                            <input type="date" name="death_start" class="form-control" value="{{ request('death_start') }}">
+                                            <span class="input-group-text">to</span>
+                                            <input type="date" name="death_end" class="form-control" value="{{ request('death_end') }}">
                                         </div>
                                     </div>
 
@@ -129,6 +147,14 @@
                         @if(request('full_member_year'))
                             @if(request('full_members_filter') || request('baptized_filter') || request('age_range') || request('baptized_start') || request('marriage_start')) | @endif
                             Full Members Accepted in {{ request('full_member_year') }}
+                        @endif
+                        @if(request('baptized'))
+                            @if(request('full_members_filter') || request('baptized_filter') || request('age_range') || request('baptized_start') || request('marriage_start') || request('full_member_year')) | @endif
+                            Baptized - {{ ucfirst(request('baptized')) }}
+                        @endif
+                        @if(request('death_start') && request('death_end'))
+                            @if(request('full_members_filter') || request('baptized_filter') || request('age_range') || request('baptized_start') || request('marriage_start') || request('full_member_year') || request('baptized')) | @endif
+                            Deaths During Period - {{ request('death_start') }} to {{ request('death_end') }}
                         @endif
 
                     </h4>
@@ -237,6 +263,12 @@
         @endif
         @if(request('full_member_year'))
             filterDetails += (filterDetails ? ' | ' : '') + 'Full Members Accepted in {{ request('full_member_year') }}';
+        @endif
+        @if(request('baptized'))
+            filterDetails += (filterDetails ? ' | ' : '') + 'Baptized - {{ ucfirst(request('baptized')) }}';
+        @endif
+        @if(request('death_start') && request('death_end'))
+            filterDetails += (filterDetails ? ' | ' : '') + 'Deaths During - {{ request('death_start') }} to {{ request('death_end') }}';
         @endif
         return 'Member Report (' + filterDetails + ') - Total Records: {{ $members->count() }}';
     }

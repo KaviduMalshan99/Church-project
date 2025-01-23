@@ -82,6 +82,10 @@
                         <input type="text" name="contact_info" placeholder="e.g., 0712345678" class="form-control" />
                     </div>
                     <div class="mb-4">
+                        <label class="form-label">Email<i class="text-danger">*</i></label>
+                        <input type="email" name="email" placeholder="e.g., example@example.com" class="form-control" />
+                    </div>
+                    <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
                         <input list="occupationOptions" name="occupation" placeholder="Select or type your occupation" class="form-control" required />
                         <datalist id="occupationOptions">
@@ -104,10 +108,7 @@
                         <label class="form-label">Professional Qualifications</label>
                         <input type="text" name="professional_quali" class="form-control" />
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" placeholder="e.g., example@example.com" class="form-control" />
-                    </div>
+                  
                     <div class="mb-4">
                         <label class="form-label">Interest Activities</label>
                         <input type="text" name="interests" placeholder="e.g., Dance, Music, etc." class="form-control" />
@@ -181,7 +182,15 @@
                             <input type="text" id="selectedOffices" name="held_office_in_council[]" class="form-control" readonly data-bs-toggle="modal" data-bs-target="#officeModal" placeholder="Select Head in Council">
                         </div>
 
-
+                        <div class="mb-4">
+                            <label class="form-label">Your Area</label>
+                            <select name="area" class="form-control">
+                                <option value="">Select area</option>
+                                @foreach ($areas as $area)
+                                    <option value="{{ $area->area }}">{{ $area->area }}</option>
+                                @endforeach
+                            </select>
+                        </div>
 
                        <!-- Current Church Congregation Section -->
                         <div class="mb-4">

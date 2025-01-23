@@ -39,7 +39,9 @@ class Member extends Model
         'academic_quali',
         'member_title',
         'married_date',
-        'member_status'
+        'member_status',
+        'date_of_death',
+        'area'
     ];
 
     /**

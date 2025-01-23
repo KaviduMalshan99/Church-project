@@ -94,6 +94,14 @@
                         <input type="date" id="marriedDate" name="married_date" class="form-control" value="{{ old('married_date') }}" />
                     </div>
                     <div class="mb-4">
+                        <label class="form-label">Contact Info</label>
+                        <input type="text" name="contact_info" placeholder="e.g., 0712345678" class="form-control" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" placeholder="e.g., example@example.com" class="form-control" />
+                    </div>
+                    <div class="mb-4">
                         <label class="form-label">Relationship to Main Person <i class="text-danger">*</i></label>
                         <input list="relationshipOptions" name="relationship_to_main_person" placeholder="e.g., son, daughter" class="form-control" />
                         <datalist id="relationshipOptions">
@@ -131,14 +139,7 @@
                         <label class="form-label">Professional Qualifications</label>
                         <input type="text" name="professional_quali" class="form-control" />
                     </div>
-                    <div class="mb-4">
-                        <label class="form-label">Contact Info</label>
-                        <input type="text" name="contact_info" placeholder="e.g., 0712345678" class="form-control" />
-                    </div>
-                    <div class="mb-4">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" placeholder="e.g., example@example.com" class="form-control" />
-                    </div>
+                   
                     
                     <div class="mb-4">
                         <label class="form-label">Interest Activities</label>
@@ -190,6 +191,7 @@
                             </label>
                         </div>
 
+                        <div class="mb-4">
                         <label class="form-label">Religion <i class="text-danger">*</i></label>
                         <select name="religion" id="religionSelect" class="form-select" required onchange="handleReligionChange()">
                             <option value="">Select Religion</option>
@@ -218,7 +220,15 @@
                             <input type="text" id="selectedOffices" name="held_office_in_council[]" class="form-control" readonly data-bs-toggle="modal" data-bs-target="#officeModal" placeholder="Select Head in Council">
                         </div>
 
-
+                        <div class="mb-4">
+                            <label class="form-label">Your Area</label>
+                            <select name="area" class="form-control">
+                                <option value="">Select area</option>
+                                @foreach ($areas as $area)
+                                    <option value="{{ $area->area }}">{{ $area->area }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                        
                        
                     <!-- Current Church Congregation Section -->

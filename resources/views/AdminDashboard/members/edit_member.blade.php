@@ -254,6 +254,19 @@
                                 placeholder="Select Head in Council" 
                                 value="{{ implode(', ', $existingHeldOffices) }}">
                         </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Your Area</label>
+                            <select name="area" class="form-control">
+                                <option value="">Select area</option>
+                                @foreach ($areas as $area)
+                                    <option value="{{ $area->area }}"
+                                        {{ old('area', $member->area) == $area->area ? 'selected' : '' }}>
+                                        {{ $area->area }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                        
 
                        <!-- <div class="mb-4">
@@ -303,6 +316,10 @@
                                     {{ old('member_status', $member->member_status) ? 'checked' : '' }} />
                                 <span class="form-check-label">Active Member</span>
                             </label>
+                        </div>
+                        <div class="mb-4">
+                            <label for="date_of_death" class="form-label">Date of Death</label>
+                            <input type="date" name="date_of_death" value="{{$member->date_of_death}}" class="form-control" id="date_of_death" />
                         </div>
                     <div class="mb-4">
                         <label class="form-label">Optional Notes </label>

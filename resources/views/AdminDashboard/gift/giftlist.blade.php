@@ -107,7 +107,7 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                @if (session('role') === 'admin')
+                                @if (session('role') === 'Super Admin')
                                     <a href="{{ route('gift.edit', $gift->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
                                     <form id="delete-form-{{ $gift->id }}" action="{{ route('gift.destroy', $gift->id) }}" method="POST" style="display: inline;">
                                         @csrf

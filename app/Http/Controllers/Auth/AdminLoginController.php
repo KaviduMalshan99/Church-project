@@ -44,7 +44,7 @@ class AdminLoginController extends Controller
                 'is_admin' => true, 
                 'name' => 'Admin', 
                 'email' => $hardcodedAdminEmail,
-                'role' => 'admin', 
+                'role' => 'Super Admin', 
             ]);
     
             session()->flash('success', 'Successfully logged in as Admin.');

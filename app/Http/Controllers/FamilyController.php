@@ -7,6 +7,7 @@ use App\Models\Member;
 use Illuminate\Http\Request;
 use App\Models\SubChurch;
 use App\Models\Religion;
+use App\Models\Area;
 use App\Models\AcademicQualification;
 use App\Models\Occupation;
 use App\Models\HeldinCouncil;
@@ -31,8 +32,9 @@ class FamilyController extends Controller
         $occupation = Occupation::all();
         $religion = Religion::all(); 
         $academicQualifications = AcademicQualification::all(); 
+        $areas = Area::all(); 
         $heldincouncil = HeldinCouncil::all();
-        return view('AdminDashboard.family.add_family', compact('churches','occupation','religion','heldincouncil','academicQualifications'));
+        return view('AdminDashboard.family.add_family', compact('churches','occupation','religion','heldincouncil','academicQualifications','areas'));
     }
 
 
@@ -60,8 +62,9 @@ class FamilyController extends Controller
                 'contact_info' => 'nullable|string|max:255',
                 'email' => 'nullable|email|max:255',
                 'religion' => 'nullable|string|max:255',
+                'area' => 'nullable|string|max:255',
                 'held_office_in_council' => 'nullable|array',
-                'held_office_in_council.*' => 'string',
+                'held_office_in_council.*' => 'nullable|string',
                 'nikaya' => 'nullable|string|max:255',
                 'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             ]);
@@ -116,6 +119,7 @@ class FamilyController extends Controller
                     'email' => $request->input('email'),
                     'academic_quali' => $request->input('academic_quali'),
                     'religion' => $request->input('religion'),
+                    'area' => $request->input('area'),
                     'nikaya' => $request->input('nikaya'),
                     'baptized' => $request->boolean('baptized'),
                     'member_status' => $request->boolean('member_status'),
@@ -151,10 +155,11 @@ class FamilyController extends Controller
         $occupation = Occupation::all();
         $academicQualifications = AcademicQualification::all();
         $heldincouncil = HeldinCouncil::all();
-
+        $areas = Area::all(); 
         $existingHeldOffices = json_decode($member->held_office_in_council, true) ?: [];
 
-        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion', 'heldincouncil', 'academicQualifications', 'existingHeldOffices'));
+        return view('AdminDashboard.family.edit_family', compact('family', 'member', 'occupation', 'religion', 
+        'heldincouncil', 'academicQualifications', 'existingHeldOffices','areas'));
     }
 
     
@@ -168,8 +173,10 @@ class FamilyController extends Controller
             'nic' => 'nullable|string',
             'civil_status' => 'nullable|string',
             'married_date' => 'nullable|date',
+            'date_of_death' => 'nullable|date',
             'birth_date' => 'nullable|date',
             'baptized_date' => 'nullable|date',
+            'area' => 'nullable|string|max:255',
             'gender' => 'required|in:Male,Female,Other',
             'occupation' => 'nullable|string|max:255',
             'professional_quali' => 'nullable|string|max:255',
@@ -182,7 +189,7 @@ class FamilyController extends Controller
             'academic_quali' => 'nullable|string|max:255',
             'religion' => 'nullable|string|max:255',
             'held_office_in_council' => 'nullable|array',
-            'held_office_in_council.*' => 'string', 
+            'held_office_in_council.*' => 'nullable|string',
             'nikaya' => 'nullable|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -221,6 +228,7 @@ class FamilyController extends Controller
                 'birth_date' => $request->input('birth_date'),
                 'married_date' => $request->input('civil_status') === 'Married' ? $request->input('married_date') : null,
                 'registered_date' => $request->input('registered_date'),
+                'date_of_death' => $request->input('date_of_death'),
                 'baptized_date' => $request->boolean('baptized') ? $request->input('baptized_date') : null,
                 'gender' => $request->input('gender'),
                 'occupation' => $request->input('occupation'),
@@ -233,6 +241,7 @@ class FamilyController extends Controller
                 'contact_info' => $request->input('contact_info'),
                 'email' => $request->input('email'),
                 'academic_quali' => $request->input('academic_quali'),
+                'area' => $request->input('area'),
                 'religion' => $request->input('religion'),
                 'nikaya' => $request->input('nikaya'),
                 'baptized' => $request->boolean('baptized'),

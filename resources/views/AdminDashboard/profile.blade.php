@@ -3,157 +3,147 @@
 @section('content')
 
 <div class="content-header">
-    <h2 class="content-title">Profile setting</h2>
+    <h2 class="content-title">Profile Setting</h2>
 </div>
 <div class="card">
     <div class="card-body">
-        <div class="row gx-5">
-            <aside class="col-lg-3 border-end">
-                <nav class="nav nav-pills flex-lg-column mb-4">
-                    <a class="nav-link active" id="general-tab" href="#" onclick="showSection('general')">General</a>
-                    <a class="nav-link" id="password-tab" href="#" onclick="showSection('password')">Password</a>
-                </nav>
-            </aside>
-            <div class="col-lg-9">
-                <section class="content-body p-xl-4">
-                    <!-- General Section -->
-                    <form id="generalSection" action="{{ route('admin.profile.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="row gx-3">
-                                    <div class="col-12 mb-3">
-                                        <label class="form-label">Name</label>
-                                        <input class="form-control" type="text" id="name" name="name" value="{{ $admin->name }}" required placeholder="Type here" />
-                                    </div>
-                                    <div class="col-lg-12 mb-3">
-                                        <label class="form-label">Email</label>
-                                        <input class="form-control" type="email" id="email" name="email" value="{{ $admin->email }}" required placeholder="example@mail.com" />
-                                    </div>
-                                    <div class="col-lg-12 mb-3">
-                                        <label class="form-label">Phone</label>
-                                        <input class="form-control" type="tel" id="contact" name="contact" value="{{ $admin->contact }}" required placeholder="+1234567890" />
-                                    </div>
-                                </div>
-                            </div>
-                            <aside class="col-lg-4">
-                                <figure class="text-lg-center">
-                                    <img id="profileImage" src="{{ asset('storage/user_images/' . session('image', 'default-user.png')) }}" alt="Profile Image" class="img-lg mb-3 img-avatar">
-                                    <figcaption>
-                                        <!-- Hidden file input -->
-                                        <input type="file" id="profileImageInput" name="image" accept="image/*" style="display: none;" onchange="previewImage(event)">
-                                        <a class="btn btn-light rounded font-md" href="javascript:void(0);" onclick="document.getElementById('profileImageInput').click();">
-                                            <i class="icons material-icons md-backup font-md"></i> Upload
-                                        </a>
-                                    </figcaption>
-                                </figure>
-                            </aside>
-                        </div>
-                        <button class="btn btn-primary" type="submit">Save changes</button>
-                    </form>
+        <div class="col-lg-12">
+            <section class="content-body p-xl-4">
+                <!-- General Section -->
+                <form id="editUserForm" action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PATCH')
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Name Input -->
+            <div class="mb-3">
+                <label for="edit_name" class="form-label">Name</label>
+                <input 
+                    type="text" 
+                    class="form-control @error('name') is-invalid @enderror" 
+                    id="edit_name" 
+                    name="name" 
+                    placeholder="Name" 
+                    value="{{ old('name', $admin->name) }}" 
+                    required>
+                @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-                    <!-- Password Section -->
-                    <form action="{{ route('admin.profile.password.update') }}" method="POST" id="passwordSection" style="display: none;">
-                    @csrf
-                        <div class="row">
-                        @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
+            <!-- Email Input -->
+            <div class="mb-3">
+                <label for="edit_email" class="form-label">Email</label>
+                <input 
+                    type="email" 
+                    class="form-control @error('email') is-invalid @enderror" 
+                    id="edit_email" 
+                    name="email" 
+                    placeholder="Email" 
+                    value="{{ old('email', $admin->email) }}" 
+                    required>
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-                            @if (session('success'))
-                                <div class="alert alert-success">
-                                    {{ session('success') }}
-                                </div>
-                            @endif
+            <!-- Contact Input -->
+            <div class="mb-3">
+                <label for="edit_contact" class="form-label">Contact</label>
+                <input 
+                    type="tel" 
+                    class="form-control @error('contact') is-invalid @enderror" 
+                    id="edit_contact" 
+                    name="contact" 
+                    placeholder="Contact" 
+                    value="{{ old('contact', $admin->contact) }}" 
+                    required>
+                @error('contact')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
 
-                            <div class="col-lg-8">
-                                <div class="mb-3">
-                                    <label class="form-label">Current Password</label>
-                                    <div class="input-group">
-                                        <input type="password" class="form-control" id="current_password" name="current_password" placeholder="Enter current password" />
-                                        <span class="input-group-text" onclick="togglePasswordVisibility('current_password', this)">
-                                            <i class="fas fa-eye"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">New Password</label>
-                                    <div class="input-group">
-                                        <input type="password" class="form-control" id="new_password" name="new_password" placeholder="Enter new password" />
-                                        <span class="input-group-text" onclick="togglePasswordVisibility('new_password', this)">
-                                            <i class="fas fa-eye"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label">Confirm New Password</label>
-                                    <div class="input-group">
-                                        <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" placeholder="Confirm new password" />
-                                        <span class="input-group-text" onclick="togglePasswordVisibility('new_password_confirmation', this)">
-                                            <i class="fas fa-eye"></i>
-                                        </span>
-                                    </div>
-                                </div>
-                                <button class="btn btn-primary" type="submit">Save Password</button>
-                            </div>
-                        </div>
-                    </form>
-                    <hr class="my-5" />
-                </section>
+             <!-- Signature Input -->
+             <div class="mb-3">
+                <label for="edit_signature" class="form-label">eSignature</label>
+                <input 
+                    type="file" 
+                    class="form-control @error('signature') is-invalid @enderror" 
+                    id="edit_signature" 
+                    name="signature" 
+                    accept="image/*">
+                @error('signature')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+
+                @if($admin->signature)
+                    <div class="mt-2">
+                        <img 
+                            id="edit_signature_preview" 
+                            src="{{ asset('storage/' . $admin->signature) }}" 
+                            alt="Signature Preview" 
+                            class="img-thumbnail" 
+                            style="max-width: 200px; max-height: 100px;">
+                    </div>
+                @endif
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <!-- Current Password -->
+            <div class="mb-3">
+                <label for="edit_current_password" class="form-label">Current Password</label>
+                <input 
+                    type="password" 
+                    class="form-control @error('current_password') is-invalid @enderror" 
+                    id="edit_current_password" 
+                    name="current_password" 
+                    placeholder="Enter current password" 
+                    required>
+                @error('current_password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- New Password -->
+            <div class="mb-3">
+                <label for="edit_password" class="form-label">New Password</label>
+                <input 
+                    type="password" 
+                    class="form-control @error('password') is-invalid @enderror" 
+                    id="edit_password" 
+                    name="password" 
+                    placeholder="New Password">
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <!-- Confirm New Password -->
+            <div class="mb-3">
+                <label for="edit_password_confirmation" class="form-label">Confirm New Password</label>
+                <input 
+                    type="password" 
+                    class="form-control @error('password_confirmation') is-invalid @enderror" 
+                    id="edit_password_confirmation" 
+                    name="password_confirmation" 
+                    placeholder="Confirm New Password">
+                @error('password_confirmation')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
             </div>
         </div>
     </div>
+
+    <!-- Save Button -->
+    <div class="text-end">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>
+
+            </section>
+        </div>
+    </div>
 </div>
-
-<script>
-    // Toggle between General and Password sections
-    function showSection(section) {
-        if (section === 'general') {
-            document.getElementById('generalSection').style.display = 'block';
-            document.getElementById('passwordSection').style.display = 'none';
-            document.getElementById('general-tab').classList.add('active');
-            document.getElementById('password-tab').classList.remove('active');
-        } else if (section === 'password') {
-            document.getElementById('generalSection').style.display = 'none';
-            document.getElementById('passwordSection').style.display = 'block';
-            document.getElementById('password-tab').classList.add('active');
-            document.getElementById('general-tab').classList.remove('active');
-        }
-    }
-
-    // Toggle password visibility
-    function togglePasswordVisibility(inputId, iconElement) {
-        const input = document.getElementById(inputId);
-        const icon = iconElement.querySelector('i');
-        
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.replace("fa-eye", "fa-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.replace("fa-eye-slash", "fa-eye");
-        }
-    }
-</script>
-
-<script>
-    // JavaScript function to preview the selected image
-    function previewImage(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                document.getElementById('profileImage').src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
 
 @endsection

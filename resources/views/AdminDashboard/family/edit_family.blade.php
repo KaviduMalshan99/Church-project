@@ -85,6 +85,12 @@
                         <label class="form-label">Contact Info <i class="text-danger">*</i></label>
                         <input type="text" name="contact_info" value="{{$member->contact_info}}" placeholder="e.g., 0712345678" class="form-control" />
                     </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Email <i class="text-danger">*</i></label>
+                        <input type="email" name="email" value="{{$member->email}}" placeholder="e.g., example@example.com" class="form-control" />
+                    </div>
+
                     <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
                         <input 
@@ -119,11 +125,6 @@
                         <input type="text" name="professional_quali" value="{{$member->professional_quali}}" class="form-control" />
                     </div>
 
-                  
-                    <div class="mb-4">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" value="{{$member->email}}" placeholder="e.g., example@example.com" class="form-control" />
-                    </div>
                     <div class="mb-4">
                         <label class="form-label">Interest Activities</label>
                         <input type="text" name="interests"  value="{{$member->interests}}" placeholder="e.g., Dance, Music, etc." class="form-control" />
@@ -222,6 +223,20 @@
                                 value="{{ implode(', ', $existingHeldOffices) }}">
                         </div>
 
+
+                        <div class="mb-4">
+                            <label class="form-label">Your Area</label>
+                            <select name="area" class="form-control">
+                                <option value="">Select area</option>
+                                @foreach ($areas as $area)
+                                    <option value="{{ $area->area }}"
+                                        {{ old('area', $member->area) == $area->area ? 'selected' : '' }}>
+                                        {{ $area->area }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
                        
                             <!-- Current Church Congregation Section -->
                             <div class="mb-4">
@@ -263,6 +278,12 @@
                                 <span class="form-check-label">Active Member</span>
                             </label>
                         </div>
+
+                        <div class="mb-4">
+                            <label for="date_of_death" class="form-label">Date of Death</label>
+                            <input type="date" name="date_of_death" value="{{$member->date_of_death}}" class="form-control" id="date_of_death" />
+                        </div>
+
                     <div class="mb-4">
                         <label class="form-label">Optional Notes </label>
                         <textarea name="optional_notes" class="form-control" placeholder="Add any additional notes here...">{{ old('optional_notes', $member->optional_notes) }}</textarea>

@@ -145,8 +145,9 @@
                                     <label for="role" class="form-label">Role</label>
                                     <select class="form-control @error('role') is-invalid @enderror" id="role" name="role" required>
                                         <option value="" disabled selected>Select Role</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="user">User</option>
+                                        <option value="Super Admin">Super Admin</option>
+                                        <option value="Admin">Admin</option>
+                                        <option value="Editor">Editor</option>
                                     </select>
                                     @error('role')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -183,71 +184,43 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editUserForm" action="" method="POST" enctype="multipart/form-data">
-                    @csrf
-                    @method('PUT')
-                    <div class="row">
-                        <div class="col-md-6">
-                            <!-- Name Input -->
-                            <div class="mb-3">
-                                <label for="edit_name" class="form-label">Name</label>
-                                <input type="text" class="form-control" id="edit_name" name="name" placeholder="Name" required>
-                            </div>
-
-                            <!-- Email Input -->
-                            <div class="mb-3">
-                                <label for="edit_email" class="form-label">Email</label>
-                                <input type="email" class="form-control" id="edit_email" name="email" placeholder="Email" required>
-                            </div>
-
-                            <!-- Contact Input -->
-                            <div class="mb-3">
-                                <label for="edit_contact" class="form-label">Contact</label>
-                                <input type="tel" class="form-control" id="edit_contact" name="contact" placeholder="Contact" required>
-                            </div>
-
-                              <!-- Role Dropdown -->
-                              <div class="mb-3">
-                                <label for="edit_role" class="form-label">Role</label>
-                                <select class="form-control" id="edit_role" name="role" required>
-                                    <option value="admin">Admin</option>
-                                    <option value="user">User</option>
-                                </select>
-                            </div>
-
-
+            <form id="editUserForm" action="" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="mb-3">
+                            <label for="edit_name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="edit_name" name="name" placeholder="Name" readonly>
                         </div>
 
-                        <div class="col-md-6">
-                          
-                           <!-- Signature Preview -->
-                            <div class="mb-3">
-                                <label for="edit_signature" class="form-label">eSignature</label>
-                                <input type="file" class="form-control" id="edit_signature" name="signature" accept="image/*">
-                                <div class="mt-2">
-                                    <img id="edit_signature_preview" src="" alt="Signature Preview" style="max-width: 200px; max-height: 100px;" class="img-thumbnail">
-                                </div>
-                            </div>
+                        <div class="mb-3">
+                            <label for="edit_email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="edit_email" name="email" placeholder="Email" readonly>
+                        </div>
 
-                            <!-- Current Password Input -->
-                            <div class="mb-3">
-                                <label for="edit_current_password" class="form-label">Current Password</label>
-                                <input type="password" class="form-control" id="edit_current_password" name="current_password" placeholder="Enter current password" required>
-                            </div>
+                        <div class="mb-3">
+                            <label for="edit_contact" class="form-label">Contact</label>
+                            <input type="tel" class="form-control" id="edit_contact" name="contact" placeholder="Contact" readonly>
+                        </div>
 
-                            <!-- New Password Input (Optional) -->
-                            <div class="mb-3">
-                                <label for="edit_password" class="form-label">New Password</label>
-                                <input type="password" class="form-control" id="edit_password" name="password" placeholder="New Password (Leave blank to keep current)">
-                            </div>
+                        <div class="mb-3">
+                            <label for="edit_role" class="form-label">Role</label>
+                            <select class="form-control" id="edit_role" name="role" required>
+                                <option value="Super Admin">Super Admin</option>
+                                <option value="Admin">Admin</option>
+                                <option value="Editor">Editor</option>
+                            </select>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Save Button -->
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
+                <!-- Save Button -->
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+
             </div>
 
         </div>
@@ -256,30 +229,22 @@
 
 
 <script>
-   function editUser(id, name, email, contact, role, signaturePath) {
+function editUser(id, name, email, contact, role) {
     // Set the form action dynamically
     const form = document.getElementById('editUserForm');
     form.action = `/settings/users/${id}`;  
 
-    // Set the input field values dynamically
+    // Set the input field values
     document.getElementById('edit_name').value = name;
     document.getElementById('edit_email').value = email;
     document.getElementById('edit_contact').value = contact;
     document.getElementById('edit_role').value = role;
 
-    // Set the signature preview
-    const signaturePreview = document.getElementById('edit_signature_preview');
-    if (signaturePath) {
-        signaturePreview.src = `/storage/${signaturePath}`;
-        signaturePreview.style.display = 'block';
-    } else {
-        signaturePreview.style.display = 'none';
-    }
-
     // Initialize and show the modal
     const editModal = new bootstrap.Modal(document.getElementById('editUserModal'));
     editModal.show();
 }
+
 
 </script>
 

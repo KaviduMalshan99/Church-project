@@ -5,6 +5,7 @@ use App\Models\Occupation;
 use App\Models\Religion;
 use App\Models\HeldinCouncil;
 use App\Models\SystemUser;
+use App\Models\Area;
 use App\Models\ContributionType;
 use Illuminate\Http\Request;
 use App\Models\AcademicQualification;
@@ -190,38 +191,16 @@ class SettingsController extends Controller
             'email' => 'required|email|max:255',
             'contact' => 'required|string|max:15',
             'role' => 'required|string',
-            'current_password' => 'required|string', 
-            'password' => 'nullable|string|min:8|confirmed', 
-            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
     
         $user = SystemUser::findOrFail($id);
-    
-        if (!\Hash::check($request->current_password, $user->password)) {
-            return redirect()->back()->withErrors(['current_password' => 'The current password is incorrect.']);
-        }
     
         $user->name = $request->name;
         $user->email = $request->email;
         $user->contact = $request->contact;
         $user->role = $request->role;
     
-        if ($request->filled('password')) {
-            $user->password = bcrypt($request->password);
-        }
-    
-        if ($request->hasFile('signature')) {
-            // Remove the old signature if exists
-            if ($user->signature && \Storage::disk('public')->exists($user->signature)) {
-                \Storage::disk('public')->delete($user->signature);
-            }
-    
-            // Store the new signature with the original name
-            $file = $request->file('signature');
-            $originalName = $file->getClientOriginalName();
-            $user->signature = $file->storeAs('signatures', $originalName, 'public');
-        }
-    
+       
         $user->save();
     
         return redirect()->route('settings.users')->with('success', 'User updated successfully');
@@ -307,5 +286,47 @@ class SettingsController extends Controller
 
         return redirect()->route('settings.contribution_types')->with('success', 'Contribution type updated successfully!');
     }
+
+
+    public function areas()
+    {
+        $areas = Area::all();
+        return view('AdminDashboard.settings.areas', compact('areas'));
+    }
+
+    public function areas_store(Request $request)
+    {
+        $validated = $request->validate([
+            'area' => 'required|string|max:255',
+            'leader' => 'required|string|max:255',
+        ]);
+
+        Area::create($validated);
+
+        return redirect()->route('settings.areas')->with('success', 'Area  added successfully!');
+    }
+
+
+    public function areas_destroy($id)
+    {
+        $areas = Area::findOrFail($id);
+        $areas->delete();
+
+        return redirect()->route('settings.areas')->with('success', 'Area  deleted successfully!');
+    }
+
+    public function areas_update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'area' => 'required|string|max:255',
+            'leader' => 'required|string|max:255',
+        ]);
+
+        $areas = Area::findOrFail($id);
+        $areas->update($validated);
+
+        return redirect()->route('settings.areas')->with('success', 'Area updated successfully!');
+    }
+
 
 }

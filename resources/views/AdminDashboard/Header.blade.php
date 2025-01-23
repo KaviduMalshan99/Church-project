@@ -39,6 +39,12 @@
                 
                 <!-- Dropdown menu for logout -->
                 <div class="dropdown-menu" style="left: -20px; top:55px" aria-labelledby="dropdownAccount">
+                    @if (session('email') !== 'admin@example.com')
+                        <a class="dropdown-item text-danger" href="{{ route('profile.show') }}">
+                            <i class="material-icons md-person"></i> Profile
+                        </a>
+                    @endif
+
                     <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
                         <i class="material-icons md-exit_to_app"></i> Logout
                     </a>
