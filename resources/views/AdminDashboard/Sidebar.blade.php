@@ -46,6 +46,14 @@
                 </a>
             </li>
 
+            <li class="menu-item {{ request()->routeIs('group.list') ? 'active' : '' }}">
+                <a class="menu-link" href="{{ route('group.list') }}">
+                    <i class="icon material-icons md-group"></i> <!-- Changed to 'group' -->
+                    <span class="text">Groups</span>
+                </a>
+            </li>
+
+
             <!--<li class="menu-item has-submenu {{ request()->is('gift/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-card_giftcard"></i>
@@ -61,7 +69,7 @@
                 </div>
             </li>-->
 
-           <li class="menu-item has-submenu {{ request()->is('reports/*') ? 'active' : '' }}">
+            <li class="menu-item has-submenu {{ request()->is('reports/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-description"></i>
                     <span class="text">Reports</span>

@@ -13,6 +13,7 @@ use App\Http\Controllers\FilterController;
 
 
 use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\GroupController;
 use App\Http\Middleware\AdminAuth;
 
 
@@ -75,6 +76,17 @@ Route::prefix('gift')->group(function () {
     Route::get('/edit/{id}', [GiftController::class, 'edit'])->name('gift.edit');
     Route::put('/edit/{id}', [GiftController::class, 'update'])->name('gift.update');
     Route::delete('/{id}', [GiftController::class, 'destroy'])->name('gift.destroy');
+});
+
+// Group Management
+Route::prefix('group')->group(function () {
+    Route::get('/list', [GroupController::class, 'index'])->name('group.list');
+    Route::get('/create', [GroupController::class, 'create'])->name('group.create');
+    Route::post('/create', [GroupController::class, 'store'])->name('group.store');
+    Route::post('/send-message/{id}', [GroupController::class, 'send_message'])->name('group.send_message');
+    Route::get('/edit/{id}', [GroupController::class, 'edit'])->name('group.edit');
+    Route::put('/edit/{id}', [GroupController::class, 'update'])->name('group.update');
+    Route::delete('/{id}', [GroupController::class, 'destroy'])->name('group.destroy');
 });
 
 
