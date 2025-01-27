@@ -1,7 +1,11 @@
 <aside class="navbar-aside shadow-sm" id="offcanvas_aside">
     <div class="aside-top" style="padding:0">
         <a href="{{ route('dashboard') }}" class="brand-wrap">
+<<<<<<< Updated upstream
             <img src="{{ asset('backend/assets/logo.jpg') }}" class="logo pt-2" alt="Church Moratumulla" style="margin-left:80%; width:40px; height:auto;" />
+=======
+            <img src="{{ asset('backend/assets/images/ctr.jpg') }}" class="logo" alt="Moratumulla Church" style="margin-left:80%; height:" />
+>>>>>>> Stashed changes
         </a>
 
         <div>

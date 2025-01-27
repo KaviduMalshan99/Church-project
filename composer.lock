@@ -2412,12 +2412,20 @@
             "version": "3.8.4",
             "source": {
                 "type": "git",
+<<<<<<< Updated upstream
                 "url": "https://github.com/CarbonPHP/carbon.git",
+=======
+                "url": "https://github.com/briannesbitt/Carbon.git",
+>>>>>>> Stashed changes
                 "reference": "129700ed449b1f02d70272d2ac802357c8c30c58"
             },
             "dist": {
                 "type": "zip",
+<<<<<<< Updated upstream
                 "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/129700ed449b1f02d70272d2ac802357c8c30c58",
+=======
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/129700ed449b1f02d70272d2ac802357c8c30c58",
+>>>>>>> Stashed changes
                 "reference": "129700ed449b1f02d70272d2ac802357c8c30c58",
                 "shasum": ""
             },
@@ -2718,6 +2726,7 @@
                 "source": "https://github.com/nikic/PHP-Parser/tree/v5.4.0"
             },
             "time": "2024-12-30T11:07:19+00:00"
+<<<<<<< Updated upstream
         },
         {
             "name": "notifylk/notify-php",
@@ -2767,6 +2776,8 @@
                 "swagger"
             ],
             "time": "2017-06-16T04:30:31+00:00"
+=======
+>>>>>>> Stashed changes
         },
         {
             "name": "nunomaduro/termwind",
@@ -6538,6 +6549,7 @@
         },
         {
             "name": "laravel/pint",
+<<<<<<< Updated upstream
             "version": "v1.20.0",
             "source": {
                 "type": "git",
@@ -6548,6 +6560,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/laravel/pint/zipball/53072e8ea22213a7ed168a8a15b96fbb8b82d44b",
                 "reference": "53072e8ea22213a7ed168a8a15b96fbb8b82d44b",
+=======
+            "version": "v1.19.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/pint.git",
+                "reference": "8169513746e1bac70c85d6ea1524d9225d4886f0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/8169513746e1bac70c85d6ea1524d9225d4886f0",
+                "reference": "8169513746e1bac70c85d6ea1524d9225d4886f0",
+>>>>>>> Stashed changes
                 "shasum": ""
             },
             "require": {
@@ -6600,7 +6624,11 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
+<<<<<<< Updated upstream
             "time": "2025-01-14T16:20:53+00:00"
+=======
+            "time": "2024-12-30T16:20:10+00:00"
+>>>>>>> Stashed changes
         },
         {
             "name": "laravel/sail",
