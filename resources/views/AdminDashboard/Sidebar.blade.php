@@ -95,7 +95,7 @@
                 </div>
             </li>
 
-            <li class="menu-item has-submenu {{ request()->is('settings/*') ? 'active' : '' }}">
+            <li class="menu-item has-submenu {{ request()->is('settings/*') ? 'active' : '' }} {{ (session('role') === 'Super Admin' || session('role') === 'Admin') ? '' : 'd-none' }}">
                 <a class="menu-link" href="#">
                     <i class="icon material-icons md-settings"></i>
                     <span class="text">Settings</span>
@@ -103,12 +103,15 @@
                 <div class="submenu {{ request()->is('settings/*') ? 'show' : '' }}">
                     <a href="{{ route('settings.occupation') }}" class="{{ request()->routeIs('settings.occupation') ? 'active' : '' }}">Occupations</a>
                     <a href="{{ route('settings.religion') }}" class="{{ request()->routeIs('settings.religion') ? 'active' : '' }}">Religion</a>
+                    <a href="{{ route('settings.areas') }}" class="{{ request()->routeIs('settings.areas') ? 'active' : '' }}">Areas</a>
                     <a href="{{ route('settings.contribution_types') }}" class="{{ request()->routeIs('settings.contribution_types') ? 'active' : '' }}">Contribution Types</a>
                     <a href="{{ route('settings.academic_qualifications') }}" class="{{ request()->routeIs('settings.academic_qualifications') ? 'active' : '' }}">Academic Qualifications</a>
-                    <a href="{{ route('settings.held_in_council') }}" class="{{ request()->routeIs('settings.held_in_council') ? 'active' : '' }}">Held in Council</a>
+                    <a href="{{ route('settings.held_in_council') }}" class="{{ request()->routeIs('settings.held_in_council') ? 'active' : '' }}">Head in Council</a>
                     <a href="{{ route('settings.users') }}" class="{{ request()->routeIs('settings.users') ? 'active' : '' }}">Users</a>
                 </div>
             </li>
+
+
         </ul>
         <hr />
     </nav>

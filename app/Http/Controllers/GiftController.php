@@ -49,20 +49,27 @@ class GiftController extends Controller
 
 
 
-    
     public function store(Request $request)
     {
         $validated = $request->validate([
             'sender_id' => 'required|exists:members,member_id',
             'type' => 'required|string',
+            'date' => 'nullable|date',
             'amount' => 'required|numeric',
         ]);
+    
+        // Get the logged-in user’s name and their signature
+        $receivedBy = session('name');
+        $user = \App\Models\SystemUser::where('name', $receivedBy)->first();
+        $userSignature = $user ? $user->signature : null;
     
         // Create the gift entry
         $gift = Gift::create([
             'sender_id' => $validated['sender_id'],
             'type' => $validated['type'],
             'amount' => $validated['amount'],
+            'date' => $validated['date'],
+            'received_by' => $receivedBy, 
         ]);
     
         // Generate the PDF
@@ -72,7 +79,7 @@ class GiftController extends Controller
         $options->set('isPhpEnabled', true);
         $dompdf->setOptions($options);
     
-        $html = view('AdminDashboard.gift.bill', compact('gift'))->render();
+        $html = view('AdminDashboard.gift.bill', compact('gift', 'receivedBy', 'userSignature'))->render();
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
@@ -107,23 +114,60 @@ class GiftController extends Controller
         return view('AdminDashboard.gift.edit_gift', compact('gift', 'members','contribution_types'));
     }
 
-public function update(Request $request, $id)
+    
+    public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'sender_id' => 'required|exists:members,member_id',
             'type' => 'required|string',
             'amount' => 'required|numeric',
+            'date' => 'nullable|date',
         ]);
-
-        $gift = Gift::findorFail($id);
+    
+        $gift = Gift::findOrFail($id);
+        
+        $receivedBy = session('name');
+        $user = \App\Models\SystemUser::where('name', $receivedBy)->first();
+        $userSignature = $user ? $user->signature : null;
+    
+        // Update the gift entry
         $gift->update([
             'sender_id' => $validated['sender_id'],
             'type' => $validated['type'],
             'amount' => $validated['amount'],
+            'date' => $validated['date'],
+            'received_by' => $receivedBy,
         ]);
-
-        return redirect()->route('gift.list')->with('success', 'Gift Updated Successfully');
+    
+        // Generate the updated PDF bill
+        $dompdf = new Dompdf();
+        $options = new Options();
+        $options->set('isHtml5ParserEnabled', true);
+        $options->set('isPhpEnabled', true);
+        $dompdf->setOptions($options);
+    
+        // Render the HTML view with the updated gift data and signature
+        $html = view('AdminDashboard.gift.bill', compact('gift', 'receivedBy', 'userSignature'))->render();
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+    
+        // Save the PDF to storage
+        $pdfPath = 'gifts/' . $gift->id . '_bill.pdf';
+        file_put_contents(storage_path('app/public/' . $pdfPath), $dompdf->output());
+    
+        // Save the PDF path in the gift entry
+        $gift->bill_path = $pdfPath;
+        $gift->save();
+    
+        $sender = Member::where('member_id', $validated['sender_id'])->first();
+        $senderEmail = $sender->email;
+    
+        Mail::to($senderEmail)->send(new \App\Mail\GiftBillMail($gift, $pdfPath));
+    
+        return redirect()->route('gift.list')->with('success', 'Gift Updated Successfully')->with('pdf_url', asset('storage/' . $pdfPath));
     }
+    
 
     public function destroy($id)
     {

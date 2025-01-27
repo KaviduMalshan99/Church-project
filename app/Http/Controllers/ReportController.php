@@ -28,7 +28,14 @@ class ReportController extends Controller
             $query->where('full_member', 0);
         }
 
-        // Filter by Baptized Members
+         // Filter by Baptized Members
+         if ($request->baptized === 'yes') {
+            $query->where('baptized', 1);
+        } elseif ($request->baptized === 'no') {
+            $query->where('baptized', 0);
+        }
+
+        // Filter by age of Baptized Members
         if ($request->baptized_filter === 'baptised_less_5') {
             $query->where('baptized', 1)
                 ->where('birth_date', '>=', now()->subYears(5));
@@ -64,6 +71,11 @@ class ReportController extends Controller
         // Filter by number of marriages during a period
         if ($request->filled('marriage_start') && $request->filled('marriage_end')) {
             $query->whereBetween('married_date', [$request->marriage_start, $request->marriage_end]);
+        }
+
+         // Filter by number of marriages during a period
+         if ($request->filled('death_start') && $request->filled('death_end')) {
+            $query->whereBetween('date_of_death', [$request->death_start, $request->death_end]);
         }
 
         // Filter by number of members accepted as full members during a year

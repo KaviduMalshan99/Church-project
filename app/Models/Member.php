@@ -38,7 +38,10 @@ class Member extends Model
         'baptized_date',
         'academic_quali',
         'member_title',
-        'married_date'
+        'married_date',
+        'member_status',
+        'date_of_death',
+        'area'
     ];
 
     /**

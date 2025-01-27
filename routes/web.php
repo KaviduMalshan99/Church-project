@@ -122,7 +122,18 @@ Route::prefix('settings')->group(function () {
     Route::post('/contribution_types/create', [SettingsController::class, 'contribution_types_store'])->name('contribution_types.store');
     Route::delete('/contribution_types/{id}', [SettingsController::class, 'contribution_types_destroy'])->name('contribution_types.destroy');
     Route::put('/contribution_types/{id}', [SettingsController::class, 'contribution_types_update'])->name('contribution_types.update');
+
+    Route::get('/areas', [SettingsController::class, 'areas'])->name('settings.areas');
+    Route::post('/areas/create', [SettingsController::class, 'areas_store'])->name('areas.store');
+    Route::delete('/areas/{id}', [SettingsController::class, 'areas_destroy'])->name('areas.destroy');
+    Route::put('/areas/{id}', [SettingsController::class, 'areas_update'])->name('areas.update');
+
+
 });
+
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
 
 
 });
@@ -134,10 +145,6 @@ Route::get('send-sms', [SMSController::class, 'showMainMembers'])->name('admin.s
 Route::post('send-group-sms', [SMSController::class, 'sendGroupSMS'])->name('admin.sendGroupSMS');
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+
 
 require __DIR__ . '/auth.php';

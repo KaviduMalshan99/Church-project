@@ -12,7 +12,9 @@ class Gift extends Model
     protected $fillable = [
         'sender_id',
         'type',
-        'amount'
+        'amount',
+        'date',
+        'received_by'
     ];
 
     public function member()

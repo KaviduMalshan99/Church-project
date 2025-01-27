@@ -31,16 +31,20 @@
                 </ul>
             </li>-->
 
-           <li class="nav-item">
-                <a class="nav-link btn-icon darkmode" href="#"> <i class="material-icons md-nights_stay"></i> </a>
-            </li>
             <li class="dropdown nav-item" style="position: relative;">
                 <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount" aria-expanded="false">
                     <img class="img-xs rounded-circle" src="{{ asset('backend/assets/imgs/people/avatar-2.png') }}" alt="User" />
+                    <span class="d-none d-md-inline">{{ session('name', 'Guest') }}</span>
                 </a>
                 
-               <!-- Dropdown menu for logout -->
-                <div class="dropdown-menu" style="left: -100px;" aria-labelledby="dropdownAccount">
+                <!-- Dropdown menu for logout -->
+                <div class="dropdown-menu" style="left: -20px; top:55px" aria-labelledby="dropdownAccount">
+                    @if (session('email') !== 'admin@example.com')
+                        <a class="dropdown-item text-danger" href="{{ route('profile.show') }}">
+                            <i class="material-icons md-person"></i> Profile
+                        </a>
+                    @endif
+
                     <a class="dropdown-item text-danger" href="#" onclick="event.preventDefault(); document.getElementById('admin-logout-form').submit();">
                         <i class="material-icons md-exit_to_app"></i> Logout
                     </a>
@@ -49,8 +53,8 @@
                         @csrf
                     </form>
                 </div>
-
             </li>
+
         </ul>
     </div>
 </header>

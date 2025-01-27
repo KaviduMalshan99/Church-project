@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Family;
 use App\Models\Member;
+use App\Models\Area;
 use App\Models\Religion;
 use Illuminate\Http\Request;
 use App\Models\SubChurch;
@@ -29,10 +30,12 @@ class MemberController extends Controller
         $occupation = Occupation::all(); 
         $religion = Religion::all();
         $heldincouncil = HeldinCouncil::all();
+        $areas = Area::all(); 
         $academicQualifications = AcademicQualification::all(); 
         $main_persons = Member::where("relationship_to_main_person", "Main Member")
                               ->get(['id', 'member_name', 'family_no']);  
-        return view('AdminDashboard.members.add_family_member', compact('main_persons', 'occupation','religion','heldincouncil','academicQualifications'));
+        return view('AdminDashboard.members.add_family_member', compact('main_persons', 'occupation','religion','heldincouncil',
+        'academicQualifications','areas'));
     }
     
 
@@ -46,6 +49,7 @@ class MemberController extends Controller
             'member_name' => 'required|string|max:255',
             'nic' => 'required|string',
             'birth_date' => 'nullable|date',
+            'area' => 'nullable|string|max:255',
             'civil_status' => 'nullable|string',
             'baptized_date' => 'nullable|date',
             'married_date' => 'nullable|date',
@@ -61,7 +65,7 @@ class MemberController extends Controller
             'email' => 'nullable|email|max:255',
             'religion' => 'nullable|string|max:255',
             'held_office_in_council' => 'nullable|array', 
-            'held_office_in_council.*' => 'string', 
+            'held_office_in_council.*' => 'nullable|string', 
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
@@ -120,8 +124,10 @@ class MemberController extends Controller
             'occupation' => $validatedData['occupation'],
             'contact_info' => $validatedData['contact_info'],
             'email' => $validatedData['email'],
+            'area' => $request->input('area'),
             'religion' => $validatedData['religion'],
             'baptized' => $request->boolean('baptized'),
+            'member_status' => $request->boolean('member_status'),
             'full_member' => $request->boolean('full_member'),
             'methodist_member' => $request->boolean('methodist_member'),
             'sabbath_member' => $request->boolean('sabbath_member'),
@@ -142,10 +148,12 @@ class MemberController extends Controller
         $member = Member::findorFail($id);
         $occupation = Occupation::all(); 
         $religion = Religion::all(); 
+        $areas = Area::all(); 
         $heldincouncil = HeldinCouncil::all();
         $existingHeldOffices = json_decode($member->held_office_in_council, true) ?: [];
         $academicQualifications = AcademicQualification::all(); 
-        return view('AdminDashboard.members.edit_member', compact('member', 'main_persons', 'occupation','religion','heldincouncil','academicQualifications','existingHeldOffices'));
+        return view('AdminDashboard.members.edit_member', compact('member', 'main_persons', 'occupation','religion','heldincouncil',
+        'academicQualifications','existingHeldOffices','areas'));
     }
 
     public function update(Request $request, $id)
@@ -190,6 +198,7 @@ class MemberController extends Controller
             'birth_date' => $request->input('birth_date'),
             'married_date' => $request->input('civil_status') === 'Married' ? $request->input('married_date') : null,
             'baptized_date' => $request->boolean('baptized') ? $request->input('baptized_date') : null,
+            'date_of_death' => $request->input('date_of_death'),
             'gender' => $request->input('gender'),
             'occupation' => $request->input('occupation'),
             'professional_quali' => $request->input('professional_quali'),
@@ -201,8 +210,10 @@ class MemberController extends Controller
             'religion' => $request->input('religion'),
             'academic_quali' => $request->input('academic_quali'),
             'nikaya' => $request->input('nikaya'),
+            'area' => $request->input('area'),
             'baptized' => $request->boolean('baptized'),
             'full_member' => $request->boolean('full_member'),
+            'member_status' => $request->boolean('member_status'),
             'methodist_member' => $request->boolean('methodist_member'),
             'sabbath_member' => $request->boolean('sabbath_member'),
             'held_office_in_council' => json_encode($request->input('held_office_in_council', [])),

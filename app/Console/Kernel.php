@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         // Schedule the command to run daily at 8:00 AM
         $schedule->command('send:birthday-sms')->dailyAt('08:00');
+        $schedule->command('send:anniversary-sms')->dailyAt('08:00');
     }
     
     

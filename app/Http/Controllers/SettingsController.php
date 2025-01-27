@@ -5,6 +5,7 @@ use App\Models\Occupation;
 use App\Models\Religion;
 use App\Models\HeldinCouncil;
 use App\Models\SystemUser;
+use App\Models\Area;
 use App\Models\ContributionType;
 use Illuminate\Http\Request;
 use App\Models\AcademicQualification;
@@ -145,18 +146,33 @@ class SettingsController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|email|unique:system_users,email',
             'contact' => 'required|numeric',
-            'password' => 'required|string|max:255|confirmed', 
+            'role' => 'required|string',
+            'password' => 'required|string|max:255|confirmed',
+            'signature' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', 
         ]);
     
+        // Handle eSignature upload
+        $signaturePath = null;
+        if ($request->hasFile('signature')) {
+            $file = $request->file('signature');
+            $originalName = $file->getClientOriginalName(); 
+            $signaturePath = $file->storeAs('signatures', $originalName, 'public');
+        }
+    
+        // Create the user
         SystemUser::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'contact' => $validated['contact'],
+            'role' => $validated['role'],
             'password' => bcrypt($validated['password']), 
+            'signature' => $signaturePath, 
         ]);
     
         return redirect()->route('settings.users')->with('success', 'User added successfully!');
     }
+    
+
 
     public function users_destroy($id)
     {
@@ -166,31 +182,32 @@ class SettingsController extends Controller
         return redirect()->route('settings.users')->with('success', 'User Deleted successfully!');
     }
     
+
     public function users_update(Request $request, $id)
     {
-        $validated = $request->validate([
+        // Validate the incoming data
+        $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|max:255|email|unique:system_users,email,' . $id,
-            'contact' => 'required|numeric',
-            'password' => 'nullable|string|max:255|confirmed',
+            'email' => 'required|email|max:255',
+            'contact' => 'required|string|max:15',
+            'role' => 'required|string',
         ]);
-
-
+    
         $user = SystemUser::findOrFail($id);
-        $user->name = $validated['name'];
-        $user->email = $validated['email'];
-        $user->contact = $validated['contact'];
-        
-        if ($request->has('password') && $request->password) {
-            $user->password = bcrypt($validated['password']);
-        }
-
+    
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->contact = $request->contact;
+        $user->role = $request->role;
+    
+       
         $user->save();
-
-        return redirect()->route('settings.users')->with('success', 'User updated successfully!');
+    
+        return redirect()->route('settings.users')->with('success', 'User updated successfully');
     }
+    
 
-
+    
 
     public function academic_qualifications()
     {
@@ -269,5 +286,47 @@ class SettingsController extends Controller
 
         return redirect()->route('settings.contribution_types')->with('success', 'Contribution type updated successfully!');
     }
+
+
+    public function areas()
+    {
+        $areas = Area::all();
+        return view('AdminDashboard.settings.areas', compact('areas'));
+    }
+
+    public function areas_store(Request $request)
+    {
+        $validated = $request->validate([
+            'area' => 'required|string|max:255',
+            'leader' => 'required|string|max:255',
+        ]);
+
+        Area::create($validated);
+
+        return redirect()->route('settings.areas')->with('success', 'Area  added successfully!');
+    }
+
+
+    public function areas_destroy($id)
+    {
+        $areas = Area::findOrFail($id);
+        $areas->delete();
+
+        return redirect()->route('settings.areas')->with('success', 'Area  deleted successfully!');
+    }
+
+    public function areas_update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'area' => 'required|string|max:255',
+            'leader' => 'required|string|max:255',
+        ]);
+
+        $areas = Area::findOrFail($id);
+        $areas->update($validated);
+
+        return redirect()->route('settings.areas')->with('success', 'Area updated successfully!');
+    }
+
 
 }

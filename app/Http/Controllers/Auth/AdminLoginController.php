@@ -33,7 +33,9 @@ class AdminLoginController extends Controller
                 'is_admin' => true, 
                 'name' => $admin->name, 
                 'email' => $admin->email,
+                'role' => $admin->role,  
             ]);
+            session()->flash('success', 'Successfully logged in');
             return redirect()->route('dashboard');
         }
     
@@ -42,8 +44,9 @@ class AdminLoginController extends Controller
                 'is_admin' => true, 
                 'name' => 'Admin', 
                 'email' => $hardcodedAdminEmail,
+                'role' => 'Super Admin', 
             ]);
-
+    
             session()->flash('success', 'Successfully logged in as Admin.');
             return redirect()->route('dashboard'); 
         }
@@ -51,7 +54,6 @@ class AdminLoginController extends Controller
         return back()->withErrors(['email' => 'Invalid credentials.'])->withInput();
     }
     
-
 
 
 

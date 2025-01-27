@@ -77,6 +77,7 @@
                     <tr>
                         <th>Member Id</th>
                         <th>Sender Name</th>
+                        <th>Received By</th>
                         <th>Type</th>
                         <th>Amount</th>
                         <th>Date</th>
@@ -92,9 +93,10 @@
                         <tr>
                             <td>@if($sender) {{ $sender->member_id }} @else <span class="text-danger">Sender not found</span> @endif</td>
                             <td>@if($sender) {{ $sender->member_name }} @else <span class="text-danger">Sender not found</span> @endif</td>
+                            <td>{{ $gift->received_by }}</td>
                             <td>{{ $gift->type }}</td>
                             <td>Rs. {{ $gift->amount }}</td>
-                            <td>{{ $gift->created_at }}</td>
+                            <td>{{ $gift->date }}</td>
                             <td>
                                 @if($gift->bill_path)
                                     <a href="{{ asset('storage/' . $gift->bill_path) }}" target="_blank">
@@ -105,14 +107,16 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <a href="{{ route('gift.edit', $gift->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
-                                <form id="delete-form-{{ $gift->id }}" action="{{ route('gift.destroy', $gift->id) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn  btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{ $gift->id }}', 'Are you sure you want to delete this?');">
-                                    Delete
-                                    </button>
-                                </form>
+                                @if (session('role') === 'Super Admin')
+                                    <a href="{{ route('gift.edit', $gift->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
+                                    <form id="delete-form-{{ $gift->id }}" action="{{ route('gift.destroy', $gift->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="button" class="btn  btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{ $gift->id }}', 'Are you sure you want to delete this?');">
+                                        Delete
+                                        </button>
+                                    </form>
+                                @endif
                             </td>
                         </tr>
                     @endforeach
