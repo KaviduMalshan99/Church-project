@@ -14,6 +14,8 @@ class Member extends Model
         'family_no',
         'member_id',
         'member_name',
+        'name_with_initials',
+        'address',
         'birth_date',
         'gender',
         'relationship_to_main_person',

@@ -32,6 +32,16 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="name_with_initials" class="form-label">Name with Initials <i class="text-danger">*</i></label>
+                        <input type="text" name="name_with_initials" placeholder="E.g., A.B. Silva" class="form-control" id="name_with_initials" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="address" class="form-label">Address <i class="text-danger">*</i></label>
+                        <textarea name="address" id="address" class="form-control" placeholder="Enter full address" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-4">
                         <label for="member_name" class="form-label">NIC <i class="text-danger">*</i></label>
                         <input type="text" name="nic" placeholder="NIC number" class="form-control" id="nic" required />
                     </div>

@@ -1,15 +1,8 @@
 <aside class="navbar-aside shadow-sm" id="offcanvas_aside">
     <div class="aside-top" style="padding:0">
         <a href="{{ route('dashboard') }}" class="brand-wrap">
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
             <img src="{{ asset('backend/assets/logo.jpg') }}" class="logo pt-2" alt="Church Moratumulla" style="margin-left:80%; width:40px; height:auto;" />
-=======
-            <img src="{{ asset('backend/assets/images/ctr.jpg') }}" class="logo" alt="Moratumulla Church" style="margin-left:80%; height:" />
->>>>>>> Stashed changes
-=======
-            <img src="{{ asset('backend/assets/images/ctr.jpg') }}" class="logo" alt="Moratumulla Church" style="margin-left:80%; height:" />
->>>>>>> Stashed changes
+
         </a>
 
         <div>
@@ -60,21 +53,6 @@
                     <span class="text">Birthdays and Anniversaries</span>
                 </a>
             </li>
-
-            <!--<li class="menu-item has-submenu {{ request()->is('gift/*') ? 'active' : '' }}">
-                <a class="menu-link" href="#">
-                    <i class="icon material-icons md-card_giftcard"></i>
-                    <span class="text">Gift Management</span>
-                </a>
-                <div class="submenu {{ request()->is('gift/*') ? 'show' : '' }}">
-                    <a href="{{ route('gift.create') }}" class="{{ request()->routeIs('gift.create') ? 'active' : '' }}">
-                        Add Gift
-                    </a>
-                    <a href="{{ route('gift.list') }}" class="{{ request()->routeIs('gift.list') ? 'active' : '' }}">
-                        List
-                    </a>
-                </div>
-            </li>-->
 
            <li class="menu-item has-submenu {{ request()->is('reports/*') ? 'active' : '' }}">
                 <a class="menu-link" href="#">

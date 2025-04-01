@@ -32,7 +32,18 @@
                         <label for="member_name" class="form-label">Member Name <i class="text-danger">*</i></label>
                         <input type="text" name="member_name" value="{{$member->member_name}}" placeholder="Type here" class="form-control" id="member_name" required />
                     </div>
-                     <div class="mb-4">
+
+                    <div class="mb-4">
+                        <label for="name_with_initials" class="form-label">Name with Initials <i class="text-danger">*</i></label>
+                        <input type="text" name="name_with_initials" value="{{$member->name_with_initials}}" placeholder="E.g., A.B. Silva" class="form-control" id="name_with_initials" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="address" class="form-label">Address <i class="text-danger">*</i></label>
+                        <textarea name="address" id="address" class="form-control" placeholder="Enter full address" rows="3" required>{{ old('address', $member->address) }}</textarea>
+                    </div>
+
+                    <div class="mb-4">
                         <label for="member_name" class="form-label">NIC</label>
                         <input type="text" name="nic" value="{{$member->nic}}" placeholder="Type here" class="form-control" id="nic" required />
                     </div>

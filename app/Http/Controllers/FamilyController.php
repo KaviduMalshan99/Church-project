@@ -45,6 +45,8 @@ class FamilyController extends Controller
             $request->validate([
                 'member_name' => 'required|string|max:255',
                 'member_title' => 'required|string|max:255',
+                'name_with_initials' => 'required|string',
+                'address' => 'required|string',
                 'academic_quali' => 'nullable|string|max:255',
                 'birth_date' => 'nullable|date',
                 'nic' => 'nullable|string',
@@ -102,6 +104,8 @@ class FamilyController extends Controller
                     'member_id' => $mainMemberId,
                     'member_title' => $request->input('member_title'),
                     'member_name' => $request->input('member_name'),
+                    'name_with_initials' => $request->input('name_with_initials'),
+                    'address' => $request->input('address'),
                     'civil_status' => $request->input('civil_status'),
                     'nic' => $request->input('nic'),
                     'birth_date' => $request->input('birth_date'),
@@ -170,6 +174,8 @@ class FamilyController extends Controller
         $request->validate([
             'member_name' => 'required|string|max:255',
             'member_title' => 'required|string|max:255',
+            'name_with_initials' => 'required|string',
+            'address' => 'required|string',
             'nic' => 'nullable|string',
             'civil_status' => 'nullable|string',
             'married_date' => 'nullable|date',
@@ -223,6 +229,8 @@ class FamilyController extends Controller
             $member->update([
                 'member_name' => $request->input('member_name'),
                 'member_title' => $request->input('member_title'),
+                'name_with_initials' => $request->input('name_with_initials'),
+                'address' => $request->input('address'),
                 'nic' => $request->input('nic'),
                 'civil_status' => $request->input('civil_status'),
                 'birth_date' => $request->input('birth_date'),

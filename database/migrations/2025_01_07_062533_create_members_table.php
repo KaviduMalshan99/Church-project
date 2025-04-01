@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('family_no')->nullable(); 
             $table->string('member_id')->nullable(); 
             $table->string('member_name');
+            $table->string('name_with_initials');
+            $table->text('address');
             $table->date('birth_date')->nullable();
             $table->enum('gender', ['Male', 'Female', 'Other']);
             $table->string('relationship_to_main_person')->nullable();
