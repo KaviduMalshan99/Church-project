@@ -22,6 +22,8 @@ class Member extends Model
         'occupation',
         'baptized',
         'full_member',
+        'half_member',
+        'associate_member',
         'methodist_member',
         'sabbath_member',
         'nikaya',

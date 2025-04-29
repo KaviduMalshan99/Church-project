@@ -201,6 +201,18 @@
                                 <span class="form-check-label">Full Member</span>
                             </label>
                         </div>
+                        <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="half_member" class="form-check-input" />
+                                <span class="form-check-label">Half Memeber</span>
+                            </label>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-check">
+                                <input type="checkbox" name="associate_member" class="form-check-input" />
+                                <span class="form-check-label">Associate Member</span>
+                            </label>
+                        </div>
 
                         <div class="mb-4">
                         <label class="form-label">Religion <i class="text-danger">*</i></label>
