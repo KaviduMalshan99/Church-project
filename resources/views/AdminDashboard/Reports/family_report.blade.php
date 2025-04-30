@@ -29,13 +29,15 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                  
+                
                     <!-- Table -->
                     <div class="col-md-12">
                         <div class="table-responsive">
                             <table id="tableData" class="table table-hover display">
                                 <div class="mt-3 mb-3">
-                                    <strong>No. of Families: {{ $totalFamilies }}</strong>
+                                    <strong>No. of Families: {{ $totalFamilies }}</strong><br><br>
+                                  
+
                                 </div>
                                 <thead>
                                     <tr>

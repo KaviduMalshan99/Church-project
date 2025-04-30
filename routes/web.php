@@ -89,6 +89,14 @@ Route::prefix('reports')->group(function () {
     Route::get('/families', [ReportController::class, 'families'])->name('reports.families');
     Route::get('/members', [ReportController::class, 'members'])->name('reports.members');
     Route::get('/fund_list', [ReportController::class, 'fund_list'])->name('reports.fund_list');
+    Route::get('/area-wise-report', [ReportController::class, 'areaWiseReport'])->name('areaWiseReport');
+    Route::get('/area-wise-report/pdf', [ReportController::class, 'downloadAreaReportPDF'])->name('areaWiseReport.pdf');
+
+    Route::get('/report/families/area-wise', [ReportController::class, 'familyAreaWiseReport'])->name('families.area.report');
+Route::post('/report/families/area-wise/download', [ReportController::class, 'downloadFamilyAreaReportPDF'])->name('families.area.report.download');
+
+    
+
 });
 
 // Settings
