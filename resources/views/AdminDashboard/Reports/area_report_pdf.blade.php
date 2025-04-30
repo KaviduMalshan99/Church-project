@@ -16,13 +16,15 @@
     </style>
 </head>
 <body>
-    <h2>Area-wise Report: {{ $area }}</h2>
+    <h2>Area-wise Members Report</h2>
+    <h2>{{ $area }}</h2>
     <table>
         <thead>
             <tr>
                 <th>Area</th>
                 <th>Family Number</th>
                 <th>Member Name</th>
+                <th>Contact</th>
             </tr>
         </thead>
         <tbody>
@@ -31,6 +33,7 @@
                     <td>{{ $row->area }}</td>
                     <td>{{ $row->family_no }}</td>
                     <td>{{ $row->member_name }}</td>
+                    <td>{{ $row->contact_info }}</td>
                 </tr>
             @endforeach
         </tbody>

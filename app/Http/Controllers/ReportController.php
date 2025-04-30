@@ -120,30 +120,30 @@ class ReportController extends Controller
 
 
 
-
     public function areaWiseReport(Request $request)
-    {
-        $area = $request->input('area');
+{
+    $area = $request->input('area');
     
-        $data = DB::table('members')
-            ->select('area', 'family_no', 'member_name')
-            ->when($area, function ($query, $area) {
-                return $query->where('area', $area);
-            })
-            ->orderBy('family_no')
-            ->get();
+    $data = DB::table('members')
+        ->select('area', 'family_no', 'member_name','contact_info')
+        ->when($area, function ($query, $area) {
+            return $query->where('area', $area);
+        })
+        ->orderBy('family_no')
+        ->paginate(10);  // Paginate with 10 records per page
+
+    // Get all unique areas
+    $areas = DB::table('members')->select('area')->distinct()->pluck('area');
     
-        // Get all unique areas
-        $areas = DB::table('members')->select('area')->distinct()->pluck('area');
-    
-        return view('AdminDashboard.Reports.area_wise_report', compact('data', 'area', 'areas'));
-    }
+    return view('AdminDashboard.Reports.area_wise_report', compact('data', 'area', 'areas'));
+}
+
     public function downloadAreaReportPDF(Request $request)
     {
         $area = $request->input('area');
     
         $data = DB::table('members')
-            ->select('area', 'family_no', 'member_name')
+            ->select('area', 'family_no', 'member_name','contact_info')
             ->when($area, function ($query, $area) {
                 return $query->where('area', $area);
             })
@@ -157,7 +157,5 @@ class ReportController extends Controller
         return $pdf->download($filename);
     }
 
-
-    
     
 }
