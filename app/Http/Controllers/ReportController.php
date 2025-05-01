@@ -157,5 +157,173 @@ class ReportController extends Controller
         return $pdf->download($filename);
     }
 
-    
+
+
+
+    public function birthdayReport(Request $request)
+{
+    $members = collect(); // default empty collection
+    $from = $request->input('from');
+    $to = $request->input('to');
+
+    if ($from && $to) {
+        $fromDate = \Carbon\Carbon::parse($from);
+        $toDate = \Carbon\Carbon::parse($to);
+
+        // Extract month and day range
+        $members = Member::select('member_name', 'contact_info', 'family_no', 'birth_date')
+            ->whereRaw("DATE_FORMAT(birth_date, '%m-%d') BETWEEN ? AND ?", [
+                $fromDate->format('m-d'),
+                $toDate->format('m-d')
+            ])
+            ->orderByRaw("DATE_FORMAT(birth_date, '%m-%d')")
+            ->get();
+    }
+
+    return view('AdminDashboard.Reports.birthday_report', compact('members', 'from', 'to'));
+}
+
+public function downloadBirthdayReportPDF(Request $request)
+{
+    $from = $request->input('from');
+    $to = $request->input('to');
+
+    $members = collect();
+
+    if ($from && $to) {
+        $fromDate = \Carbon\Carbon::parse($from);
+        $toDate = \Carbon\Carbon::parse($to);
+
+        $members = Member::select('member_name', 'contact_info', 'family_no', 'birth_date')
+            ->whereRaw("DATE_FORMAT(birth_date, '%m-%d') BETWEEN ? AND ?", [
+                $fromDate->format('m-d'),
+                $toDate->format('m-d')
+            ])
+            ->orderByRaw("DATE_FORMAT(birth_date, '%m-%d')")
+            ->get();
+    }
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('AdminDashboard.Reports.birthday_report_pdf', compact('members', 'from', 'to'));
+    return $pdf->download('Birthday_Report_' . $from . '_to_' . $to . '.pdf');
+}
+
+
+
+public function anniversaryReport(Request $request)
+{
+    $members = collect(); // empty by default
+    $from = $request->input('from');
+    $to = $request->input('to');
+
+    if ($from && $to) {
+        $fromDate = \Carbon\Carbon::parse($from);
+        $toDate = \Carbon\Carbon::parse($to);
+
+        $members = Member::select('member_name', 'contact_info',    'married_date',)
+            ->whereRaw("DATE_FORMAT(married_date, '%m-%d') BETWEEN ? AND ?", [
+                $fromDate->format('m-d'),
+                $toDate->format('m-d')
+            ])
+            ->orderByRaw("DATE_FORMAT(married_date, '%m-%d')")
+            ->get();
+    }
+
+    return view('AdminDashboard.Reports.anniversary_report', compact('members', 'from', 'to'));
+}
+
+public function downloadAnniversaryReportPDF(Request $request)
+{
+    $from = $request->input('from');
+    $to = $request->input('to');
+
+    $members = collect();
+
+    if ($from && $to) {
+        $fromDate = \Carbon\Carbon::parse($from);
+        $toDate = \Carbon\Carbon::parse($to);
+
+        $members = Member::select('member_name', 'contact_info', 'married_date')
+            ->whereRaw("DATE_FORMAT(married_date, '%m-%d') BETWEEN ? AND ?", [
+                $fromDate->format('m-d'),
+                $toDate->format('m-d')
+            ])
+            ->orderByRaw("DATE_FORMAT(married_date, '%m-%d')")
+            ->get();
+    }
+
+    $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('AdminDashboard.Reports.anniversary_report_pdf', compact('members', 'from', 'to'));
+    return $pdf->download('Anniversary_Report_' . $from . '_to_' . $to . '.pdf');
+}
+
+
+
+public function fundListByArea(Request $request)
+{
+    $area = $request->input('area');
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+
+    $gifts = Gift::with(['member.family'])
+        ->whereHas('member', function ($q) use ($area) {
+            if ($area) {
+                $q->where('area', $area);
+            }
+        })
+        ->when($startDate, function ($q) use ($startDate) {
+            return $q->whereDate('created_at', '>=', $startDate);
+        })
+        ->when($endDate, function ($q) use ($endDate) {
+            return $q->whereDate('created_at', '<=', $endDate);
+        })
+        ->get();
+
+    $totalAmount = $gifts->sum('amount');
+    $areas = Member::select('area')->distinct()->pluck('area');
+
+    return view('AdminDashboard.Reports.fund_list_area_report', compact(
+        'gifts', 'area', 'startDate', 'endDate', 'totalAmount', 'areas'
+    ));
+}
+
+/// PDF download function
+public function downloadFundListByAreaPDF(Request $request)
+{
+    $area = $request->input('area');
+    $startDate = $request->input('start_date');
+    $endDate = $request->input('end_date');
+
+    // Fetch gifts with member and family relationships
+    $gifts = Gift::with(['member.family'])
+        ->whereHas('member', function ($q) use ($area) {
+            if ($area) {
+                $q->where('area', $area);
+            }
+        })
+        ->when($startDate, function ($q) use ($startDate) {
+            return $q->whereDate('created_at', '>=', $startDate);
+        })
+        ->when($endDate, function ($q) use ($endDate) {
+            return $q->whereDate('created_at', '<=', $endDate);
+        })
+        ->get();
+
+    $totalAmount = $gifts->sum('amount');
+
+    // Sanitize filename parts
+    $safeStartDate = str_replace(['/', '\\'], '-', $startDate);
+    $safeEndDate = str_replace(['/', '\\'], '-', $endDate);
+    $safeArea = $area ? preg_replace('/[^A-Za-z0-9_-]/', '-', $area) : 'All';
+
+    $fileName = 'Fund_Report_' . $safeArea . '_' . $safeStartDate . '_to_' . $safeEndDate . '.pdf';
+
+    // Generate PDF
+    $pdf = Pdf::loadView('AdminDashboard.Reports.fund_list_area_pdf', compact(
+        'gifts', 'area', 'startDate', 'endDate', 'totalAmount'
+    ));
+
+    return $pdf->download($fileName);
+}
+
+
+
 }

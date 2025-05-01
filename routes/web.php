@@ -94,8 +94,13 @@ Route::prefix('reports')->group(function () {
 
     Route::get('/report/families/area-wise', [ReportController::class, 'familyAreaWiseReport'])->name('families.area.report');
 Route::post('/report/families/area-wise/download', [ReportController::class, 'downloadFamilyAreaReportPDF'])->name('families.area.report.download');
+Route::get('/birthday', [ReportController::class, 'birthdayReport'])->name('birthday.report');
+Route::get('/birthday/download', [ReportController::class, 'downloadBirthdayReportPDF'])->name('birthday.report.pdf');
+Route::get('/anniversary', [ReportController::class, 'anniversaryReport'])->name('anniversary.report');
+Route::get('/anniversary/download', [ReportController::class, 'downloadAnniversaryReportPDF'])->name('anniversary.report.pdf');
 
-    
+Route::get('/fund-list-area', [ReportController::class, 'fundListByArea'])->name('fund.list.area');
+Route::get('/fund-list-area-pdf', [ReportController::class, 'downloadFundListByAreaPDF'])->name('fund.list.area.pdf');  
 
 });
 

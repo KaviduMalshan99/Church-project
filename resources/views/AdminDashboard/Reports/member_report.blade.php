@@ -163,6 +163,14 @@
     <button style="border: 1px solid grey; padding: 5px 10px; font-size: 13px;">
         Area-wise Report
     </button>
+</a>                    <a href="{{ route('birthday.report') }}">
+    <button style="border: 1px solid grey; padding: 5px 10px; font-size: 13px;margin-left:5px;">
+        Birthday Report
+    </button>
+</a>                    <a href="{{ route('anniversary.report') }}">
+    <button style="border: 1px solid grey; padding: 5px 10px; font-size: 13px;margin-left:5px;">
+        Anniversary Report
+    </button>
 </a><br>
                 </div>
     
