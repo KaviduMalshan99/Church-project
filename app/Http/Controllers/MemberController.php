@@ -33,7 +33,7 @@ class MemberController extends Controller
         $areas = Area::all(); 
         $academicQualifications = AcademicQualification::all(); 
         $main_persons = Member::where("relationship_to_main_person", "Main Member")
-                              ->get(['id', 'member_name', 'family_no']);  
+                              ->get(['id', 'member_name', 'family_no','address']);  
         return view('AdminDashboard.members.add_family_member', compact('main_persons', 'occupation','religion','heldincouncil',
         'academicQualifications','areas'));
     }

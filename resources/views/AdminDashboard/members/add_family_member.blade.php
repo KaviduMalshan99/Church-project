@@ -25,8 +25,10 @@
             <select name="main_person" class="form-control" id="main_person">
                 <option value="">Select family main person</option>
                 @foreach($main_persons as $main_person)
-                    <option value="{{ $main_person->id }}">
-                        {{ $main_person->member_name }} ({{ $main_person->family_no }})
+                    <option value="{{ $main_person->id }}"
+                    data-address="{{ $main_person->address }}"
+                    >
+                        {{ $main_person->member_name }} ({{ $main_person->family_no }}) {{ $main_person->address }}
                     </option>
                 @endforeach
             </select>
@@ -60,7 +62,8 @@
 
                     <div class="mb-4">
                         <label for="address" class="form-label">Address <i class="text-danger">*</i></label>
-                        <textarea name="address" id="address" class="form-control" placeholder="Enter full address" rows="3" required></textarea>
+                        <input type="text" name="address" id="address" class="form-control" placeholder="Main person's address will show here" required readonly />
+
                     </div>
 
                     <div class="mb-4">
@@ -324,6 +327,28 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        console.log('✅ jQuery + Select2 script running');
+
+        $('#main_person').on('change', function () {
+            console.log('🔁 Main person changed (via Select2)');
+
+            let selectedOption = $(this).find('option:selected');
+            let address = selectedOption.data('address');
+
+            console.log('📦 Selected address:', address);
+
+            if (address) {
+                $('#address').val(address);
+            } else {
+                $('#address').val('');
+            }
+        });
+    });
+</script>
+
 <script>
     // Toggle the "Other" field for church congregation
     function toggleOtherChurchInput() {
@@ -415,5 +440,9 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
+
+
+
+
 
 @endsection
