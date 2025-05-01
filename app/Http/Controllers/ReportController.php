@@ -1,10 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Member;
 use App\Models\Family;
 use App\Models\Gift;
 use App\Models\ContributionType;
+use Illuminate\Support\Facades\DB;
+
 use Illuminate\Http\Request;
 
 class ReportController extends Controller
@@ -114,7 +117,45 @@ class ReportController extends Controller
         return view('AdminDashboard.Reports.fund_report', compact('gifts', 'totalAmount', 'contribution_types'));
     }
 
+
+
+
+    public function areaWiseReport(Request $request)
+{
+    $area = $request->input('area');
     
+    $data = DB::table('members')
+        ->select('area', 'family_no', 'member_name','contact_info')
+        ->when($area, function ($query, $area) {
+            return $query->where('area', $area);
+        })
+        ->orderBy('family_no')
+        ->paginate(10);  // Paginate with 10 records per page
+
+    // Get all unique areas
+    $areas = DB::table('members')->select('area')->distinct()->pluck('area');
+    
+    return view('AdminDashboard.Reports.area_wise_report', compact('data', 'area', 'areas'));
+}
+
+    public function downloadAreaReportPDF(Request $request)
+    {
+        $area = $request->input('area');
+    
+        $data = DB::table('members')
+            ->select('area', 'family_no', 'member_name','contact_info')
+            ->when($area, function ($query, $area) {
+                return $query->where('area', $area);
+            })
+            ->orderBy('family_no')
+            ->get();
+    
+        $safeArea = preg_replace('/[^A-Za-z0-9 _-]/', '_', $area);
+        $filename = 'Area_Report_' . $safeArea . '.pdf';
+    
+        $pdf = Pdf::loadView('AdminDashboard.Reports.area_report_pdf', compact('data', 'area'));
+        return $pdf->download($filename);
+    }
 
     
 }

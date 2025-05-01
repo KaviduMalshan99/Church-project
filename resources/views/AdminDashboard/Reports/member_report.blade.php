@@ -158,9 +158,14 @@
                         @endif
 
                     </h4>
-                    <h5>Total Records: {{ $members->count() }}</h5>
+                    <h5>Total Records: {{ $members->count() }}</h5><br>
+                    <a href="{{ route('areaWiseReport') }}">
+    <button style="border: 1px solid grey; padding: 5px 10px; font-size: 13px;">
+        Area-wise Report
+    </button>
+</a><br>
                 </div>
-
+    
                 <!-- Table -->
                 <div class="table-responsive">
                     <table id="tableData" class="table table-hover display">
