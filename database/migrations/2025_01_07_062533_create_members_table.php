@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string('occupation')->nullable();
             $table->boolean('baptized')->default(false);
             $table->boolean('full_member')->default(false);
+            $table->boolean('half_member')->default(false);
+            $table->boolean('associate_member')->default(false);
             $table->boolean('methodist_member')->default(false);
             $table->boolean('sabbath_member')->default(false);
             $table->string('nikaya')->nullable();
