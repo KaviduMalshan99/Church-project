@@ -11,8 +11,8 @@
     </style>
 </head>
 <body>
-    <h2>Birthday Report</h2>
-    <p>Date Range: {{ $from }} to {{ $to }}</p>
+    <h2 style="text-align:center;">Birthday Report</h2>
+    <h3>Date Range: {{ $from }} to {{ $to }}</h3>
     <table>
         <thead>
             <tr>

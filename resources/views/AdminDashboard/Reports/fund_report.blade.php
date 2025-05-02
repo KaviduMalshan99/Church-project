@@ -22,7 +22,11 @@
         <div class="content-header">
             <h2 class="content-title">Report - Fund</h2>
         </div>
-
+        <a href="{{ route('fund.list.area') }}">
+    <button class="mb-3" style="border: 1px solid grey; padding: 5px 10px; font-size: 13px;margin-left:5px;">
+        Area-Wise Fund Report
+    </button>
+</a>      
         <!-- Date and Type Filter Form -->
         <form method="GET" action="{{ route('reports.fund_list') }}">
             <div class="row mb-3">

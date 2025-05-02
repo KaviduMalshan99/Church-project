@@ -21,9 +21,9 @@
             </div>
             <div class="col-md-3 align-self-end">
                 @if($members->count())
-                    <a href="{{ route('birthday.report.pdf', ['from' => request('from'), 'to' => request('to')]) }}" class="btn">
+                <button style="border: 1px solid grey; padding: 5px 10px; font-size: 15px; width: 60%;">     <a href="{{ route('birthday.report.pdf', ['from' => request('from'), 'to' => request('to')]) }}"  >
                         Download PDF
-                    </a>
+                    </a></button>
                 @endif
             </div>
         </div>

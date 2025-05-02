@@ -20,9 +20,9 @@
             </div>
             <div class="col-md-3 align-self-end">
                 @if($members->count())
-                    <a href="{{ route('anniversary.report.pdf', ['from' => request('from'), 'to' => request('to')]) }}" class="btn btn-success">
+                <button  style="border: 1px solid grey; padding: 5px 10px; font-size: 14px;width:60%;">           <a href="{{ route('anniversary.report.pdf', ['from' => request('from'), 'to' => request('to')]) }}">
                         Download PDF
-                    </a>
+                    </a></button>
                 @endif
             </div>
         </div>
@@ -32,8 +32,8 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
+                    <th>Family Number</th>
                     <th>Member Name</th>
-                    <th>Spouse Name</th>
                     <th>Contact Info</th>
                     <th>Wedding Date</th>
                 </tr>
@@ -41,8 +41,8 @@
             <tbody>
                 @foreach($members as $member)
                     <tr>
+                        <td>{{ $member->family_no  }}</td>
                         <td>{{ $member->member_name }}</td>
-                   
                         <td>{{ $member->contact_info }}</td>
                         <td>{{ \Carbon\Carbon::parse($member->married_date)->format('Y-m-d') }}</td>
                     </tr>

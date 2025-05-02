@@ -3,8 +3,9 @@
 @section('content')
 <!-- Form for selecting area -->
 <form method="GET" action="{{ route('areaWiseReport') }}" style="width:50%; display: flex; align-items: center;">
-    <select name="area" class="form-control mb-3" style="margin-right: 10px;">
-        <option value="">-- Select Area --</option>
+    <select name="area" class="form-control mb-3" style="margin-right: 10px;border: 1px solid black;" placeholder ="Select Area">
+   
+    <option value="">-- Select Area --</option>
         @foreach ($areas as $a)
             <option value="{{ $a }}" {{ $a == $area ? 'selected' : '' }}>{{ $a }}</option>
         @endforeach
@@ -24,7 +25,10 @@
             <th>Area</th>
             <th>Family Number</th>
             <th>Member Name</th>
+            <th>Email</th>
             <th>Contact</th>
+     
+
         </tr>
     </thead>
     <tbody>
@@ -33,7 +37,9 @@
                 <td>{{ $row->area }}</td>
                 <td>{{ $row->family_no }}</td>
                 <td>{{ $row->member_name }}</td>
+                <td>{{ $row->email }}</td>
                 <td>{{ $row->contact_info}}</td>
+              
             </tr>
         @endforeach
     </tbody>

@@ -125,7 +125,7 @@ class ReportController extends Controller
     $area = $request->input('area');
     
     $data = DB::table('members')
-        ->select('area', 'family_no', 'member_name','contact_info')
+        ->select('area', 'family_no', 'member_name','email','contact_info')
         ->when($area, function ($query, $area) {
             return $query->where('area', $area);
         })
@@ -143,7 +143,7 @@ class ReportController extends Controller
         $area = $request->input('area');
     
         $data = DB::table('members')
-            ->select('area', 'family_no', 'member_name','contact_info')
+            ->select('area', 'family_no', 'member_name','email','contact_info')
             ->when($area, function ($query, $area) {
                 return $query->where('area', $area);
             })
@@ -219,7 +219,7 @@ public function anniversaryReport(Request $request)
         $fromDate = \Carbon\Carbon::parse($from);
         $toDate = \Carbon\Carbon::parse($to);
 
-        $members = Member::select('member_name', 'contact_info',    'married_date',)
+        $members = Member::select('family_no','member_name', 'contact_info',    'married_date',)
             ->whereRaw("DATE_FORMAT(married_date, '%m-%d') BETWEEN ? AND ?", [
                 $fromDate->format('m-d'),
                 $toDate->format('m-d')
@@ -242,7 +242,7 @@ public function downloadAnniversaryReportPDF(Request $request)
         $fromDate = \Carbon\Carbon::parse($from);
         $toDate = \Carbon\Carbon::parse($to);
 
-        $members = Member::select('member_name', 'contact_info', 'married_date')
+        $members = Member::select('family_no','member_name', 'contact_info', 'married_date')
             ->whereRaw("DATE_FORMAT(married_date, '%m-%d') BETWEEN ? AND ?", [
                 $fromDate->format('m-d'),
                 $toDate->format('m-d')

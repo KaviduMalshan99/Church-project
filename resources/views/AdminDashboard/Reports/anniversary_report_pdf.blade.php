@@ -11,13 +11,13 @@
     </style>
 </head>
 <body>
-    <h2>Wedding Anniversary Report</h2>
+    <h2 style="text-align:center;">Wedding Anniversary Report</h2>
     <p>Date Range: {{ $from }} to {{ $to }}</p>
     <table>
         <thead>
             <tr>
+                <th>Family Number</th>
                 <th>Member Name</th>
-                <th>Spouse Name</th>
                 <th>Contact Info</th>
                 <th>Wedding Date</th>
             </tr>
@@ -25,6 +25,8 @@
         <tbody>
             @foreach($members as $member)
             <tr>
+                <td>{{ $member->family_no }}</td>
+         
                 <td>{{ $member->member_name }}</td>
          
                 <td>{{ $member->contact_info }}</td>
