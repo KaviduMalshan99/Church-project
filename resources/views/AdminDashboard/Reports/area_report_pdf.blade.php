@@ -8,31 +8,39 @@
             border-collapse: collapse;
         }
         table, th, td {
-            border: 1px solid black;
+            border: 0.5px solid black;
         }
         th, td {
             padding: 8px;
         }
+
+        
+       
+   
+        th { background-color: #f2f2f2; }
+
     </style>
 </head>
 <body>
-    <h2>Area-wise Members Report</h2>
-    <h2>{{ $area }}</h2>
-    <table>
-        <thead>
+    <h2 style="text-align:center;">Area-wise Members Report</h2>
+    <h3>{{ $area }}</h3>
+    <table  class="table table-striped">
+        <thead  class="thead-dark">
             <tr>
-                <th>Area</th>
+            
                 <th>Family Number</th>
                 <th>Member Name</th>
+                <th>Email</th>
                 <th>Contact</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($data as $row)
                 <tr>
-                    <td>{{ $row->area }}</td>
+                  
                     <td>{{ $row->family_no }}</td>
                     <td>{{ $row->member_name }}</td>
+                    <td>{{ $row->email }}</td>
                     <td>{{ $row->contact_info }}</td>
                 </tr>
             @endforeach
