@@ -100,46 +100,64 @@ class FilterController extends Controller
 
    
 
-    public function show_list()
+    public function show_list(Request $request)
     {
-        $startOfWeek = Carbon::now()->subWeek()->startOfWeek();
-        $endOfWeek = Carbon::now()->subWeek()->endOfWeek();
+        $fromDate = $request->input('from_date');
+        $toDate = $request->input('to_date');
     
-        $startMonth = $startOfWeek->month;
-        $startDay = $startOfWeek->day;
-        $endMonth = $endOfWeek->month;
-        $endDay = $endOfWeek->day;
+        if ($fromDate && $toDate) {
+            $start = Carbon::parse($fromDate);
+            $end = Carbon::parse($toDate);
     
-        $birthdays = Member::where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
-            if ($startMonth === $endMonth) {
-                // If the range is within the same month
-                $query->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
-            } else {
-                // If the range spans across two months
-                $query->where(function ($subQuery) use ($startMonth, $startDay) {
-                    $subQuery->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) >= ?", [$startMonth, $startDay]);
-                })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
-                    $subQuery->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) <= ?", [$endMonth, $endDay]);
-                });
-            }
-        })->get();
+            $startMonth = $start->month;
+            $startDay = $start->day;
+            $endMonth = $end->month;
+            $endDay = $end->day;
     
-        $anniversaries = Member::where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
-            if ($startMonth === $endMonth) {
-                // If the range is within the same month
-                $query->whereRaw("MONTH(married_date) = ? AND DAY(married_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
-            } else {
-                // If the range spans across two months
-                $query->where(function ($subQuery) use ($startMonth, $startDay) {
-                    $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) >= ?", [$startMonth, $startDay]);
-                })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
-                    $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) <= ?", [$endMonth, $endDay]);
-                });
-            }
-        })->get();
+            $birthdays = Member::where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
+                if ($startMonth === $endMonth) {
+                    $query->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
+                } else {
+                    $query->where(function ($subQuery) use ($startMonth, $startDay) {
+                        $subQuery->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) >= ?", [$startMonth, $startDay]);
+                    })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
+                        $subQuery->whereRaw("MONTH(birth_date) = ? AND DAY(birth_date) <= ?", [$endMonth, $endDay]);
+                    });
+                }
+            })
+            ->orderByRaw('MONTH(birth_date), DAY(birth_date)')
+            ->get();
     
-        return view('AdminDashboard.filter.list', compact('birthdays', 'anniversaries', 'startOfWeek', 'endOfWeek'));
+            $anniversaries = Member::where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
+                if ($startMonth === $endMonth) {
+                    $query->whereRaw("MONTH(married_date) = ? AND DAY(married_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
+                } else {
+                    $query->where(function ($subQuery) use ($startMonth, $startDay) {
+                        $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) >= ?", [$startMonth, $startDay]);
+                    })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
+                        $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) <= ?", [$endMonth, $endDay]);
+                    });
+                }
+            })
+            ->orderByRaw('MONTH(married_date), DAY(married_date)')
+            ->get();
+        } else {
+            // Show all records if no date filter
+            $birthdays = Member::whereNotNull('birth_date')
+                ->orderByRaw('MONTH(birth_date), DAY(birth_date)')
+                ->get();
+    
+            $anniversaries = Member::whereNotNull('married_date')
+                ->orderByRaw('MONTH(married_date), DAY(married_date)')
+                ->get();
+    
+            $start = null;
+            $end = null;
+        }
+    
+        return view('AdminDashboard.filter.list', compact('birthdays', 'anniversaries', 'start', 'end'));
     }
+    
     
     
     

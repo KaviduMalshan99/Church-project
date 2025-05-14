@@ -7,8 +7,35 @@
 <div class="d-flex justify-content-end mb-4">
     <a class="btn btn-primary" href="{{ route('family.create') }}">Add Family</a>
 </div>
-<div class="card py-2 px-4 fs-5 fw-bold">
-{{$totalFamilies}} Families
+<div class="card shadow-sm rounded-3 p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="mb-0 text-primary">
+            <i class="fas fa-users me-2"></i>Family Directory
+        </h5>
+        <span class="badge bg-primary rounded-pill fs-6">{{$totalFamilies}} Families</span>
+    </div>
+    
+    <form method="GET" action="{{ route('family.list') }}" class="row g-3 align-items-end">
+        <div class="col-md-6 col-lg-4">
+            <label for="area" class="form-label">Filter by Area:</label>
+            <select name="area" id="area" class="form-select">
+                <option value="">-- All Areas --</option>
+                @foreach($areas as $area)
+                    <option value="{{ $area->area }}" {{ request('area') == $area->area ? 'selected' : '' }}>
+                        {{ $area->area }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <div class="col-md-6 col-lg-4 d-flex gap-2">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter me-1"></i> Apply Filter
+            </button>
+            <a href="{{ route('family.list') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-undo me-1"></i> Reset
+            </a>
+        </div>
+    </form>
 </div>
 <div class="card">
     <div class="card-body">

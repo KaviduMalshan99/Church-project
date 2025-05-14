@@ -18,12 +18,30 @@ use Illuminate\Support\Facades\Storage;
 
 class FamilyController extends Controller
 {
-    public function index()
-    {
-        $families = Family::with('mainPerson')->paginate(25);  
-        $totalFamilies = Family::count();
-        return view('AdminDashboard.family.familylist', compact('families', 'totalFamilies'));
+    public function index(Request $request)
+{
+    // Start the query
+    $query = Family::with('mainPerson');
+
+    // Apply area filter if provided
+    if ($request->filled('area')) {
+        $query->whereHas('mainPerson', function ($q) use ($request) {
+            $q->where('area', $request->input('area'));
+        });
     }
+
+    // Get total count based on filtered query
+    $totalFamilies = $query->count();
+
+    // Paginate the result
+    $families = $query->paginate(25);
+
+    // Get list of all areas for the dropdown
+    $areas = Area::all();
+
+    return view('AdminDashboard.family.familylist', compact('families', 'totalFamilies', 'areas'));
+}
+
     
 
     public function create()

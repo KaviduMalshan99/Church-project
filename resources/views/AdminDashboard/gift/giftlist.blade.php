@@ -4,70 +4,167 @@
 @if(session('pdf_url'))
     <script type="text/javascript">
         window.onload = function() {
-            // Open the PDF in a new tab
             var pdfWindow = window.open("{{ session('pdf_url') }}", "_blank");
-
-            // Trigger print after the PDF is loaded
             pdfWindow.onload = function() {
                 pdfWindow.print();
             };
-
-            // After printing (or canceling), redirect to the gift list page
             pdfWindow.onafterprint = function() {
                 window.location.href = '{{ route('gift.list') }}';
             };
         };
     </script>
 @endif
-
-    
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="d-flex">
-        <!-- Total Card -->
-        <div class="card text-white" style="width: 30rem;">
-            <div class="card-body">
-                <form method="GET" action="{{ route('gift.list') }}" class="d-flex align-items-center" id="filterForm">
-                    <div class="me-3">
-                        <input type="date" name="date" class="form-control" value="{{ request('date') }}" onchange="this.form.submit()">
-                    </div>
-
-                    <div class="me-3">
-                        <select name="contribution_type" class="form-select" onchange="this.form.submit()">
-                            <option value="">Select Contribution Type</option>
-                            <option value="all" {{ request('contribution_type') == 'all' ? 'selected' : '' }}>All</option>
-                            @foreach($contribution_types as $type)
-                                <option value="{{ $type->name }}" {{ request('contribution_type') == $type->name ? 'selected' : '' }}>
-                                    {{ $type->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                    <!-- Reset Button -->
-                    <button type="button" class="btn btn-secondary" onclick="resetFilters()">Reset</button>
-                </form>
-            </div>
+<div class="container-fluid py-3">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Filters</h5>
         </div>
-    </div>
-    
-    <div class="d-flex">
-        <!-- Total Card -->
-        <div class="card text-white" style="width: 18rem;">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4 class="card-title mb-0">Total Amount</h4>
-                    <h4 class="card-text text-danger mb-0">Rs. {{ number_format($totalAmount, 2) }}</h4>
+        <div class="card-body">
+            <ul class="nav nav-tabs mb-3" id="filterTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ request('date') || request('contribution_type') ? 'active' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('area')) ? 'active' : '') }}" 
+                            id="single-date-tab" data-bs-toggle="tab" data-bs-target="#single-date" type="button" role="tab" aria-selected="{{ request('date') || request('contribution_type') ? 'true' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('area')) ? 'true' : 'false') }}">
+                        Single Date
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ request('from_date') || request('to_date') ? 'active' : '' }}" 
+                            id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button" role="tab" 
+                            aria-selected="{{ request('from_date') || request('to_date') ? 'true' : 'false' }}">
+                        Weekly Range
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ request('from_month') || request('to_month') ? 'active' : '' }}" 
+                            id="monthly-tab" data-bs-toggle="tab" data-bs-target="#monthly" type="button" role="tab" 
+                            aria-selected="{{ request('from_month') || request('to_month') ? 'true' : 'false' }}">
+                        Monthly Range
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link {{ request('area') ? 'active' : '' }}" 
+                            id="area-tab" data-bs-toggle="tab" data-bs-target="#area" type="button" role="tab" 
+                            aria-selected="{{ request('area') ? 'true' : 'false' }}">
+                        Area
+                    </button>
+                </li>
+            </ul>
+            
+            <div class="tab-content" id="filterTabContent">
+                <!-- Single Date Filter -->
+                <div class="tab-pane fade {{ request('date') || request('contribution_type') ? 'show active' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('area')) ? 'show active' : '') }}" 
+                     id="single-date" role="tabpanel" aria-labelledby="single-date-tab">
+                    <form method="GET" action="{{ route('gift.list') }}" class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label">Select Date</label>
+                            <input type="date" name="date" class="form-control" value="{{ request('date') }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Contribution Type</label>
+                            <select name="contribution_type" class="form-select">
+                                <option value="">Select Contribution Type</option>
+                                <option value="all" {{ request('contribution_type') == 'all' ? 'selected' : '' }}>All</option>
+                                @foreach($contribution_types as $type)
+                                    <option value="{{ $type->name }}" {{ request('contribution_type') == $type->name ? 'selected' : '' }}>
+                                        {{ $type->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="d-flex w-100">
+                                <button type="submit" class="btn btn-danger text-center me-2" style="border-radius: 8px; width: 120px;">Apply</button>
+                                <a href="{{ route('gift.list') }}" class="btn btn-outline-secondary text-center" style="border-radius: 8px; width: 120px;">Reset</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Weekly Date Range Filter -->
+                <div class="tab-pane fade {{ request('from_date') || request('to_date') ? 'show active' : '' }}" 
+                     id="weekly" role="tabpanel" aria-labelledby="weekly-tab">
+                    <form method="GET" action="{{ route('gift.list') }}" class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label">From Date</label>
+                            <input type="date" name="from_date" class="form-control" value="{{ request('from_date') }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">To Date</label>
+                            <input type="date" name="to_date" class="form-control" value="{{ request('to_date') }}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="d-flex w-100">
+                                <button type="submit" class="btn btn-danger text-center me-2" style="border-radius: 8px; width: 120px;">Apply</button>
+                                <a href="{{ route('gift.list') }}" class="btn btn-outline-secondary text-center" style="border-radius: 8px; width: 120px;">Reset</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Monthly Range Filter -->
+                <div class="tab-pane fade {{ request('from_month') || request('to_month') ? 'show active' : '' }}" 
+                     id="monthly" role="tabpanel" aria-labelledby="monthly-tab">
+                    <form method="GET" action="{{ route('gift.list') }}" class="row g-3">
+                        <div class="col-md-5">
+                            <label class="form-label">From Month</label>
+                            <input type="month" name="from_month" class="form-control" value="{{ request('from_month') }}">
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">To Month</label>
+                            <input type="month" name="to_month" class="form-control" value="{{ request('to_month') }}">
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="d-flex w-100">
+                                <button type="submit" class="btn btn-danger text-center me-2" style="border-radius: 8px; width: 120px;">Apply</button>
+                                <a href="{{ route('gift.list') }}" class="btn btn-outline-secondary text-center" style="border-radius: 8px; width: 120px;">Reset</a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Area Filter -->
+                <div class="tab-pane fade {{ request('area') ? 'show active' : '' }}" 
+                     id="area" role="tabpanel" aria-labelledby="area-tab">
+                    <form method="GET" action="{{ route('gift.list') }}" class="row g-3">
+                        <div class="col-md-10">
+                            <label class="form-label">Select Area</label>
+                            <select name="area" class="form-select">
+                                <option value="">Select Area</option>
+                                @foreach($areas as $area)
+                                    <option value="{{ $area->area }}" {{ request('area') == $area->area ? 'selected' : '' }}>
+                                        {{ $area->area }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <div class="d-flex w-100">
+                                <button type="submit" class="btn btn-danger text-center me-2" style="border-radius: 8px; width: 120px;">Apply</button>
+                                <a href="{{ route('gift.list') }}" class="btn btn-outline-secondary text-center" style="border-radius: 8px; width: 120px;">Reset</a>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <a class="btn btn-primary mb-3" href="{{ route('gift.create') }}">Add Fund</a>
 </div>
 
 
 
 
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="card text-white" style="width: 18rem;">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+                <h4 class="card-title mb-0">Total Amount</h4>
+                <h4 class="card-text text-danger mb-0">Rs. {{ number_format($totalAmount, 2) }}</h4>
+            </div>
+        </div>
+    </div>
+    <a class="btn btn-primary" href="{{ route('gift.create') }}">Add Fund</a>
+</div>
 
 <div class="card">
     <div class="card-body">
@@ -112,8 +209,8 @@
                                     <form id="delete-form-{{ $gift->id }}" action="{{ route('gift.destroy', $gift->id) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="button" class="btn  btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{ $gift->id }}', 'Are you sure you want to delete this?');">
-                                        Delete
+                                        <button type="button" class="btn btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{ $gift->id }}', 'Are you sure you want to delete this?');">
+                                            Delete
                                         </button>
                                     </form>
                                 @endif
@@ -127,9 +224,7 @@
 </div>
 
 <script>
-
-    $(document).ready(function() {
-        // Initialize DataTable for the combined table
+    $(document).ready(function () {
         $('#giftTable').DataTable({
             "paging": true,
             "searching": true,
@@ -138,14 +233,28 @@
             "lengthChange": true
         });
     });
-</script>
-<script>
-    // Reset Filters Function
+
     function resetFilters() {
         document.querySelector('input[name="date"]').value = '';
         document.querySelector('select[name="contribution_type"]').value = '';
-        document.getElementById('filterForm').submit(); // Trigger form submission to reset filters
+        document.querySelector('input[name="from_date"]').value = '';
+        document.querySelector('input[name="to_date"]').value = '';
+        document.querySelector('input[name="from_month"]').value = '';
+        document.querySelector('input[name="to_month"]').value = '';
+        document.getElementById('filterForm').submit();
     }
-</script>
 
+
+    // Add this script to ensure the correct tab is shown when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    // Create a Bootstrap tab instance
+    var triggerTabList = [].slice.call(document.querySelectorAll('#filterTabs button'))
+    triggerTabList.forEach(function(triggerEl) {
+        if (triggerEl.classList.contains('active')) {
+            var tabTrigger = new bootstrap.Tab(triggerEl)
+            tabTrigger.show()
+        }
+    })
+})
+</script>
 @endsection

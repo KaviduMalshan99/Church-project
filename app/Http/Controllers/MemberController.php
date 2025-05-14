@@ -15,14 +15,30 @@ use Illuminate\Support\Facades\Storage;
 
 class MemberController extends Controller
 {
-    public function index()
-    {
-        $family_members = Member::with(['family', 'family.mainPerson'])
-                                ->where('relationship_to_main_person', '!=', 'Main Member')
-                                ->get();
+   public function index(Request $request)
+{
+    // Start query with family and mainPerson relations
+    $query = Member::with(['family', 'family.mainPerson'])
+                   ->where('relationship_to_main_person', '!=', 'Main Member');
 
-        return view('AdminDashboard.members.memberlist', compact('family_members'));
+    // ✅ Filter by the member's own area
+    if ($request->filled('area')) {
+        $query->where('area', $request->input('area'));
     }
+
+    // Count filtered members
+    $memberCount = $query->count();
+
+    // Paginate results
+    $family_members = $query->paginate(25);
+
+    // Get areas for dropdown
+    $areas = Area::all();
+
+    return view('AdminDashboard.members.memberlist', compact('family_members', 'areas', 'memberCount'));
+}
+
+
 
 
     public function create()
