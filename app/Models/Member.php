@@ -54,7 +54,7 @@ class Member extends Model
      */
     public function family()
     {
-        return $this->belongsTo(Family::class, 'family_id');
+        return $this->belongsTo(Family::class, 'family_no');
     }
 
     /**

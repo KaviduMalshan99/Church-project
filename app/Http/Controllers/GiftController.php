@@ -11,30 +11,55 @@ use Illuminate\Support\Facades\Mail;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Str;
+use Carbon\Carbon; 
+use App\Models\Area;
+
 
 class GiftController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Gift::query();
-        
-        // Filter by date if selected
-        if ($request->has('date') && $request->date != '') {
-            $query->whereDate('created_at', $request->date);
-        }
-        
-        // Filter by contribution_type if selected, except for 'all'
-        if ($request->has('contribution_type') && $request->contribution_type != '' && $request->contribution_type != 'all') {
-            $query->where('type', $request->contribution_type);
-        }
-    
-        $gifts = $query->get();
-        $totalAmount = $gifts->sum('amount');
-    
-        $contribution_types = ContributionType::all();
-    
-        return view('AdminDashboard.gift.giftlist', compact('gifts', 'totalAmount', 'contribution_types'));
+   public function index(Request $request)
+{
+    $query = Gift::query();
+
+    // Filter by exact date
+    if ($request->filled('date')) {
+        $query->whereDate('created_at', $request->date);
     }
+
+    // Filter by contribution type
+    if ($request->filled('contribution_type') && $request->contribution_type !== 'all') {
+        $query->where('type', $request->contribution_type);
+    }
+
+    // Weekly filter: from_date to to_date
+    if ($request->filled('from_date') && $request->filled('to_date')) {
+        $query->whereBetween('created_at', [$request->from_date, $request->to_date]);
+    }
+
+    // Monthly filter: from_month to to_month
+    if ($request->filled('from_month') && $request->filled('to_month')) {
+        $fromMonth = Carbon::createFromFormat('Y-m', $request->from_month)->startOfMonth();
+        $toMonth = Carbon::createFromFormat('Y-m', $request->to_month)->endOfMonth();
+        $query->whereBetween('created_at', [$fromMonth, $toMonth]);
+    }
+
+    // ✅ Filter by sender's area
+    if ($request->filled('area')) {
+        $query->whereHas('member', function ($q) use ($request) {
+            $q->where('area', $request->input('area'));
+        });
+    }
+
+    $gifts = $query->get();
+    $totalAmount = $gifts->sum('amount');
+
+    $contribution_types = ContributionType::all();
+
+    $areas = Area::all();
+    return view('AdminDashboard.gift.giftlist', compact('gifts', 'totalAmount', 'contribution_types', 'areas'));
+}
+
+
     
     
     
