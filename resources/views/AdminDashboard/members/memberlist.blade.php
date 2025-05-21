@@ -94,11 +94,16 @@
                     @endforeach
                 </tbody>
             </table>
+
+            <!-- Pagination links -->
+            <div class="d-flex justify-content-center">
+            {{ $family_members->links('vendor.pagination.bootstrap-4') }}
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Pagination links -->
+
 
 
 <script>
