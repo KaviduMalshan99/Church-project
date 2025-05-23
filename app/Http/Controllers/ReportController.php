@@ -50,21 +50,25 @@ class ReportController extends Controller
                 ->where('birth_date', '<=', now()->subYears(15));
         }
 
-            // Filter by age
-            if ($request->filled('age_range')) {
-            $ageRange = $request->age_range;
-            if ($ageRange == '0-18') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 0 AND 18');
-            } elseif ($ageRange == '19-25') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 19 AND 25');
-            } elseif ($ageRange == '26-35') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 26 AND 35');
-            } elseif ($ageRange == '36-50') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 36 AND 50');
-            } elseif ($ageRange == '51+') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 51');
-            }
-        }
+                            /// Filter by age
+                if ($request->filled('age_range')) {
+                    $ageRange = $request->age_range;
+
+                    if ($ageRange == '0-5') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 0 AND 5');
+                    } elseif ($ageRange == '6-15') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 6 AND 15');
+                    } elseif ($ageRange == '16-30') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 16 AND 30');
+                    } elseif ($ageRange == '31-50') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 31 AND 50');
+                    } elseif ($ageRange == '51-60') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 51 AND 60');
+                    } elseif ($ageRange == '60+') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) > 60');
+                    }
+                }
+
 
          // Filter by number of members baptized during a period
         if ($request->filled('baptized_start') && $request->filled('baptized_end')) {
