@@ -4009,3 +4009,37 @@ footer.main-footer {
   filter: invert(1);
 }
 
+.dark .dataTables_wrapper .dataTables_paginate .ellipsis {
+    color: white !important;
+    padding: 5px 10px;
+}
+
+.dark .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+    border: 1px solid #ccc;
+    background-color: #444;
+    margin: 2px;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.dark .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #007bff !important;
+    color: rgb(8, 8, 8) !important;
+    border-color: #007bff !important;
+}
+
+.dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #555;
+    color: white !important;
+    border: 1px solid #999;
+}
+
+.dark .dataTables_wrapper .dataTables_info,
+.dark .dataTables_wrapper .dataTables_length,
+.dark .dataTables_wrapper .dataTables_filter,
+.dark .dataTables_wrapper .dataTables_processing {
+    color: rgb(255, 255, 255) !important;
+}
+
+

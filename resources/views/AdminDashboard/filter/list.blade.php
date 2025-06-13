@@ -2,42 +2,6 @@
 
 @section('content')
 
-<style>
-    /* Fix visibility of the ellipsis (...) in pagination */
-    .dataTables_wrapper .dataTables_paginate .ellipsis {
-        color: white !important;  /* Or any contrasting color */
-        padding: 5px 10px;
-    }
-
-    /* General fix for dark theme */
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        color: white !important;
-        border: 1px solid #ccc;
-        background-color: #444;
-        margin: 2px;
-        padding: 5px 10px;
-        border-radius: 4px;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background-color: #007bff !important;
-        color: rgb(8, 8, 8) !important;
-        border-color: #007bff !important;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        background-color: #555;
-        color: white !important;
-        border: 1px solid #999;
-    }
-
-    .dataTables_info,
-    .dataTables_length,
-    .dataTables_filter,
-    .dataTables_processing {
-        color: rgb(255, 255, 255) !important;
-    }
-</style>
 
 
 <div class="content-header">
