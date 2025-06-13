@@ -27,6 +27,15 @@
                 @endforeach
             </select>
         </div>
+        <div class="col-md-6 col-lg-3">
+           <label for="family_number" class="form-label">Family Number:</label>
+            <input type="text" name="family_number" id="family_number" class="form-control" value="{{ request('family_number') }}">
+        </div>
+
+       <div class="col-md-6 col-lg-3">
+        <label for="member_name" class="form-label">Main Person Name:</label>
+        <input type="text" name="member_name" id="member_name" class="form-control" value="{{ request('member_name') }}">
+      </div>
         <div class="col-md-6 col-lg-4 d-flex gap-2">
             <button type="submit" class="btn btn-primary">
                 <i class="fas fa-filter me-1"></i> Apply Filter

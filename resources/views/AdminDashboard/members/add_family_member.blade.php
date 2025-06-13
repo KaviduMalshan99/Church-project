@@ -1,7 +1,11 @@
 @extends ('AdminDashboard.master')
 
 @section('content')
-
+<style>
+    .card-body * {
+        font-weight: bold;
+    }
+</style>
 
 <form method="POST" action="{{ route('member.store') }}" enctype="multipart/form-data">
 @csrf
@@ -27,6 +31,7 @@
                 @foreach($main_persons as $main_person)
                     <option value="{{ $main_person->id }}"
                     data-address="{{ $main_person->address }}"
+                    data-married="{{ $main_person->married_date }}"
                     >
                         {{ $main_person->member_name }} ({{ $main_person->family_no }}) {{ $main_person->address }}
                     </option>
@@ -207,7 +212,7 @@
                         <div class="mb-4">
                             <label class="form-check">
                                 <input type="checkbox" name="half_member" class="form-check-input" />
-                                <span class="form-check-label">Half Memeber</span>
+                                <span class="form-check-label">Junior Member</span>
                             </label>
                         </div>
                         <div class="mb-4">
@@ -349,7 +354,7 @@
 
             let selectedOption = $(this).find('option:selected');
             let address = selectedOption.data('address');
-
+            
             console.log('📦 Selected address:', address);
 
             if (address) {
@@ -357,9 +362,39 @@
             } else {
                 $('#address').val('');
             }
+
+          
+            
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        console.log('💍 Marriage script loaded');
+
+        function updateMarriageField() {
+            let selectedOption = $('#main_person').find('option:selected');
+            let marriedDate = selectedOption.data('married');
+            let civilStatus = $('input[name="civil_status"]:checked').val();
+
+            if (civilStatus === 'Married' && marriedDate) {
+                $('#marriedDate').val(marriedDate);
+                $('#marriedDateContainer').show();
+            } else {
+                $('#marriedDate').val('');
+                $('#marriedDateContainer').hide();
+            }
+        }
+
+        $('#main_person').on('change', updateMarriageField);
+        $('input[name="civil_status"]').on('change', updateMarriageField);
+
+        // Run once on page load in case of old form data
+        updateMarriageField();
+    });
+</script>
+
 
 <script>
     // Toggle the "Other" field for church congregation

@@ -266,11 +266,19 @@ public function fundListByArea(Request $request)
     $area = $request->input('area');
     $startDate = $request->input('start_date');
     $endDate = $request->input('end_date');
+    $memberName = $request->input('member_name');
+    $familyNo = $request->input('family_no');
 
     $gifts = Gift::with(['member.family'])
-        ->whereHas('member', function ($q) use ($area) {
+        ->whereHas('member', function ($q) use ($area,$memberName,$familyNo) {
             if ($area) {
                 $q->where('area', $area);
+            }
+            if ($memberName) {
+                $q->where('member_name', 'like', '%' . $memberName . '%');
+            }
+            if ($familyNo) {
+                $q->where('family_no', 'like', '%' . $familyNo . '%');
             }
         })
         ->when($startDate, function ($q) use ($startDate) {
@@ -285,7 +293,7 @@ public function fundListByArea(Request $request)
     $areas = Member::select('area')->distinct()->pluck('area');
 
     return view('AdminDashboard.Reports.fund_list_area_report', compact(
-        'gifts', 'area', 'startDate', 'endDate', 'totalAmount', 'areas'
+        'gifts', 'area', 'startDate', 'endDate', 'totalAmount', 'areas','memberName', 'familyNo'
     ));
 }
 
@@ -295,12 +303,21 @@ public function downloadFundListByAreaPDF(Request $request)
     $area = $request->input('area');
     $startDate = $request->input('start_date');
     $endDate = $request->input('end_date');
+    $memberName = $request->input('member_name');
+    $familyNo = $request->input('family_no');
+
 
     // Fetch gifts with member and family relationships
     $gifts = Gift::with(['member.family'])
-        ->whereHas('member', function ($q) use ($area) {
+        ->whereHas('member', function ($q) use ($area,$memberName, $familyNo) {
             if ($area) {
                 $q->where('area', $area);
+            }
+            if ($memberName) {
+                $q->where('member_name', 'like', '%' . $memberName . '%');
+            }
+            if ($familyNo) {
+                $q->where('family_no', 'like', '%' . $familyNo . '%');
             }
         })
         ->when($startDate, function ($q) use ($startDate) {
@@ -322,7 +339,7 @@ public function downloadFundListByAreaPDF(Request $request)
 
     // Generate PDF
     $pdf = Pdf::loadView('AdminDashboard.Reports.fund_list_area_pdf', compact(
-        'gifts', 'area', 'startDate', 'endDate', 'totalAmount'
+        'gifts', 'area', 'startDate', 'endDate', 'totalAmount','memberName', 'familyNo'
     ));
 
     return $pdf->download($fileName);

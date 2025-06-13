@@ -3979,3 +3979,33 @@ footer.main-footer {
 .status.returned {
   background-color: #ff5722; /* Orange for returned */
 }
+
+.dark .modal-content {
+  background-color: #2a3042;
+  border: 1px solid #303547;
+  color: #fff;
+}
+
+.dark .modal-header,
+.dark .modal-footer {
+  background-color: #2f3446;
+  border-color: #383e50;
+}
+
+.dark .modal-title {
+  color: #fff;
+}
+
+.dark .form-check-input {
+  background-color: #1e2231;
+  border-color: #383e50;
+}
+
+.dark .form-check-label {
+  color: #fff;
+}
+
+.dark .btn-close {
+  filter: invert(1);
+}
+
