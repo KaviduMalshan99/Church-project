@@ -26,9 +26,19 @@
                 <label>To:</label>
                 <input type="date" name="end_date" class="form-control" value="{{ $endDate }}">
             </div>
+            <div class="col-md-3">
+                <label>Member Name:</label>
+                 <input type="text" name="member_name" class="form-control" value="{{ request('member_name') }}">
+            </div>
+
+           <div class="col-md-3">
+            <label>Family Number:</label>
+            <input type="text" name="family_no" class="form-control" value="{{ request('family_no') }}">
+           </div>
 
             <div class="col-md-3 align-self-end">
                 <button type="submit" class="btn btn-primary">Filter</button>
+                <a href="{{ route('fund.list.area') }}" class="btn btn-secondary">Reset</a>
             </div>
         </div>
     </form>
@@ -38,6 +48,8 @@
         <input type="hidden" name="area" value="{{ $area }}">
         <input type="hidden" name="start_date" value="{{ $startDate }}">
         <input type="hidden" name="end_date" value="{{ $endDate }}">
+        <input type="hidden" name="member_name" value="{{ request('member_name') }}">
+         <input type="hidden" name="family_no" value="{{ request('family_no') }}">
 
         <button type="submit"  style="border: 1px solid grey; padding: 5px 10px; font-size: 14px;width:15%;">Download PDF</button>
     </form>

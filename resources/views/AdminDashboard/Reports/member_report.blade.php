@@ -68,11 +68,12 @@
                                         <label class="mb-1">Age Range</label>
                                         <select name="age_range" class="form-select">
                                             <option value="">Select Age Range</option>
-                                            <option value="0-18" {{ request('age_range') == '0-18' ? 'selected' : '' }}>0-18</option>
-                                            <option value="19-25" {{ request('age_range') == '19-25' ? 'selected' : '' }}>19-25</option>
-                                            <option value="26-35" {{ request('age_range') == '26-35' ? 'selected' : '' }}>26-35</option>
-                                            <option value="36-50" {{ request('age_range') == '36-50' ? 'selected' : '' }}>36-50</option>
-                                            <option value="51+" {{ request('age_range') == '51+' ? 'selected' : '' }}>51+</option>
+                                            <option value="0-5" {{ request('age_range') == '0-5' ? 'selected' : '' }}>0-5</option>
+                                            <option value="6-15" {{ request('age_range') == '6-15' ? 'selected' : '' }}>6-15</option>
+                                            <option value="16-30" {{ request('age_range') == '16-30' ? 'selected' : '' }}>16-30</option>
+                                            <option value="31-50" {{ request('age_range') == '31-50' ? 'selected' : '' }}>31-50</option>
+                                            <option value="51-60" {{ request('age_range') == '51-60' ? 'selected' : '' }}>51-60</option>
+                                            <option value="60+" {{ request('age_range') == '60+' ? 'selected' : '' }}>60+</option>
                                         </select>
                                     </div>
 

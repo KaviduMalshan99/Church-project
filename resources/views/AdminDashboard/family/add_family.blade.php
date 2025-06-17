@@ -1,6 +1,12 @@
 @extends ('AdminDashboard.master')
 
 @section('content')
+<style>
+    .card-body * {
+        font-weight: bold;
+    }
+</style>
+
 <form method="POST" action="{{ route('family.store') }}" enctype="multipart/form-data">
     @csrf
     <div class="row">
@@ -97,12 +103,12 @@
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
-                        <input list="occupationOptions" name="occupation" placeholder="Select or type your occupation" class="form-control" required />
-                        <datalist id="occupationOptions">
+                        <select name="occupation" class="form-select" required>
+                            <option value="" disabled selected>Select your occupation</option>
                             @foreach ($occupation as $item)
-                                <option value="{{ $item->name }}"></option>
+                                <option value="{{ $item->name }}">{{ $item->name }}</option>
                             @endforeach
-                        </datalist>
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Academic Qualifications</label>
@@ -174,7 +180,7 @@
                         <div class="mb-4">
                             <label class="form-check">
                                 <input type="checkbox" name="half_member" class="form-check-input" />
-                                <span class="form-check-label">Half Memeber</span>
+                                <span class="form-check-label">Junior Member</span>
                             </label>
                         </div>
                         

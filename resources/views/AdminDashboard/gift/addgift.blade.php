@@ -28,8 +28,8 @@
                                 <select name="sender_id" class="form-select select2" id="sender_id">
                                     <option value="">Select sender</option>
                                     @foreach($members as $member)
-                                    <option value="{{$member->member_id}}" {{ old('sender_id') == $member->member_id ? 'selected' : '' }}>
-                                        {{$member->member_name}} ({{$member->member_id}})
+                                    <option value="{{ $member->member_id }}" {{ old('sender_id') == $member->member_id ? 'selected' : '' }}>
+                                        {{ $member->name_with_initials }} ({{ $member->member_id }})
                                     </option>
                                     @endforeach
                                 </select>

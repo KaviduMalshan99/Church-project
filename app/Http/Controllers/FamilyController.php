@@ -30,6 +30,18 @@ class FamilyController extends Controller
         });
     }
 
+    // Filter by family_number
+    if ($request->filled('family_number')) {
+        $query->where('family_number', 'like', '%' . $request->input('family_number') . '%');
+    }
+
+    // Filter by main person's member_name
+    if ($request->filled('member_name')) {
+        $query->whereHas('mainPerson', function ($q) use ($request) {
+            $q->where('member_name', 'like', '%' . $request->input('member_name') . '%');
+        });
+    }
+
     // Get total count based on filtered query
     $totalFamilies = $query->count();
 

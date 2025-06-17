@@ -50,7 +50,7 @@
             <li class="menu-item {{ request()->routeIs('show.list') ? 'active' : '' }}">
                 <a class="menu-link" href="{{ route('show.list') }}">
                     <i class="icon material-icons md-event"></i>
-                    <span class="text">Birthdays and Anniversaries</span>
+                    <span class="text">Birthdays and Wedding Anniversaries</span>
                 </a>
             </li>
 

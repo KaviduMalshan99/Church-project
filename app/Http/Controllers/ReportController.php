@@ -50,21 +50,25 @@ class ReportController extends Controller
                 ->where('birth_date', '<=', now()->subYears(15));
         }
 
-            // Filter by age
-            if ($request->filled('age_range')) {
-            $ageRange = $request->age_range;
-            if ($ageRange == '0-18') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 0 AND 18');
-            } elseif ($ageRange == '19-25') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 19 AND 25');
-            } elseif ($ageRange == '26-35') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 26 AND 35');
-            } elseif ($ageRange == '36-50') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 36 AND 50');
-            } elseif ($ageRange == '51+') {
-                $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) >= 51');
-            }
-        }
+                            /// Filter by age
+                if ($request->filled('age_range')) {
+                    $ageRange = $request->age_range;
+
+                    if ($ageRange == '0-5') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 0 AND 5');
+                    } elseif ($ageRange == '6-15') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 6 AND 15');
+                    } elseif ($ageRange == '16-30') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 16 AND 30');
+                    } elseif ($ageRange == '31-50') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 31 AND 50');
+                    } elseif ($ageRange == '51-60') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) BETWEEN 51 AND 60');
+                    } elseif ($ageRange == '60+') {
+                        $query->whereRaw('TIMESTAMPDIFF(YEAR, birth_date, CURDATE()) > 60');
+                    }
+                }
+
 
          // Filter by number of members baptized during a period
         if ($request->filled('baptized_start') && $request->filled('baptized_end')) {
@@ -262,11 +266,19 @@ public function fundListByArea(Request $request)
     $area = $request->input('area');
     $startDate = $request->input('start_date');
     $endDate = $request->input('end_date');
+    $memberName = $request->input('member_name');
+    $familyNo = $request->input('family_no');
 
     $gifts = Gift::with(['member.family'])
-        ->whereHas('member', function ($q) use ($area) {
+        ->whereHas('member', function ($q) use ($area,$memberName,$familyNo) {
             if ($area) {
                 $q->where('area', $area);
+            }
+            if ($memberName) {
+                $q->where('member_name', 'like', '%' . $memberName . '%');
+            }
+            if ($familyNo) {
+                $q->where('family_no', 'like', '%' . $familyNo . '%');
             }
         })
         ->when($startDate, function ($q) use ($startDate) {
@@ -281,7 +293,7 @@ public function fundListByArea(Request $request)
     $areas = Member::select('area')->distinct()->pluck('area');
 
     return view('AdminDashboard.Reports.fund_list_area_report', compact(
-        'gifts', 'area', 'startDate', 'endDate', 'totalAmount', 'areas'
+        'gifts', 'area', 'startDate', 'endDate', 'totalAmount', 'areas','memberName', 'familyNo'
     ));
 }
 
@@ -291,12 +303,21 @@ public function downloadFundListByAreaPDF(Request $request)
     $area = $request->input('area');
     $startDate = $request->input('start_date');
     $endDate = $request->input('end_date');
+    $memberName = $request->input('member_name');
+    $familyNo = $request->input('family_no');
+
 
     // Fetch gifts with member and family relationships
     $gifts = Gift::with(['member.family'])
-        ->whereHas('member', function ($q) use ($area) {
+        ->whereHas('member', function ($q) use ($area,$memberName, $familyNo) {
             if ($area) {
                 $q->where('area', $area);
+            }
+            if ($memberName) {
+                $q->where('member_name', 'like', '%' . $memberName . '%');
+            }
+            if ($familyNo) {
+                $q->where('family_no', 'like', '%' . $familyNo . '%');
             }
         })
         ->when($startDate, function ($q) use ($startDate) {
@@ -318,7 +339,7 @@ public function downloadFundListByAreaPDF(Request $request)
 
     // Generate PDF
     $pdf = Pdf::loadView('AdminDashboard.Reports.fund_list_area_pdf', compact(
-        'gifts', 'area', 'startDate', 'endDate', 'totalAmount'
+        'gifts', 'area', 'startDate', 'endDate', 'totalAmount','memberName', 'familyNo'
     ));
 
     return $pdf->download($fileName);

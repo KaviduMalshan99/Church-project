@@ -18,12 +18,30 @@ class MemberController extends Controller
    public function index(Request $request)
 {
     // Start query with family and mainPerson relations
-    $query = Member::with(['family', 'family.mainPerson'])
+    $query = Member::with(['family', 'family.mainPerson',])
                    ->where('relationship_to_main_person', '!=', 'Main Member');
 
     // ✅ Filter by the member's own area
     if ($request->filled('area')) {
         $query->where('area', $request->input('area'));
+    }
+
+    // Filter by Family No (related family table)
+    if ($request->filled('family_no')) {
+    $query->whereHas('familyByNumber', function ($q) use ($request) {
+        $q->where('family_number', 'like', '%' . $request->input('family_no') . '%');
+    });
+    }
+
+
+    // Filter by Member ID
+    if ($request->filled('member_id')) {
+        $query->where('member_id', 'like', '%' . $request->input('member_id') . '%');
+    }
+
+    // Filter by Member Name
+    if ($request->filled('member_name')) {
+        $query->where('member_name', 'like', '%' . $request->input('member_name') . '%');
     }
 
     // Count filtered members
@@ -49,7 +67,7 @@ class MemberController extends Controller
         $areas = Area::all(); 
         $academicQualifications = AcademicQualification::all(); 
         $main_persons = Member::where("relationship_to_main_person", "Main Member")
-                              ->get(['id', 'member_name', 'family_no','address']);  
+                              ->get(['id', 'member_name', 'family_no','address','married_date']);  
         return view('AdminDashboard.members.add_family_member', compact('main_persons', 'occupation','religion','heldincouncil',
         'academicQualifications','areas'));
     }

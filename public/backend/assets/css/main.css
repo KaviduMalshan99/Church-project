@@ -3979,3 +3979,67 @@ footer.main-footer {
 .status.returned {
   background-color: #ff5722; /* Orange for returned */
 }
+
+.dark .modal-content {
+  background-color: #2a3042;
+  border: 1px solid #303547;
+  color: #fff;
+}
+
+.dark .modal-header,
+.dark .modal-footer {
+  background-color: #2f3446;
+  border-color: #383e50;
+}
+
+.dark .modal-title {
+  color: #fff;
+}
+
+.dark .form-check-input {
+  background-color: #1e2231;
+  border-color: #383e50;
+}
+
+.dark .form-check-label {
+  color: #fff;
+}
+
+.dark .btn-close {
+  filter: invert(1);
+}
+
+.dark .dataTables_wrapper .dataTables_paginate .ellipsis {
+    color: white !important;
+    padding: 5px 10px;
+}
+
+.dark .dataTables_wrapper .dataTables_paginate .paginate_button {
+    color: white !important;
+    border: 1px solid #ccc;
+    background-color: #444;
+    margin: 2px;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.dark .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #007bff !important;
+    color: rgb(8, 8, 8) !important;
+    border-color: #007bff !important;
+}
+
+.dark .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #555;
+    color: white !important;
+    border: 1px solid #999;
+}
+
+.dark .dataTables_wrapper .dataTables_info,
+.dark .dataTables_wrapper .dataTables_length,
+.dark .dataTables_wrapper .dataTables_filter,
+.dark .dataTables_wrapper .dataTables_processing {
+    color: rgb(255, 255, 255) !important;
+}
+
+
