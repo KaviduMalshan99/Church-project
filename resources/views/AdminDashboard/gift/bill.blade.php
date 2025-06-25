@@ -84,7 +84,7 @@
         <table>
             <tr>
                 <th>Sender Name:</th>
-                <td>{{ $gift->member->member_name }}</td>
+                <td>{{ $gift->member->member_title }} {{ $gift->member->name_with_initials }}</td>
             </tr>
             <tr>
                 <th>Sender ID:</th>

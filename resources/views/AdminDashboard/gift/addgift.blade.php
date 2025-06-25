@@ -1,6 +1,13 @@
 @extends ('AdminDashboard.master')
 
 @section('content')
+<style>
+    .select2-selection__clear {
+    color: red; /* Or any color you want */
+    cursor: pointer;
+}
+
+</style>
 
 <form method="POST" action="{{ route('gift.store') }}" enctype="multipart/form-data">
     @csrf
@@ -115,5 +122,9 @@
         });
     });
 </script>
+<!-- Include in your master layout or section -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 
 @endsection
