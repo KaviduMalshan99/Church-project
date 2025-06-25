@@ -13,6 +13,7 @@ use Dompdf\Options;
 use Illuminate\Support\Str;
 use Carbon\Carbon; 
 use App\Models\Area;
+use Illuminate\Support\Facades\File;
 
 
 class GiftController extends Controller
@@ -109,8 +110,16 @@ class GiftController extends Controller
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
     
-        $pdfPath = 'gifts/' . $gift->id . '_bill.pdf';
-        file_put_contents(storage_path('app/public/' . $pdfPath), $dompdf->output());
+         // Step 5: Save PDF to Storage
+    $directory = storage_path('app/public/gifts');
+    if (!File::exists($directory)) {
+        File::makeDirectory($directory, 0777, true);
+    }
+
+    $pdfFilename = $gift->id . '_bill.pdf';
+    $pdfPath = 'gifts/' . $pdfFilename;
+    file_put_contents(storage_path('app/public/' . $pdfPath), $dompdf->output());
+
     
         // Save the PDF path in the database
         $gift->bill_path = $pdfPath;

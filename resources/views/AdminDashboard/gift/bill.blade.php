@@ -84,7 +84,7 @@
         <table>
             <tr>
                 <th>Sender Name:</th>
-                <td>{{ $gift->member->member_name }}</td>
+                <td>{{ $gift->member->member_title }} {{ $gift->member->name_with_initials }}</td>
             </tr>
             <tr>
                 <th>Sender ID:</th>
@@ -112,7 +112,7 @@
 
 
     <!-- Signature Section -->
-    @if ($userSignature)
+    {{-- @if ($userSignature)
         <div class="signature">
             <p>Received By: <br>{{ $receivedBy }}</p>
             <img src="data:image/jpeg;base64,{{ base64_encode(file_get_contents(public_path('storage/'. $userSignature))) }}" alt="Signature"  width="100">
@@ -121,7 +121,14 @@
         <div class="signature">
             <p>Signature:No signature available</p>
         </div>
-    @endif
+    @endif --}}
+
+    <!-- Signature Section -->
+<div class="signature" style="margin-top: 40px;">
+    <p>Received By: {{ $receivedBy }}</p>
+    <p>Signature: ....................................</p>
+</div>
+
 
   
     <!-- Footer Section -->

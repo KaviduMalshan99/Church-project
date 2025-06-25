@@ -138,12 +138,12 @@
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Occupation <i class="text-danger">*</i></label>
-                        <input list="occupationOptions" name="occupation" placeholder="Select or type your occupation" class="form-control" required />
-                        <datalist id="occupationOptions">
+                        <select name="occupation" class="form-select" required>
+                            <option value="" disabled selected>Select your occupation</option>
                             @foreach ($occupation as $item)
-                                <option value="{{ $item->name }}"></option>
+                                <option value="{{ $item->name }}">{{ $item->name }}</option>
                             @endforeach
-                        </datalist>
+                        </select>
                     </div>
                     <div class="mb-4">
                         <label class="form-label">Academic Qualifications</label>
