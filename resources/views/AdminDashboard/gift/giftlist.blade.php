@@ -22,14 +22,14 @@
         <div class="card-body">
             <ul class="nav nav-tabs mb-3" id="filterTabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ request('date') || request('contribution_type') ? 'active' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('area')) ? 'active' : '') }}" 
-                            id="single-date-tab" data-bs-toggle="tab" data-bs-target="#single-date" type="button" role="tab" aria-selected="{{ request('date') || request('contribution_type') ? 'true' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('area')) ? 'true' : 'false') }}">
+                    <button class="nav-link {{ request('date') || request('contribution_type') ? 'active' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('main_area') || request('sub_area')) ? 'active' : '') }}" 
+                            id="single-date-tab" data-bs-toggle="tab" data-bs-target="#single-date" type="button" role="tab" aria-selected="{{ request('date') || request('contribution_type') ? 'true' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('main_area') || request('sub_area')) ? 'true' : 'false') }}">
                         Single Date
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link {{ request('from_date') || request('to_date') ? 'active' : '' }}" 
-                            id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button" role="tab" 
+                            id="weekly-tab" data-bs-toggle="tab" data-bs-target="#weekly" type="button" 
                             aria-selected="{{ request('from_date') || request('to_date') ? 'true' : 'false' }}">
                         Weekly Range
                     </button>
@@ -42,9 +42,9 @@
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link {{ request('area') ? 'active' : '' }}" 
+                    <button class="nav-link {{ request('main_area') || request('sub_area') ? 'active' : '' }}" 
                             id="area-tab" data-bs-toggle="tab" data-bs-target="#area" type="button" role="tab" 
-                            aria-selected="{{ request('area') ? 'true' : 'false' }}">
+                            aria-selected="{{ request('main_area') || request('sub_area') ? 'true' : 'false' }}">
                         Area
                     </button>
                 </li>
@@ -52,7 +52,7 @@
             
             <div class="tab-content" id="filterTabContent">
                 <!-- Single Date Filter -->
-                <div class="tab-pane fade {{ request('date') || request('contribution_type') ? 'show active' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('area')) ? 'show active' : '') }}" 
+                <div class="tab-pane fade {{ request('date') || request('contribution_type') ? 'show active' : (!(request('from_date') || request('to_date') || request('from_month') || request('to_month') || request('main_area') || request('sub_area')) ? 'show active' : '') }}" 
                      id="single-date" role="tabpanel" aria-labelledby="single-date-tab">
                     <form method="GET" action="{{ route('gift.list') }}" class="row g-3">
                         <div class="col-md-5">
@@ -123,16 +123,27 @@
                 </div>
                 
                 <!-- Area Filter -->
-                <div class="tab-pane fade {{ request('area') ? 'show active' : '' }}" 
+                <div class="tab-pane fade {{ request('main_area') || request('sub_area') ? 'show active' : '' }}" 
                      id="area" role="tabpanel" aria-labelledby="area-tab">
                     <form method="GET" action="{{ route('gift.list') }}" class="row g-3">
-                        <div class="col-md-10">
-                            <label class="form-label">Select Area</label>
-                            <select name="area" class="form-select">
-                                <option value="">Select Area</option>
-                                @foreach($areas as $area)
-                                    <option value="{{ $area->area }}" {{ request('area') == $area->area ? 'selected' : '' }}>
-                                        {{ $area->area }}
+                        <div class="col-md-5">
+                            <label class="form-label">Main Area</label>
+                            <select name="main_area" class="form-select" id="main_area_select">
+                                <option value="">Select Main Area</option>
+                                @foreach($main_areas as $main_area)
+                                    <option value="{{ $main_area }}" {{ request('main_area') == $main_area ? 'selected' : '' }}>
+                                        {{ $main_area }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-5">
+                            <label class="form-label">Sub Area</label>
+                            <select name="sub_area" class="form-select" id="sub_area_select">
+                                <option value="">Select Sub Area</option>
+                                @foreach($sub_areas as $sub_area)
+                                    <option value="{{ $sub_area }}" {{ request('sub_area') == $sub_area ? 'selected' : '' }}>
+                                        {{ $sub_area }}
                                     </option>
                                 @endforeach
                             </select>
@@ -241,20 +252,68 @@
         document.querySelector('input[name="to_date"]').value = '';
         document.querySelector('input[name="from_month"]').value = '';
         document.querySelector('input[name="to_month"]').value = '';
+        document.querySelector('select[name="main_area"]').value = '';
+        document.querySelector('select[name="sub_area"]').value = '';
         document.getElementById('filterForm').submit();
     }
 
+    // Handle dynamic sub area filtering
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainAreaSelect = document.getElementById('main_area_select');
+        const subAreaSelect = document.getElementById('sub_area_select');
+        
+        if (mainAreaSelect && subAreaSelect) {
+            // Function to populate sub areas based on selected main area
+            function populateSubAreas(selectedMainArea) {
+                // Clear sub area selection
+                subAreaSelect.innerHTML = '<option value="">Select Sub Area</option>';
+                
+                if (selectedMainArea) {
+                    // Filter sub areas based on selected main area
+                    const allAreas = @json($areas->pluck('area'));
+                    const filteredSubAreas = [];
+                    
+                    allAreas.forEach(function(area) {
+                        const parts = area.split('-');
+                        if (parts[0] === selectedMainArea && parts[1]) {
+                            if (!filteredSubAreas.includes(parts[1])) {
+                                filteredSubAreas.push(parts[1]);
+                            }
+                        }
+                    });
+                    
+                    // Add filtered sub areas to dropdown
+                    filteredSubAreas.forEach(function(subArea) {
+                        const option = document.createElement('option');
+                        option.value = subArea;
+                        option.textContent = subArea;
+                        subAreaSelect.appendChild(option);
+                    });
+                }
+            }
+            
+            // Handle main area change
+            mainAreaSelect.addEventListener('change', function() {
+                populateSubAreas(this.value);
+            });
+            
+            // Populate sub areas on page load if main area is already selected
+            if (mainAreaSelect.value) {
+                populateSubAreas(mainAreaSelect.value);
+            }
+        }
+    });
 
     // Add this script to ensure the correct tab is shown when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    // Create a Bootstrap tab instance
-    var triggerTabList = [].slice.call(document.querySelectorAll('#filterTabs button'))
-    triggerTabList.forEach(function(triggerEl) {
-        if (triggerEl.classList.contains('active')) {
-            var tabTrigger = new bootstrap.Tab(triggerEl)
-            tabTrigger.show()
-        }
+    document.addEventListener('DOMContentLoaded', function() {
+        // Create a Bootstrap tab instance
+        var triggerTabList = [].slice.call(document.querySelectorAll('#filterTabs button'))
+        triggerTabList.forEach(function(triggerEl) {
+            if (triggerEl.classList.contains('active')) {
+                var tabTrigger = new bootstrap.Tab(triggerEl)
+                tabTrigger.show()
+            }
+        })
     })
-})
 </script>
 @endsection

@@ -76,7 +76,7 @@
                         <input type="text" name="nic" placeholder="Type here" class="form-control" id="nic" required />
                     </div>
                     <div class="mb-4">
-                        <label for="birth_date" class="form-label">Birth Date</label>
+                        <label for="birth_date" class="form-label">Date of Birth</label>
                         <input type="date" name="birth_date" class="form-control" id="birth_date" />
                     </div>
                     <div class="mb-4">
@@ -109,7 +109,7 @@
                     </div>
 
                     <div class="mb-4" id="marriedDateContainer" style="display: none;">
-                        <label class="form-label" for="marriedDate">Marriage Date</label>
+                        <label class="form-label" for="marriedDate">Date of Married</label>
                         <input type="date" id="marriedDate" name="married_date" class="form-control" value="{{ old('married_date') }}" />
                     </div>
                     <div class="mb-4">

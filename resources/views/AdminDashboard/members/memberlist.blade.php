@@ -93,17 +93,17 @@
                             <td>{{ $family_member->gender }}</td>
                             <td>{{ $family_member->contact_info }}</td>
                             <td class="text-end">
-                                <!-- Edit and Delete Actions -->
-                                <a href="{{ route('member.edit', $family_member->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
+    <div class="d-inline-flex gap-1">
+        <a href="{{ route('member.edit', $family_member->id) }}" class="btn btn-sm btn-outline-primary custom-hover">Edit</a>
 
-                                <form id="delete-form-{{ $family_member->id }}" action="{{ route('member.destroy', $family_member->id) }}" method="POST" style="display: inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" class="btn  btn-outline-danger btn-sm" onclick="confirmDelete('delete-form-{{ $family_member->id }}', 'Are you sure you want to delete this Member?');">
-                                    Delete
-                                    </button>
-                                </form>
-                            </td>
+        <form id="delete-form-{{ $family_member->id }}" action="{{ route('member.destroy', $family_member->id) }}" method="POST" style="display: inline;">
+            @csrf
+            @method('DELETE')
+            <button type="button" class="btn btn-sm btn-outline-danger" onclick="confirmDelete('delete-form-{{ $family_member->id }}')">Delete</button>
+        </form>
+    </div>
+</td>
+
                         </tr>
                     @endforeach
                 </tbody>
@@ -124,6 +124,8 @@
     function confirmDelete() {
         return confirm("Are you sure you want to delete this member?");
     }
+
+    
 </script>
 <script>
     $(document).ready(function() {

@@ -129,20 +129,19 @@ class FilterController extends Controller
                 ->orderByRaw('MONTH(birth_date), DAY(birth_date)')
                 ->get();
 
-            $anniversaries = Member::where('religion', 'Methodist')
-                ->where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
-                    if ($startMonth === $endMonth) {
-                        $query->whereRaw("MONTH(married_date) = ? AND DAY(married_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
-                    } else {
-                        $query->where(function ($subQuery) use ($startMonth, $startDay) {
-                            $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) >= ?", [$startMonth, $startDay]);
-                        })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
-                            $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) <= ?", [$endMonth, $endDay]);
-                        });
-                    }
-                })
-                ->orderByRaw('MONTH(married_date), DAY(married_date)')
-                ->get();
+            $anniversaries = Member::where(function ($query) use ($startMonth, $startDay, $endMonth, $endDay) {
+                if ($startMonth === $endMonth) {
+                    $query->whereRaw("MONTH(married_date) = ? AND DAY(married_date) BETWEEN ? AND ?", [$startMonth, $startDay, $endDay]);
+                } else {
+                    $query->where(function ($subQuery) use ($startMonth, $startDay) {
+                        $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) >= ?", [$startMonth, $startDay]);
+                    })->orWhere(function ($subQuery) use ($endMonth, $endDay) {
+                        $subQuery->whereRaw("MONTH(married_date) = ? AND DAY(married_date) <= ?", [$endMonth, $endDay]);
+                    });
+                }
+            })
+            ->orderByRaw('MONTH(married_date), DAY(married_date)')
+            ->get();
         } else {
             // Show all Methodist members if no date filter
             $birthdays = Member::where('religion', 'Methodist')
