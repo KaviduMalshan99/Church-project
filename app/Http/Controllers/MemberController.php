@@ -192,8 +192,15 @@ class MemberController extends Controller
         $heldincouncil = HeldinCouncil::all();
         $existingHeldOffices = json_decode($member->held_office_in_council, true) ?: [];
         $academicQualifications = AcademicQualification::all(); 
+        // Get the current main person id from the family (convert member_id string to numeric id)
+        $family = \App\Models\Family::where('family_number', $member->family_no)->first();
+        $currentMainPersonId = null;
+        if ($family && $family->main_person_id) {
+            $mainPerson = \App\Models\Member::where('member_id', $family->main_person_id)->first();
+            $currentMainPersonId = $mainPerson ? $mainPerson->id : null;
+        }
         return view('AdminDashboard.members.edit_member', compact('member', 'main_persons', 'occupation','religion','heldincouncil',
-        'academicQualifications','existingHeldOffices','areas'));
+        'academicQualifications','existingHeldOffices','areas', 'currentMainPersonId'));
     }
 
     public function update(Request $request, $id)

@@ -27,7 +27,7 @@
                         <option value="">Select family main person</option>
                         @foreach($main_persons as $main_person)
                             <option value="{{ $main_person->id }}"
-                                {{ old('main_person', $member->main_person) == $main_person->id ? 'selected' : '' }}>
+                                {{ old('main_person', $currentMainPersonId) == $main_person->id ? 'selected' : '' }}>
                                 {{ $main_person->member_name }} ({{ $main_person->family_no }})
                             </option>
                         @endforeach

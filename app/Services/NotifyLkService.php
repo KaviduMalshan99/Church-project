@@ -36,7 +36,12 @@ class NotifyLkService
         curl_close($ch);
     
         // Return the response
-        return json_decode($response);
+        $result = json_decode($response, true);
+
+    // Log the result for debugging
+    \Log::info('Notify.lk SMS Response', $result);
+
+    return $result;
     }
     
 }

@@ -44,10 +44,20 @@ class GiftController extends Controller
         $query->whereBetween('created_at', [$fromMonth, $toMonth]);
     }
 
-    // ✅ Filter by sender's area
-    if ($request->filled('area')) {
+    // Filter by main area and sub area
+    if ($request->filled('main_area') || $request->filled('sub_area')) {
         $query->whereHas('member', function ($q) use ($request) {
-            $q->where('area', $request->input('area'));
+            if ($request->filled('main_area') && $request->filled('sub_area')) {
+                // Both main area and sub area are selected
+                $combinedArea = $request->input('main_area') . '-' . $request->input('sub_area');
+                $q->where('area', $combinedArea);
+            } elseif ($request->filled('main_area')) {
+                // Only main area is selected - filter by main area prefix
+                $q->where('area', 'like', $request->input('main_area') . '-%');
+            } elseif ($request->filled('sub_area')) {
+                // Only sub area is selected - filter by sub area suffix
+                $q->where('area', 'like', '%-' . $request->input('sub_area'));
+            }
         });
     }
 
@@ -56,8 +66,26 @@ class GiftController extends Controller
 
     $contribution_types = ContributionType::all();
 
+    // Get all areas and separate them into main areas and sub areas
     $areas = Area::all();
-    return view('AdminDashboard.gift.giftlist', compact('gifts', 'totalAmount', 'contribution_types', 'areas'));
+    $main_areas = [];
+    $sub_areas = [];
+    
+    foreach ($areas as $area) {
+        $parts = explode('-', $area->area);
+        if (count($parts) >= 2) {
+            $main_areas[] = trim($parts[0]);
+            $sub_areas[] = trim($parts[1]);
+        }
+    }
+    
+    // Remove duplicates and sort
+    $main_areas = array_unique($main_areas);
+    $sub_areas = array_unique($sub_areas);
+    sort($main_areas);
+    sort($sub_areas);
+    
+    return view('AdminDashboard.gift.giftlist', compact('gifts', 'totalAmount', 'contribution_types', 'areas', 'main_areas', 'sub_areas'));
 }
 
 
